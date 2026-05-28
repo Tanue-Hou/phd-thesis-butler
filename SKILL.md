@@ -81,25 +81,76 @@ phd-thesis-butler/
           "model":"xiaomi mimo v2.5"}]}
 ```
 
-## 使用方式
+## Quickstart（最小可跑示例）
 
-### 查询句式（写作时）
-1. 识别写作场景（如"写引言"）
-2. 查看 CROSS_CATEGORY_MAP.md → 定位 category/subtype
-3. 加载对应子 skill：`skill_view("phd-thesis-butler/sub_skills/dis_intro")`
-4. 从子 skill 的 references/ 中检索模板
+### 1. 查询句式（写作时）
 
-### 抽取新论文（扩展用）
-1. 准备 PDF（命名规范：P###_DIS.pdf / P###_AREF.pdf）
-2. 调用 router: `cat prompts/gm.prompt.txt | ...`
-3. 按输出 plan 执行
-
-### 聚合已有产出
 ```bash
-scripts/aggregate.py dedup --input raw/Raw_DIS.jsonl --output dedup/DeDup_DIS.jsonl
-scripts/aggregate.py coverage --input filtered/Filtered_DIS.jsonl --spec references/FULL_CLASSIFICATION.yaml --gap-output gaps/gap_DIS.json
-scripts/generate_top50.py --input curated/quality/QUALITY2_SELECTION_DIS.jsonl --output-dir curated/quality/TOP50_BY_CATEGORY/
+# 加载主 skill → 路由
+skill_view("phd-thesis-butler")
+
+# 需要写引言 → 加载 INTRO 子 skill
+skill_view("phd-thesis-butler/sub_skills/dis_intro")
+
+# 检索 motivation 相关模板
+grep '"subtype":"motivation"' data/curated/quality/QUALITY2_SELECTION_DIS.jsonl | head -5
 ```
+
+### 2. 抽取新论文
+
+```bash
+# 准备命名规范的 PDF
+# P001_DIS.pdf  +  P001_AREF.pdf
+
+# 调用 Router 生成执行计划
+cat prompts/router.prompt.txt | ... → {"plan":[...]}
+
+# 按 plan 执行抽取
+python3 scripts/qa_check.py --input raw/DIS_001.jsonl --output qa/DIS_001.json
+```
+
+### 3. 聚合已有产出
+
+```bash
+python3 scripts/aggregate.py dedup --input raw/Raw_DIS.jsonl --output dedup/DeDup_DIS.jsonl
+python3 scripts/aggregate.py filter --input dedup/DeDup_DIS.jsonl --output filtered/Filtered_DIS.jsonl
+python3 scripts/aggregate.py stats --dis filtered/Filtered_DIS.jsonl --output stats_report.json
+python3 scripts/generate_top50.py --input filtered/Filtered_DIS.jsonl --output-dir TOP50/
+```
+
+### 4. 输出样例
+
+**TEMPLATE 行（DIS）**:
+```jsonl
+{"paper_id":"001","source":"DIS","record_type":"TEMPLATE","category":"INTRO","subtype":"motivation","template":"В последние годы ___ привлекает все большее внимание в области ___.","slots":["объект/тема","область/контекст"],"when_to_use":"引言段首：交代研究方向关注度并限定领域","common_mistakes":["空泛不落地","未限定范围导致过度泛化"],"strength":"neutral","quality_score":2,"schema_version":"2.1"}
+```
+
+**UTIL 行**:
+```jsonl
+{"paper_id":"001","source":"DIS","record_type":"UTIL","kind":"CONSERVATIVE","subtype":"hedging","template":"В рамках допущений можно предположить, что {X}.","when_to_use":"讨论段：给出保守解释并显式限定条件","common_mistakes":["只加保守词但不给条件","用保守词回避可验证表述"],"function":"保守推断/限定结论","quality_score":2,"schema_version":"2.1"}
+```
+
+---
+
+## 版本历史
+
+| 版本 | 日期 | 变更 |
+|------|------|------|
+| v2.1 | 2026-05 | 最终版：9,602条，PII脱敏通过，JSON schema 严格化 |
+| v2.0 | 2026-05 | 引入 record_type(TEMPLATE/UTIL)，Router输出JSON契约，三档覆盖指标 |
+| v1.0 | 2026-05 | 初始方案：13个子skill，按category拆分的Lite架构 |
+| Pilot | 2026-05 | 9篇试点验证pipeline，确定分类体系与质量阈值 |
+
+### v2.1 关键变更
+
+- 字段命名清洗：消除 subrype/subtitle/common_mstake 等拼写错误
+- quality_score 统一：int 0/1/2，清除 float/str 混用
+- PII 脱敏：替换真实姓名、地址、机构名为占位符
+- 移除中文模板：删除 607 条 Chinese-language 条目
+- qa_check.py：--max-words 参数真正生效，overall_pass 包含所有检查
+- JSON Schema：UTIL 必填字段补齐（kind/subtype/when_to_use/common_mistakes）
+- FULL_CLASSIFICATION.yaml：新增 allowed_source / allowed_record_types 校验字段
+- Router 输出契约：添加完整 plan JSON 示例
 
 ## 约束
 - 模型强制：xiaomi mimo v2.5

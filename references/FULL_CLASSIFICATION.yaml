@@ -1,14 +1,24 @@
 # PhD Thesis Butler — Full Classification Enumeration v2.1
-# This is the SINGLE SOURCE OF TRUTH for all category/subtype/kind values.
-# Sub-skills MUST NOT invent their own values.
+# SINGLE SOURCE OF TRUTH for all category/subtype/kind values.
 
 schema_version: "2.1"
 
-record_types:
-  - TEMPLATE
-  - UTIL
+allowed_sources: ["DIS", "AREF"]
+allowed_record_types: ["TEMPLATE", "UTIL"]
+
+quality_scores:
+  2: "跨学科通用、槽位合理、句式自然、when_to_use与common_mistakes具体可执行"
+  1: "可用但场景偏窄/槽位设计一般/措辞略僵硬"
+  0: "空泛、不可迁移、缺字段、疑似复刻、或无槽位的伪模板"
+
+coverage_tiers:
+  N_core: 200
+  N_mid: 80
+  N_rare: 30
 
 DIS:
+  allowed_source: "DIS"
+  allowed_record_types: ["TEMPLATE", "UTIL"]
   categories:
     INTRO:
       description: "引言/背景"
@@ -45,6 +55,8 @@ DIS:
       subtypes: [deployment, real_time, resource_usage, code_reproducibility, practical_complexity]
 
 AREF:
+  allowed_source: "AREF"
+  allowed_record_types: ["TEMPLATE"]
   categories:
     АКТУАЛЬНОСТЬ:
       description: "актуальность темы"
@@ -90,6 +102,8 @@ AREF:
       subtypes: [main_result, practical_outcome, scientific_significance, future_direction]
 
 UTIL:
+  allowed_source: ["DIS", "AREF"]
+  allowed_record_types: ["UTIL"]
   kinds:
     CONNECTIVE:
       description: "连接结构用法"
@@ -100,13 +114,3 @@ UTIL:
     NUMERIC:
       description: "数字汇报口径"
       subtypes: [improvement_report, error_report, distribution_report, comparison_report]
-
-quality_scores:
-  2: "跨学科通用、槽位合理、句式自然、when_to_use与common_mistakes具体可执行"
-  1: "可用但场景偏窄/槽位设计一般/措辞略僵硬"
-  0: "空泛、不可迁移、缺字段、疑似复刻、或无槽位的伪模板"
-
-coverage_tiers:
-  N_core: 200
-  N_mid: 80
-  N_rare: 30

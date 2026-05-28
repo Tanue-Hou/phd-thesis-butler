@@ -41,14 +41,34 @@ ERROR: wrong model (require xiaomi mimo v2.5)
   - 输出 recommend（推荐子 skill + 建议 category/subtype）
 
 ## 输出契约（唯一合法结构）
+```json
 {"plan":[
-  {"action":"run_skill|run_script|recommend",
-   "skill":"sub_skills/xxx",
-   "input":"/path/to/file",
-   "output":"/path/to/output",
+  {"action":"run_skill",
+   "skill":"sub_skills/dis_intro",
+   "input":"/path/P001_DIS.pdf",
+   "output":"/out/batch_001/DIS_001_intro.jsonl",
    "model":"xiaomi mimo v2.5",
-   "args":{"mode":"lite|full","paper_id":"xxx"}}
+   "args":{"mode":"lite","paper_id":"001"}},
+  {"action":"run_script",
+   "script":"scripts/qa_check.py",
+   "input":"/out/batch_001/DIS_001_intro.jsonl",
+   "output":"/out/batch_001/qa_DIS_001.json",
+   "model":"",
+   "args":{"--max-words":"25","--slot-threshold":"0.98"}},
+  {"action":"recommend",
+   "recommend":[
+     {"skill":"sub_skills/dis_intro","reason":"引言动机/目标/任务模板最集中"},
+     {"skill":"sub_skills/utils_core","reason":"连接词与保守措辞"}],
+   "model":"xiaomi mimo v2.5"}
 ]}
+
+每个 plan item 固定字段：
+- action: run_skill | run_script | recommend
+- skill/script: 子 skill 标识符或脚本路径
+- input/output: 文件路径
+- model: 模型名（非执行类可留空）
+- args: 传递参数（字典）
+```
 
 ## 错误输出
 - ERROR: wrong model (require xiaomi mimo v2.5)
