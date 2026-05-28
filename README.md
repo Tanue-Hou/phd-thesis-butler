@@ -1,110 +1,95 @@
-# PhD Thesis Butler
+# PhD Thesis Butler (博士论文管家)
 
-## Sentence Bank for Russian Academic Writing
+**Language:** English | [中文](README.zh-CN.md)
 
-**9,602 sentence templates** extracted from **327 candidate and doctoral dissertations** across 23+ scientific fields, organized into a dual-channel classification system.
+A skill-pack for **Russian academic writing**: a curated **sentence template bank** extracted from BMSTU candidate & doctoral dissertations, organized into dual channels (DIS + AREF) and served through a loadable "skill" interface for Hermes / Claude Code / Codex-style agents.
 
-Built for researchers writing dissertations in Russian — especially engineering, mathematics, and natural sciences. Designed as a skill that any AI agent can load to automatically detect the user's writing context and serve relevant templates.
+> This project focuses on **portable expression patterns** (templates with slots), not on copying original text.
 
 ---
 
 ## Overview
 
-| Metric | Value |
-|---|---|
-| Source dissertations | 327 (BMSTU) |
-| Total templates | 9,602 |
-| DIS channel (structural) | 5,621 — organized by dissertation section |
-| AREF channel (auto-reference) | 3,573 — organized by contribution framing |
-| UTILS channel (utility patterns) | 408 — connectives, hedging, numeric reporting |
-| Quality 2 (excellent, portable) | ~2,000+ |
-| Categories covered | 23 active |
+**Corpus & output (current build):**
 
-Each template includes: the Russian sentence pattern, slot markers `[...]` for user input, `when_to_use` guidance, and `common_mistakes` warnings.
+- Source dissertations: **327 (BMSTU)**
+- Total templates: **9,602**
+  - DIS channel: **5,621** (by dissertation section)
+  - AREF channel: **3,573** (by автореферат module)
+  - UTILS channel: **408** (connectives / hedging / numeric reporting)
+- Quality 2 (excellent, portable): **~2,000+**
+- Active categories/modules: **23**
+
+Each template includes:
+- Russian pattern with slot markers `[...]`
+- `when_to_use` guidance
+- `common_mistakes` warnings
+- `quality_score` (0–2)
 
 ---
 
 ## Classification System
 
-### DIS Channel — By Dissertation Section (11 categories)
+### DIS channel — by dissertation section (11 categories)
 
-| Category | Templates | Usage |
-|---|---|---|
-| Introduction (INTRO) | ~800 | Opening, motivation, problem statement, objectives |
-| Literature Survey (SURVEY) | ~700 | Prior work review, gap identification, positioning |
-| Formal Definitions (FORMAL_DEFS) | ~300 | Notation, theorems, definitions, problem formulation |
-| Model Construction (MODEL) | ~600 | Mathematical modeling, assumptions, theoretical framework |
-| Methodology (METHOD) | ~600 | Algorithm design, procedures, criteria |
-| Engineering (ENGINEERING) | ~400 | System design, implementation, prototypes |
-| Experiments (EXPERIMENT) | ~500 | Setup, parameters, benchmarks, scenarios |
-| Results (RESULT) | ~600 | Findings, tables, figures, comparative analysis |
-| Discussion (DISCUSSION) | ~500 | Interpretation, limitations, implications |
-| Transition (TRANSITION) | ~300 | Connective phrases between sections |
-| Conclusion (CONCLUSION) | ~500 | Summary, contributions, future work |
+- INTRO — opening, motivation, problem statement, objectives
+- SURVEY — prior work review, gap identification, positioning
+- FORMAL_DEFS — notation, theorems, definitions, formulation
+- MODEL — modeling, assumptions, theoretical framework
+- METHOD — algorithms, procedures, criteria
+- ENGINEERING — implementation, prototypes, systems
+- EXPERIMENT — setup, parameters, scenarios, benchmarks
+- RESULT — findings, figures/tables, comparisons
+- DISCUSSION — interpretation, limitations, implications
+- TRANSITION — cross-section connective phrasing
+- CONCLUSION — summary, contributions, future work
 
-### AREF Channel — By Автореферат Module (14 modules)
+### AREF channel — by автореферат module (14 modules)
 
-| Module | Purpose |
-|---|---|
-| Актуальность | Relevance / timeliness |
-| Новизна | Novelty claims |
-| Цель / Задачи | Goals and task decomposition |
-| Объект / Предмет | Object and subject of study |
-| Гипотеза | Hypothesis formulation |
-| Методы | Methods description |
-| Положения | Defended provisions |
-| Достоверность | Validity claims |
-| Теоретическая значимость | Theoretical significance |
-| Практическая значимость | Practical significance |
-| Апробация | Approbation / validation |
-| Внедрение | Implementation claims |
-| Структура | Structural overview |
+Includes: актуальность, новизна, цель/задачи, объект/предмет, методы, положения, достоверность, теоретическая/практическая значимость, апробация, внедрение, структура, выводы, etc.
 
-### UTILS Channel — Utility Patterns (3 kinds)
+### UTILS channel — utility patterns (3 kinds)
 
-| Kind | Examples |
-|---|---|
-| CONNECTIVE | contrast, addition, cause_effect, concession, illustration, sequencing |
-| CONSERVATIVE | hedging, limitation_qualifier, suggestion_soft, uncertainty_expression |
-| NUMERIC | improvement_report, error_report, distribution_report, comparison_report |
+- CONNECTIVE — contrast/addition/cause-effect/concession/illustration/sequencing
+- CONSERVATIVE — hedging, limitation qualifiers, uncertainty expressions
+- NUMERIC — improvement/error/distribution/comparison reporting patterns
 
 ---
 
 ## Quality Scoring
 
-Every template is scored 0–2:
+Templates are scored 0–2:
 
-| Score | Meaning | Auto-serve? |
-|---|---|---|
-| **2 (excellent)** | Field-independent, self-contained, ready to use | ✅ Default |
-| **1 (good)** | Valid but needs domain adaptation | ⚠️ Fallback only |
-| **0 (informative)** | Domain-tied construction | ❌ Manual only |
+- **2 (excellent)**: field-independent, self-contained, ready to use
+- **1 (good)**: valid but needs domain adaptation
+- **0 (informative)**: domain-tied; manual review required
 
 ---
 
 ## Data Format (JSONL v2.1)
 
+Example entry:
+
 ```json
 {
   "id": "DIS_INTRO_0427",
   "text": "В последние годы [Область] привлекает всё большее внимание исследователей в связи с [Фактор/Причина].",
-  "kind": "problem_statement",
-  "subtype": "relevance_opening",
   "source": "DIS",
   "category": "INTRO",
   "quality_score": 2,
-  "semantic_tags": ["relevance", "opening", "trend"],
   "when_to_use": "Для открытия введения, когда нужно обосновать актуальность через возрастающий интерес",
   "common_mistakes": "Не злоупотребляйте — эта конструкция эффективна 1–2 раза на всё введение"
 }
 ```
 
 Master files:
-- `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` (5,621 lines)
-- `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` (3,573 lines)
-- `data/curated/master/MASTER_UTILS.jsonl` (408 lines)
+
+- `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl`
+- `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl`
+- `data/curated/master/MASTER_UTILS.jsonl`
 
 Quality selections:
+
 - `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl`
 - `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl`
 - `data/curated/quality/QUALITY2_UTILS.jsonl`
@@ -113,19 +98,17 @@ Quality selections:
 
 ## Installation
 
-### Hermes Agent
+### Hermes (skill install)
 
 ```bash
 hermes skill install github:Tanue-Hou/phd-thesis-butler
 ```
 
-Then load in any session:
+Load in a session:
 
 ```
 /skill phd-thesis-butler
 ```
-
-The agent will automatically detect your writing context and serve templates.
 
 ### Claude Code
 
@@ -134,7 +117,7 @@ mkdir -p ~/.claude/skills/
 git clone https://github.com/Tanue-Hou/phd-thesis-butler.git ~/.claude/skills/phd-thesis-butler
 ```
 
-Add to your CLAUDE.md:
+Then add in CLAUDE.md (example):
 
 ```
 Always load ~/.claude/skills/phd-thesis-butler/SKILL.md for Russian academic writing.
@@ -146,43 +129,56 @@ Always load ~/.claude/skills/phd-thesis-butler/SKILL.md for Russian academic wri
 git clone https://github.com/Tanue-Hou/phd-thesis-butler.git
 ```
 
-Then reference the template files during writing sessions.
-
 ---
 
 ## Usage
 
-The skill is designed to be **proactive**: once loaded, the agent scans your writing, detects which dissertation section you're working on, and serves 3–5 relevant templates automatically.
+The skill is designed to be **proactive**: once loaded, the agent can detect your writing context (e.g., INTRO vs MODEL) and serve a small set of relevant templates.
 
 You can also query directly:
 
+```bash
+# Search by category/subtype in quality templates
+grep '"category":"INTRO"' data/curated/quality/QUALITY2_SELECTION_DIS.jsonl | head -5
 ```
-# Search for specific subtype in quality templates
-grep '"subtype":"motivation"' data/curated/quality/QUALITY2_SELECTION_DIS.jsonl | head -5
 
-# Or load a sub-skill for section-specific guidance
+Or load a section sub-skill:
+
+```
 /skill phd-thesis-butler/sub_skills/dis_intro
 ```
 
 ---
 
-## Sub-Skills
+## Sub-Skills (by writing section)
 
-| Writing section | Load this sub-skill |
-|---|---|
-| Introduction | `sub_skills/dis_intro` |
-| Literature Survey | `sub_skills/dis_survey` |
-| Model Construction | `sub_skills/dis_model` |
-| Methodology | `sub_skills/dis_method` |
-| Experiments | `sub_skills/dis_experiment` |
-| Results | `sub_skills/dis_result` |
-| Discussion | `sub_skills/dis_discussion` |
-| Conclusion | `sub_skills/dis_conclusion` |
-| Transitions | `sub_skills/dis_transition` |
-| Formal Definitions | `sub_skills/dis_formal_defs` |
-| Engineering | `sub_skills/dis_engineering` |
-| Avtoreferat | `sub_skills/aref_core` |
-| Utils | `sub_skills/utils_core` |
+- `sub_skills/dis_intro`
+- `sub_skills/dis_survey`
+- `sub_skills/dis_model`
+- `sub_skills/dis_method`
+- `sub_skills/dis_experiment`
+- `sub_skills/dis_result`
+- `sub_skills/dis_discussion`
+- `sub_skills/dis_conclusion`
+- `sub_skills/dis_transition`
+- `sub_skills/dis_formal_defs`
+- `sub_skills/dis_engineering`
+- `sub_skills/aref_core`
+- `sub_skills/utils_core`
+
+---
+
+## Disclaimer (Important)
+
+This repository provides **sentence templates and writing patterns** for polishing and drafting assistance. It does not guarantee that any output is suitable for direct submission as a dissertation, paper, or academic work.
+
+You are responsible for:
+
+- factual verification, citations, and compliance with your institution/journal rules
+- plagiarism/similarity checks and proper quotation/paraphrasing
+- ensuring academic integrity and originality
+
+If you directly submit AI-generated text or unreviewed template-filled content, any resulting academic or legal risk is solely your responsibility.
 
 ---
 
@@ -204,9 +200,3 @@ Templates extracted from publicly available BMSTU dissertation materials. All pe
   howpublished = {\url{https://github.com/Tanue-Hou/phd-thesis-butler}}
 }
 ```
-
----
-
-## Disclaimer
-
-This tool provides sentence templates for **writing reference only**. It is not intended for automatic generation of academic papers. Users are responsible for compliance with their institution's academic ethics policies.
