@@ -1,103 +1,9 @@
-[🇬🇧 English](#en) · [🇨🇳 中文](#zh)
-
-<style>
-#en { display: block; }
-#zh { display: none; }
-#en:target { display: block; }
-#zh:target { display: block; }
-#zh:target ~ #en { display: none; }
-</style>
-
-<div id="zh">
-
-# 博士论文管家（PhD Thesis Butler）
-
-一个面向**俄语学术写作**的 skill-pack：从大量 кандидат/доктор 学位论文中抽取可迁移的**句式模板库**，按 DIS 与 AREF 双通道分类组织，可作为 Hermes / Claude Code / Codex 等代理的可加载技能库。
-
-> 项目只提供**可迁移表达模式（模板）**，不复制原文。
-
----
-
-## 概览
-
-- 来源论文：**327**
-- 模板总量：**9,602**（DIS 5,621 + AREF 3,573 + UTILS 408）
-- Quality=2（高可迁移精选）：**~2,000+**
-- 覆盖分类/模块：**23**
-
-每条模板包含：俄语句式（含槽位 `[...]`）、使用场景、常见误用、质量评分。
-
----
-
-## 分类体系
-
-**DIS 通道（按章节）：** INTRO · SURVEY · FORMAL_DEFS · MODEL · METHOD · ENGINEERING · EXPERIMENT · RESULT · DISCUSSION · TRANSITION · CONCLUSION
-
-**AREF 通道（按 автореферат 模块 14 个）：** актуальность · новизна · цель/задачи · объект/предмет · методы · положения · достоверность · 理论/实践意义 · апробация · внедрение · структура · выводы
-
-**UTILS 通道（3 类）：** CONNECTIVE · CONSERVATIVE · NUMERIC
-
----
-
-## 质量分级
-
-- **2（优秀）**：跨学科通用，可直接填槽
-- **1（可用）**：需要领域适配
-- **0（信息性）**：领域绑定，需人工挑选
-
----
-
-## 数据格式
-
-```json
-{
-  "id": "DIS_INTRO_0427",
-  "text": "В последние годы [Область] привлекает всё большее внимание исследователей в связи с [Фактор/Причина].",
-  "source": "DIS",
-  "category": "INTRO",
-  "quality_score": 2,
-  "when_to_use": "用于引言开头：用'关注度上升'来引出 актуальность",
-  "common_mistakes": "不要反复使用；一篇引言建议 1–2 次即可"
-}
-```
-
-主库：`MASTER_SENTENCEBANK_DIS.jsonl` · `MASTER_SENTENCEBANK_AREF.jsonl` · `MASTER_UTILS.jsonl`
-
-精选：`QUALITY2_SELECTION_DIS.jsonl` · `QUALITY2_SELECTION_AREF.jsonl` · `QUALITY2_UTILS.jsonl`
-
----
-
-## 安装
-
-**Hermes：** `hermes skill install github:Tanue-Hou/phd-thesis-butler` → 加载 `/skill phd-thesis-butler`
-
-**Claude Code：** 克隆到 `~/.claude/skills/`，在 CLAUDE.md 中引用
-
-**Codex CLI：** `git clone https://github.com/Tanue-Hou/phd-thesis-butler.git`
-
----
-
-## 子技能
-
-`dis_intro` · `dis_survey` · `dis_model` · `dis_method` · `dis_experiment` · `dis_result` · `dis_discussion` · `dis_conclusion` · `dis_transition` · `dis_formal_defs` · `dis_engineering` · `aref_core` · `utils_core`
-
----
-
-## 免责声明
-
-本仓库提供的句式模板仅用于润色与写作参考。使用者的学术诚信、引用合规、原创性保障等责任自行承担。
-
----
-
-## 许可证
-
-**CC BY 4.0** — 可自由使用、改编、再分发，需保留署名。
-
-</div>
-
-<div id="en">
-
 # PhD Thesis Butler（博士论文管家）
+
+<details open>
+<summary><strong>🇬🇧 English</strong></summary>
+
+<br>
 
 A skill-pack for **Russian academic writing**: a curated **sentence template bank** extracted from candidate & doctoral dissertations, organized into dual channels (DIS + AREF) and served through a loadable "skill" interface for Hermes / Claude Code / Codex-style agents.
 
@@ -105,7 +11,7 @@ A skill-pack for **Russian academic writing**: a curated **sentence template ban
 
 ---
 
-## Overview
+### Overview
 
 **Corpus & output (current build):**
 
@@ -125,23 +31,17 @@ Each template includes:
 
 ---
 
-## Classification System
+### Classification System
 
-### DIS channel — by dissertation section
+**DIS channel** — INTRO · SURVEY · FORMAL_DEFS · MODEL · METHOD · ENGINEERING · EXPERIMENT · RESULT · DISCUSSION · TRANSITION · CONCLUSION
 
-INTRO · SURVEY · FORMAL_DEFS · MODEL · METHOD · ENGINEERING · EXPERIMENT · RESULT · DISCUSSION · TRANSITION · CONCLUSION
+**AREF channel** — актуальность · новизна · цель/задачи · объект/предмет · методы · положения · достоверность · теоретическая/практическая значимость · апробация · внедрение · структура · выводы
 
-### AREF channel — by автореферат module (14 modules)
-
-актуальность · новизна · цель/задачи · объект/предмет · методы · положения · достоверность · теоретическая/практическая значимость · апробация · внедрение · структура · выводы
-
-### UTILS channel — utility patterns (3 kinds)
-
-CONNECTIVE · CONSERVATIVE · NUMERIC
+**UTILS channel** — CONNECTIVE · CONSERVATIVE · NUMERIC
 
 ---
 
-## Quality Scoring
+### Quality Scoring
 
 - **2 (excellent)**: field-independent, ready to use
 - **1 (good)**: needs domain adaptation
@@ -149,7 +49,7 @@ CONNECTIVE · CONSERVATIVE · NUMERIC
 
 ---
 
-## Data Format (JSONL v2.1)
+### Data Format (JSONL v2.1)
 
 ```json
 {
@@ -169,30 +69,120 @@ Quality: `QUALITY2_SELECTION_DIS.jsonl` · `QUALITY2_SELECTION_AREF.jsonl` · `Q
 
 ---
 
-## Installation
+### Installation
 
 **Hermes:** `hermes skill install github:Tanue-Hou/phd-thesis-butler` → load with `/skill phd-thesis-butler`
 
-**Claude Code:** `git clone https://github.com/Tanue-Hou/phd-thesis-butler.git ~/.claude/skills/phd-thesis-butler` → reference in CLAUDE.md
+**Claude Code:** clone to `~/.claude/skills/`, reference in CLAUDE.md
 
 **Codex CLI:** `git clone https://github.com/Tanue-Hou/phd-thesis-butler.git`
 
 ---
 
-## Sub-Skills
+### Sub-Skills
 
 `dis_intro` · `dis_survey` · `dis_model` · `dis_method` · `dis_experiment` · `dis_result` · `dis_discussion` · `dis_conclusion` · `dis_transition` · `dis_formal_defs` · `dis_engineering` · `aref_core` · `utils_core`
 
 ---
 
-## Disclaimer
+### Disclaimer
 
-This repository provides **sentence templates and writing patterns** for polishing and drafting assistance. It does not guarantee that any output is suitable for direct submission as academic work. Users are responsible for factual verification, citations, plagiarism checks, and academic integrity.
+This repository provides sentence templates and writing patterns for polishing and drafting assistance. Users are responsible for factual verification, citations, plagiarism checks, and academic integrity.
 
 ---
 
-## License
+### License
 
 **CC BY 4.0** — Free to use, adapt, and redistribute with attribution.
 
-</div>
+</details>
+
+<br>
+
+<details>
+<summary><strong>🇨🇳 中文</strong></summary>
+
+<br>
+
+一个面向**俄语学术写作**的 skill-pack：从大量 кандидат/доктор 学位论文中抽取可迁移的**句式模板库**，按 DIS 与 AREF 双通道分类组织，可作为 Hermes / Claude Code / Codex 等代理的可加载技能库。
+
+> 项目只提供可迁移表达模式（模板），不复制原文。
+
+---
+
+### 概览
+
+- 来源论文：**327**
+- 模板总量：**9,602**（DIS 5,621 + AREF 3,573 + UTILS 408）
+- Quality=2（高可迁移精选）：**~2,000+**
+- 覆盖分类/模块：**23**
+
+每条模板包含：俄语句式（含槽位 `[...]`）、使用场景、常见误用、质量评分。
+
+---
+
+### 分类体系
+
+**DIS 通道** — INTRO · SURVEY · FORMAL_DEFS · MODEL · METHOD · ENGINEERING · EXPERIMENT · RESULT · DISCUSSION · TRANSITION · CONCLUSION
+
+**AREF 通道** — актуальность · новизна · цель/задачи · объект/предмет · методы · положения · достоверность · 理论/实践意义 · апробация · внедрение · структура · выводы
+
+**UTILS 通道** — CONNECTIVE · CONSERVATIVE · NUMERIC
+
+---
+
+### 质量分级
+
+- **2（优秀）**：跨学科通用，可直接填槽
+- **1（可用）**：需要领域适配
+- **0（信息性）**：领域绑定，需人工挑选
+
+---
+
+### 数据格式
+
+```json
+{
+  "id": "DIS_INTRO_0427",
+  "text": "В последние годы [Область] привлекает всё большее внимание исследователей в связи с [Фактор/Причина].",
+  "source": "DIS",
+  "category": "INTRO",
+  "quality_score": 2,
+  "when_to_use": "用于引言开头：用'关注度上升'来引出 актуальность",
+  "common_mistakes": "不要反复使用；一篇引言建议 1–2 次即可"
+}
+```
+
+主库：`MASTER_SENTENCEBANK_DIS.jsonl` · `MASTER_SENTENCEBANK_AREF.jsonl` · `MASTER_UTILS.jsonl`
+
+精选：`QUALITY2_SELECTION_DIS.jsonl` · `QUALITY2_SELECTION_AREF.jsonl` · `QUALITY2_UTILS.jsonl`
+
+---
+
+### 安装
+
+**Hermes：** `hermes skill install github:Tanue-Hou/phd-thesis-butler` → 加载 `/skill phd-thesis-butler`
+
+**Claude Code：** 克隆到 `~/.claude/skills/`，在 CLAUDE.md 中引用
+
+**Codex CLI：** `git clone https://github.com/Tanue-Hou/phd-thesis-butler.git`
+
+---
+
+### 子技能
+
+`dis_intro` · `dis_survey` · `dis_model` · `dis_method` · `dis_experiment` · `dis_result` · `dis_discussion` · `dis_conclusion` · `dis_transition` · `dis_formal_defs` · `dis_engineering` · `aref_core` · `utils_core`
+
+---
+
+### 免责声明
+
+本仓库提供的句式模板仅用于润色与写作参考。使用者的学术诚信、引用合规、原创性保障等责任自行承担。
+
+---
+
+### 许可证
+
+**CC BY 4.0** — 可自由使用、改编、再分发，需保留署名。
+
+</details>
