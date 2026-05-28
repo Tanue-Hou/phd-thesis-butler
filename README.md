@@ -125,7 +125,7 @@ This repository provides sentence templates and writing patterns for polishing a
 
 **DIS 通道** — INTRO · SURVEY · FORMAL_DEFS · MODEL · METHOD · ENGINEERING · EXPERIMENT · RESULT · DISCUSSION · TRANSITION · CONCLUSION
 
-**AREF 通道** — актуальность · новизна · цель/задачи · объект/предмет · методы · положения · достоверность · 理论/实践意义 · апробация · внедрение · структура · выводы
+**AREF 通道** — актуальность · новизна · цель/задачи · объект/предмет · методы · положения · достоверность · теоретическая/практическая значимость · апробация · внедрение · структура · выводы
 
 **UTILS 通道** — CONNECTIVE · CONSERVATIVE · NUMERIC
 
