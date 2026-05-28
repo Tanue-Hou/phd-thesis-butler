@@ -154,7 +154,6 @@ with open(f"{SKILL}/data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl") as f:
 
 ## 约束
 
-- **模型强制**：xiaomi mimo v2.5（抽取管线）
 - **所有 category/subtype 必须来自** `FULL_CLASSIFICATION.yaml`
 - **输出 schema 必须遵守** `sentencebank_entry.schema.v2_1.json`
 - **schema_version 必须为 "2.1"**

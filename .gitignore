@@ -3,3 +3,8 @@ qa_archive/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Internal / private — do not commit
+*_private*
+*_internal.md
+.hermes/
