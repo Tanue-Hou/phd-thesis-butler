@@ -100,7 +100,69 @@ skill_view("phd-thesis-butler/sub_skills/dis_conclusion")
 grep '"quality_score":2' data/curated/quality/QUALITY2_SELECTION_DIS.jsonl | grep '"subtype":"motivation"' | head -5
 ```
 
-### Claude Code
+### 配置 LLM 提供商
+
+在启动智能体前，设置你的 LLM API key（支持任意 OpenAI 兼容接口）：
+
+```bash
+# 在你的 shell 配置或 .env 中设置
+export YOUR_API_KEY="sk-..."
+export YOUR_BASE_URL="https://api.example.com/v1"
+```
+
+然后在智能体的 prompt 中指定模型（具体模型名由你的提供商决定）：
+
+```
+You must use the configured LLM provider. If the provider is unavailable,
+fall back to an alternative provider configured in your environment.
+```
+
+### 让智能体直接润色论文
+
+加载对应的子 skill 后，智能体就可以自动使用句式库来润色你的写作。通过 `references/CROSS_CATEGORY_MAP.md` 进行场景映射。
+
+**示例对话（Claude Code / Hermes）：**
+
+```
+用户：帮我润色这段引言，让它更符合俄语学术规范
+智能体：加载 phd-thesis-butler/sub_skills/dis_intro → 检索 motivation/problem_statement 模板 → 应用润色
+```
+
+**示例对话（Codex CLI）：**
+
+```
+@skill phd-thesis-butler/sub_skills/dis_intro
+@search "problem_statement" in phd-thesis-butler
+请根据模板帮我优化以下段落：...
+```
+
+**工作流程：**
+
+1. 用户提供待润色的俄语学术段落
+2. 智能体自动识别段落属于哪个 category/subtype（INTRO.motivation / MODEL.assumptions / CONCLUSION.limitations 等）
+3. 智能体从对应子 skill 的 QUALITY2_SELECTION 中检索相关句式模板
+4. 智能体将模板与用户原文结合，给出符合俄语学术规范的润色建议
+5. 润色建议包含：替换的句式模板、修改理由、原句与改句对比
+
+**多轮迭代：**
+
+```python
+# 智能体内部逻辑（伪代码）
+def polish_paragraph(paragraph, scene="INTRO.motivation"):
+    # 1. 加载对应子 skill
+    templates = load_skill(f"phd-thesis-butler/sub_skills/{scene_to_skill(scene)}")
+    
+    # 2. 检索高匹配模板
+    candidates = search_templates(templates, paragraph)
+    
+    # 3. 应用润色
+    polished = apply_template(paragraph, candidates[0])
+    
+    # 4. 返回对比结果
+    return {"original": paragraph, "polished": polished, "template_used": candidates[0]}
+```
+
+### Claude Code 专用
 
 ```bash
 # 安装 skill
@@ -109,31 +171,39 @@ claude skills install phd-thesis-butler
 # 加载子 skill
 /skill phd-thesis-butler/sub_skills/dis_intro
 
-# 检索模板
-grep "motivation" ~/.claude/skills/phd-thesis-butler/data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl | head -10
+# 直接让 Claude 润色
+请使用 phd-thesis-butler 的 INTRO 句式库，帮我润色下面这段话，使其符合俄语学术论文引言部分的写作规范：
+
+[粘贴你的俄语段落]
 ```
 
-### Codex CLI
+### Codex CLI 专用
 
 ```bash
 # 加载 skill
-@skill phd-thesis-butler/sub_skills/dis_intro
+@skill phd-thesis-butler/sub_skills/dis_model
 
 # 查询用法
-@search "numeric reporting templates" in phd-thesis-butler
+@search "assumptions templates" in phd-thesis-butler
+
+# 润色
+请根据 MODEL.assumptions 的模板，优化以下假设表述：
 ```
 
-### Hermes Agent
+### Hermes Agent 专用
 
 ```bash
 # 安装 skill
 hermes skills install phd-thesis-butler
 
 # 加载子 skill
-/skill phd-thesis-butler/sub_skills/dis_intro
+/skill phd-thesis-butler/sub_skills/dis_conclusion
 
-# 按需检索（不占上下文）
-grep '"subtype":"gap"' ~/.hermes/skills/phd-thesis-butler/data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl | head -5
+# 检索模板
+grep '"subtype":"limitations"' ~/.hermes/skills/phd-thesis-butler/data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl | head -5
+
+# 润色会话
+我需要写论文结论部分的局限性段落，请从句子库中推荐合适的模板，并帮我润色以下内容：
 ```
 
 ### 快速查询示例
