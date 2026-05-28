@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SentenceBank Entry v2.1",
+  "description": "JSONL schema for PhD Thesis Butler sentence bank entries",
+  "type": "object",
+  "required": ["paper_id", "source", "record_type", "template", "quality_score", "schema_version"],
+  "properties": {
+    "schema_version": {"type": "string", "enum": ["2.1"]},
+    "paper_id": {"type": "string", "pattern": "^\\d{3,4}$"},
+    "source": {"type": "string", "enum": ["DIS", "AREF"]},
+    "record_type": {"type": "string", "enum": ["TEMPLATE", "UTIL"]},
+    "category": {"type": "string"},
+    "subtype": {"type": "string"},
+    "function": {"type": "string"},
+    "template": {"type": "string", "minLength": 5},
+    "slots": {"type": "array", "items": {"type": "string"}},
+    "when_to_use": {"type": "string"},
+    "common_mistakes": {"type": "array", "items": {"type": "string"}},
+    "strength": {"type": "string", "enum": ["conservative", "neutral", "strong"]},
+    "quality_score": {"type": "integer", "minimum": 0, "maximum": 2}
+  },
+  "if": {"properties": {"record_type": {"const": "TEMPLATE"}}},
+  "then": {"required": ["slots", "when_to_use", "common_mistakes", "strength"]},
+  "else": {"required": ["function"]}
+}

@@ -1,0 +1,112 @@
+# PhD Thesis Butler — Full Classification Enumeration v2.1
+# This is the SINGLE SOURCE OF TRUTH for all category/subtype/kind values.
+# Sub-skills MUST NOT invent their own values.
+
+schema_version: "2.1"
+
+record_types:
+  - TEMPLATE
+  - UTIL
+
+DIS:
+  categories:
+    INTRO:
+      description: "引言/背景"
+      subtypes: [motivation, relevance, problem_statement, objective, tasks, object_subject, contributions_preview, thesis_structure]
+    SURVEY:
+      description: "文献综述"
+      subtypes: [taxonomy, comparison, limitations_of_prior, gap, positioning, evaluation_axes, baseline_selection]
+    MODEL:
+      description: "理论/模型构建"
+      subtypes: [assumptions, boundary_conditions, uncertainties, errors, notation, units, coordinate_frames, parameter_identifiability, constraints, simplifications]
+    METHOD:
+      description: "方法/算法"
+      subtypes: [pipeline_overview, input_output, algorithm_steps, parameter_setting, complexity, stability_claims_conservative, implementation_details, ablation_plan]
+    EXPERIMENT:
+      description: "实验/验证"
+      subtypes: [data_description, scenario_design, metrics, baselines, train_test_split, hyperparams, reproducibility, statistical_reporting]
+    RESULT:
+      description: "结果汇报"
+      subtypes: [numeric_reporting, improvement_reporting, distribution_reporting, case_studies, failure_cases, comparison_table]
+    DISCUSSION:
+      description: "讨论"
+      subtypes: [mechanism_explanation, sensitivity, tradeoff, generalization, threat_to_validity, interpretation_hedged]
+    CONCLUSION:
+      description: "结论"
+      subtypes: [summary, contributions_recap, applicability, limitations, future_work]
+    TRANSITION:
+      description: "过渡/承接"
+      subtypes: [section_openers, section_closers, paragraph_linkers, signposting]
+    FORMAL_DEFS:
+      description: "正式定义/符号"
+      subtypes: [definition, lemma_style, constraint_introductions, symbol_introductions]
+    ENGINEERING:
+      description: "工程实现"
+      subtypes: [deployment, real_time, resource_usage, code_reproducibility, practical_complexity]
+
+AREF:
+  categories:
+    АКТУАЛЬНОСТЬ:
+      description: "актуальность темы"
+      subtypes: [practical_demand, theoretical_gap, regulatory_context, trend_motivation]
+    ОБЪЕКТ_ПРЕДМЕТ:
+      description: "объект и предмет исследования"
+      subtypes: [object_definition, subject_definition, scope_delimitation]
+    ЦЕЛЬ_ЗАДАЧИ:
+      description: "цель и задачи"
+      subtypes: [goal_statement, task_list, task_verbs_norm, scope_of_tasks]
+    МЕТОДЫ:
+      description: "методы исследования"
+      subtypes: [theoretical_method, experimental_method, numerical_method, modeling_method]
+    НОВИЗНА:
+      description: "научная новизна"
+      subtypes: [first_proposal, novel_combination, improvement_over_baseline, new_regularity]
+    НОВИЗНА_ФОРМУЛИРОВКИ:
+      description: "формулировки новизны"
+      subtypes: [comparative_claim, incremental_claim, breakthrough_claim, hybrid_claim]
+    ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ:
+      description: "теоретическая значимость"
+      subtypes: [theory_extension, formalization, classification_schema, method_derivation]
+    ПРАКТИЧЕСКАЯ_ЗНАЧИМОСТЬ:
+      description: "практическая значимость"
+      subtypes: [applied_method, software_implementation, experimental_validation, recommendation]
+    ПОЛОЖЕНИЯ:
+      description: "положения, выносимые на защиту"
+      subtypes: [model_claim, result_claim, relationship_claim, methodology_claim]
+    РЕЗУЛЬТАТЫ:
+      description: "результаты"
+      subtypes: [numeric_reporting, comparison_reporting, distribution_reporting, worst_case_reporting]
+    АПРОБАЦИЯ:
+      description: "апробация работы"
+      subtypes: [conference_presentation, publication, implementation_act]
+    ПУБЛИКАЦИИ:
+      description: "публикации"
+      subtypes: [list_style, contribution_statement, indexing_claims]
+    СТРУКТУРА:
+      description: "структура и объем диссертации"
+      subtypes: [chapter_overview, volume_notation, logical_structure]
+    ВЫВОДЫ:
+      description: "выводы"
+      subtypes: [main_result, practical_outcome, scientific_significance, future_direction]
+
+UTIL:
+  kinds:
+    CONNECTIVE:
+      description: "连接结构用法"
+      subtypes: [contrast, addition, cause_effect, concession, illustration, sequencing]
+    CONSERVATIVE:
+      description: "保守/不确定性措辞"
+      subtypes: [hedging, limitation_qualifier, suggestion_soft, uncertainty_expression]
+    NUMERIC:
+      description: "数字汇报口径"
+      subtypes: [improvement_report, error_report, distribution_report, comparison_report]
+
+quality_scores:
+  2: "跨学科通用、槽位合理、句式自然、when_to_use与common_mistakes具体可执行"
+  1: "可用但场景偏窄/槽位设计一般/措辞略僵硬"
+  0: "空泛、不可迁移、缺字段、疑似复刻、或无槽位的伪模板"
+
+coverage_tiers:
+  N_core: 200
+  N_mid: 80
+  N_rare: 30

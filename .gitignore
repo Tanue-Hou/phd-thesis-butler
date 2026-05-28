@@ -1,0 +1,5 @@
+data/curated/master_backup/
+qa_archive/
+__pycache__/
+*.pyc
+.DS_Store
