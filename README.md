@@ -2,7 +2,7 @@
 
 **Language:** English | [中文](README.zh-CN.md)
 
-A skill-pack for **Russian academic writing**: a curated **sentence template bank** extracted from BMSTU candidate & doctoral dissertations, organized into dual channels (DIS + AREF) and served through a loadable "skill" interface for Hermes / Claude Code / Codex-style agents.
+A skill-pack for **Russian academic writing**: a curated **sentence template bank** extracted from candidate & doctoral dissertations, organized into dual channels (DIS + AREF) and served through a loadable "skill" interface for Hermes / Claude Code / Codex-style agents.
 
 > This project focuses on **portable expression patterns** (templates with slots), not on copying original text.
 
@@ -12,7 +12,7 @@ A skill-pack for **Russian academic writing**: a curated **sentence template ban
 
 **Corpus & output (current build):**
 
-- Source dissertations: **327 (BMSTU)**
+- Source dissertations: **327**
 - Total templates: **9,602**
   - DIS channel: **5,621** (by dissertation section)
   - AREF channel: **3,573** (by автореферат module)
@@ -186,7 +186,7 @@ If you directly submit AI-generated text or unreviewed template-filled content, 
 
 **CC BY 4.0** — Free to use, adapt, and redistribute with attribution.
 
-Templates extracted from publicly available BMSTU dissertation materials. All personal identifiers replaced with placeholders.
+All personal identifiers in the templates have been replaced with placeholders.
 
 ---
 
