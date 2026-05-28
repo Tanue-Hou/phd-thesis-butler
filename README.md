@@ -165,8 +165,8 @@ def polish_paragraph(paragraph, scene="INTRO.motivation"):
 ### Claude Code 专用
 
 ```bash
-# 安装 skill
-claude skills install phd-thesis-butler
+# 从 GitHub 安装 skill
+claude skills install https://github.com/Tanue-Hou/phd-thesis-butler
 
 # 加载子 skill
 /skill phd-thesis-butler/sub_skills/dis_intro
@@ -180,7 +180,10 @@ claude skills install phd-thesis-butler
 ### Codex CLI 专用
 
 ```bash
-# 加载 skill
+# 从 GitHub 安装 skill
+@skill install https://github.com/Tanue-Hou/phd-thesis-butler
+
+# 加载子 skill
 @skill phd-thesis-butler/sub_skills/dis_model
 
 # 查询用法
@@ -193,8 +196,8 @@ claude skills install phd-thesis-butler
 ### Hermes Agent 专用
 
 ```bash
-# 安装 skill
-hermes skills install phd-thesis-butler
+# 从 GitHub 安装 skill
+hermes skills install https://github.com/Tanue-Hou/phd-thesis-butler
 
 # 加载子 skill
 /skill phd-thesis-butler/sub_skills/dis_conclusion
