@@ -22,8 +22,15 @@ PhD Thesis Butler, disserCat, dissovet.msu.ru, disser.spbu.ru, ВАК, авто�
 
 ## 当前状态
 
-active
+active - 5 智能体润色系统构建中
 
 ## 最近更新
 
-2026-05-29: 完成 MSU/SPbSU/MIPT/HSE/disserCat 公开来源调研，输出调研报告
+2026-05-29: 5 Agent pipeline 构建完成并通过测试
+- Router (学科/场景推断) ✅
+- Retriever (3层回退链) ✅  
+- Polisher (三级润色, 待API key验证) ✅
+- Consistency (一致性检查) ✅
+- Safety (安全审查) ✅
+- 样本数据: 22 GLOBAL模板 + 5 UTILS + CLUSTER副本
+- 管线测试: Router→Retriever→Consistency→Safety 全部通过
