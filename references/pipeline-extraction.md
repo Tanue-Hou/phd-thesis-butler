@@ -162,10 +162,46 @@ for f in queue/dead_letter/*.json:
     json.dump(job, open(f"queue/todo/{job['id']}.json", "w"), ensure_ascii=False)
     os.unlink(f)
 
-# 3) 降低并行度后重启
+# 3) 降低并行度后重启（前车之鉴：20 Workers → 10 Workers 即可避免 429）
 ```
 
-典型结果：637 篇 dead 中约 637/637 可恢复（100%，均为 API 限流，非 PDF 本身问题）。
+典型结果：637 篇 dead 中 100% 可恢复（均为 API 限流，非 PDF 本身问题）。
+
+### 429 指数退避（代码级）
+
+API 返回 `{"error":{"code":"429","message":"Too many requests"}}` 时，**必须实现在 Worker 内部**，不能推到 Runner 层：
+
+```python
+max_retries = 5
+for attempt in range(max_retries):
+    result = subprocess.run([curl_cmd], ...)
+    resp = json.loads(result.stdout)
+    if "error" in resp and resp["error"].get("code") == "429":
+        wait = min(2 ** attempt * 5, 60)  # 5s, 10s, 20s, 40s, 60s
+        time.sleep(wait)
+        continue
+    # ... normal processing
+```
+
+注意：重试逻辑必须包含 `time.sleep()` 并在循环中 `continue`，不要 return 错误。5 次重试基本覆盖所有瞬态限流。
+
+### Worker 无声挂掉（Runner 僵死）
+
+场景：Runner 仍在运行但最后一个 Worker 进程已无声退出，doing 目录留有一个 job 文件，循环无限等待 `doing` 清空。
+
+```bash
+# 检查
+ls queue/aref_doing/        # 还有文件
+ps aux | grep aref_worker  # 无进程
+
+# 恢复
+python3 agents/aref_worker.py --job queue/aref_doing/LAST_JOB.json --output data/raw/AREF
+cp queue/aref_doing/LAST_JOB.json queue/aref_done/
+rm queue/aref_doing/LAST_JOB.json
+pkill -f "run_aref.py"  # 杀掉僵死的 Runner
+```
+
+预防：Runner 主循环应定期检查 worker 进程数，发现 doing 有文件但 worker 进程为 0 时强制退出。
 
 ### Worker 脚本常见问题
 
@@ -174,6 +210,38 @@ for f in queue/dead_letter/*.json:
 | 缺少 `subprocess` import | Worker 报 `name 'subprocess' is not defined` | 确保 `import json, os, sys, re, time, subprocess, shutil` 在文件顶部 |
 | API 返回无 choices | 429 限流时返回 `{"error":{...}}` 而非 `{"choices":[...]}` | 加错误检测 + 指数退避重试 |
 | curl 引用 `api_key` 变量被写为字面量 | `***` 而非 `{api_key}` 在 f-string 中 | 检查 Authorization 行是否使用 `f"...{api_key}"` |
+
+## G3 归并：Category 归一化（关键步骤）
+
+合并 DIS + AREF 数据前必须先做 category 清洗，否则 G3 gate 会因大量孤类 < 3 条而失败。
+
+### 必须合并的 Category 变体
+
+```python
+CATEGORY_MERGE = {
+    # 拼写错误
+    "DISCUYSIS": "DISCUSSION",
+    "DISCUYSSION": "DISCUSSION",
+    "METHODOLOGY": "METHOD",    # 与 METHOD 同义
+    "METHODS": "METHOD",        # 单复数
+    "RESULTS": "RESULT",
+    "STRUCTURE": "INTRO",       # 极少条目，合入 INTRO
+    # AREF 复合类别（pipe 分隔）
+    "НОВИЗНА|ПРАКТИЧЕСКАЯ_ЗНАЧИМОСТЬ": "НОВИЗНА",
+    "ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ|ПРАКТИЧЕСКАЯ_ЗНАЧИМОСТЬ": "ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ",
+    "ТЕОРЕТИЧЕСКАЯ_ПРАКТИЧЕСКАЯ_ЗНАЧИМОСТЬ": "ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ",
+    # 孤类 → 父类
+    "ВВОДНАЯ_ФОРМУЛИРОВКА": "INTRO",
+    "ВОПРОСЫ": "DISCUSSION",
+    "ГИПОТЕЗЫ": "DISCUSSION",
+    "ЗНАЧИМОСТЬ": "ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ",
+    "КОНСТРУКТИВНАЯ_КРИТИКА": "DISCUSSION",
+    "СОДЕРЖАНИЕ": "INTRO",
+    "СТРУКТУРА": "INTRO",
+}
+```
+
+> 经验：G3 合并后应有约 **23 个核心 category**。如果 > 30，说明有未合并的拼写错误或孤类。
 
 ## Subject 归一化（G4 归层）
 
@@ -202,3 +270,4 @@ HUM_SOC_SUBJECTS = {
 | AREF PDF smaller (50-100KB) vs DIS (2-15MB) | Shorter text, fewer templates per job |
 | FileNotFoundError during `os.rename` | Skip gracefully (another worker already claimed) |
 | Worker 无声挂掉 | Runner 循环等待 doing 队列清空但 worker 进程已死 → 手动处理最后一个 job + kill runner |
+| 旧 AREF 进程被 kill 后新进程正常 | 通知 stale（proc_a26 被手动 kill 重启为 proc_fc25）— 确认 ps 后忽略通知即可 |

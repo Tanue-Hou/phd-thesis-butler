@@ -1,5 +1,22 @@
 # Changelog
 
+## v3.1.1 (2026-05-30)
+
+### Asset Layer Fix — 归层修复 + 占位符迁移 + PII 脱敏
+
+**修复**
+- Issue 1: HUM_SOC/ART_SPORT master/MASTER.jsonl 填充数据（原为空）
+- Issue 2: GLOBAL/TECH_LIFE quality 文件消除 100% 重叠（EXPERIMENT/METHOD/MODEL/RESULT/SURVEY 按学科正确分配）
+- Issue 3: 全局 UTILS 占位符统一迁移 ___ → [...]（499+493+236 处）
+- Issue 4: HUM_SOC/TECH_LIFE quality 子目录生成（按 category 拆分）
+- PII 脱敏检查通过（无真实人名/邮箱/电话/地址泄露）
+
+**资产结构**
+- GLOBAL (L0): 188 条（跨层级通用模板，Q2=100%）
+- TECH_LIFE (L1): 5,802 条（技术/生命/精密科学）
+- HUM_SOC (L1): 4,055 条（人文/社会科学）
+- Zero overlap across all layers ✅
+
 ## v3.1.0 (2026-05-30)
 
 ### Phase 2 Integration — MSU + SPbSU 双通道数据合并
