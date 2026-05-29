@@ -22,7 +22,7 @@ PhD Thesis Butler, disserCat, dissovet.msu.ru, disser.spbu.ru, ВАК, авто�
 
 ## 当前状态
 
-v3.1.0 — Phase 2 DIS+AREF 双通道全量抽取完成，G1–G5 全部通过
+v3.1.1 — Asset Layer Fix: 归层修复 + 占位符迁移 + Zero Overlap
 
 ## 最近更新
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.1.1 (2026-05-30)
+
+### Asset Layer Fix — 归层修复 + 占位符迁移 + PII 脱敏
+
+**修复**
+- HUM_SOC/ART_SPORT master 空文件填充
+- GLOBAL/TECH_LIFE quality 文件 100% 重叠消除
+- UTILS 占位符 ___ → [...] 全局迁移（1,234 处）
+- HUM_SOC quality 子目录生成
+- PII 脱敏检查通过（无泄漏）
+
+**资产结构**
+- GLOBAL (L0): 188 条 / TECH_LIFE (L1): 5,802 条 / HUM_SOC (L1): 4,055 条
+- Zero overlap across all layers
+
 ## v3.1.0 (2026-05-30)
 
 ### Phase 2 Complete — DIS + AREF Dual-Channel Pipeline

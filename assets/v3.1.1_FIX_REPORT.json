@@ -1,0 +1,18 @@
+{
+  "version": "3.1.1",
+  "fixed_issues": [
+    "Issue 1: HUM_SOC/ART_SPORT master/MASTER.jsonl populated",
+    "Issue 2: GLOBAL/TECH_LIFE quality files regenerated with proper layer separation",
+    "Issue 3: ___ → [...] placeholder migration",
+    "Issue 4: HUM_SOC/ART_SPORT quality files generated"
+  ],
+  "layer_stats": {
+    "GLOBAL": 188,
+    "TECH_LIFE": 5802,
+    "HUM_SOC": 4055,
+    "ART_SPORT": 0
+  },
+  "pii_found": 3,
+  "placeholders_fixed": 0,
+  "zero_overlap": true
+}
