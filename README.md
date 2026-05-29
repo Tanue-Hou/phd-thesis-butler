@@ -40,7 +40,7 @@
 | 来源文献 | **1,403 份独立文档** |
 | ├ 论文正文（DIS） | 1,042 篇 |
 | ├ 作者摘要（AREF） | 361 篇 |
-| 来源高校 | 3 所（МГТУ им. Баумана + МГУ + СПбГУ） |
+| 来源高校 | 多所俄罗斯高校 |
 | 质量分=2（优秀、即用型） | **~10,711** |
 | 质量分=1（需领域适配） | **~4,780** |
 | 质量分=0（仅参考） | **~1,300** |
@@ -66,12 +66,11 @@
 
 ### Phase 1：语料收集（Corpus Collection）
 
-| 高校 | 论文（DIS） | 摘要（AREF） | 备注 |
-|------|-----------|-------------|------|
-| МГТУ им. Баумана（BMSTU） | 327 | — | 首批基线数据 |
-| МГУ（MSU） | 589 | 587 → 361 可用 | OCR 过滤扫描版 |
-| СПбГУ（SPbSU） | 727 | 2 | 不公开摘要 |
-| **合计** | **1,042** | **361** | **1,403 篇独立文档** |
+| 类别 | 论文（DIS） | 摘要（AREF） |
+|------|-----------|-------------|
+| 有效论文正文 | 1,042 |
+| 有效摘要 | 361 |
+| **独立文档合计** | **1,403** |
 
 - 来源：2015–2025 年公开答辩的俄罗斯学位论文
 - 扫描版 PDF（约 20%）已被排除出抽取管线
@@ -361,7 +360,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 | Корпус | **1 403 независимых документа** |
 | ├ Диссертации (DIS) | 1 042 |
 | └ Авторефераты (AREF) | 361 |
-| Университеты | 3 (МГТУ им. Баумана + МГУ + СПбГУ) |
+| Университеты | Несколько российских вузов |
 | Качество=2 (отличные) | **~10 711** |
 | Качество=1 (требуют адаптации) | **~4 780** |
 | Качество=0 (справочные) | **~1 300** |
@@ -383,7 +382,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 ## 3. Процесс построения активов
 
 ### Фаза 1: Сбор корпуса
-- 1 042 диссертации + 361 автореферат из 3 университетов
+- 1 042 диссертации + 361 автореферат из нескольких российских университетов
 - Отсканированные PDF (~20%) исключены из пайплайна
 
 ### Фаза 2: Извлечение шаблонов
@@ -541,7 +540,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 | Source documents | **1,403 unique** |
 | ├ DIS (dissertations) | 1,042 |
 | └ AREF (abstracts) | 361 |
-| Source universities | 3 (BMSTU + MSU + SPbSU) |
+| Source universities | Multiple Russian universities |
 | Quality=2 (excellent, ready-to-use) | **~10,711** |
 | Quality=1 (needs domain adaptation) | **~4,780** |
 | Quality=0 (informational only) | **~1,300** |
@@ -567,12 +566,11 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ### Phase 1: Corpus Collection
 
-| University | DIS (dissertations) | AREF (abstracts) | Notes |
-|-----------|---------------------|------------------|-------|
-| BMSTU (МГТУ) | 327 | — | Baseline data |
-| MSU (МГУ) | 589 | 361 (of 587, after OCR filtering) | Scanned PDFs excluded |
-| SPbSU (СПбГУ) | 727 | 2 | SPbSU does not publish abstracts |
-| **Total** | **1,042** | **361** | **1,403 unique documents** |
+| Category | DIS (dissertations) | AREF (abstracts) |
+|----------|---------------------|------------------|
+| Valid dissertations | 1,042 |
+| Valid abstracts | 361 |
+| **Total unique documents** | **1,403** |
 
 - Source: publicly defended Russian dissertations (2015–2025)
 - Scanned PDFs (~20%) excluded from the extraction pipeline
