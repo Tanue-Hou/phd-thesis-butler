@@ -1,6 +1,6 @@
 ---
 name: phd-thesis-butler
-description: "PhD Thesis Butler — Russian Academic Writing Sentence Bank (17,039 pure Russian templates from 1,042 dissertations + 361 abstracts)"
+description: "PhD Thesis Butler — Russian Academic Writing Sentence Bank (16,735 pure Russian templates from 1,042 dissertations + 361 abstracts)"
 version: "3.2"
 ---
 
