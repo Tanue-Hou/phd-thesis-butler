@@ -109,3 +109,12 @@ SKILL.md v3.0 written with all rules integrated
   T5: smoke_test.sh — ALL 5 TESTS PASSED ✅
   T6: TRAINING_PLAN_DISCIPLINE_FILL.md ✅
   Git tag: v3.0.0
+
+[2026-05-29 23:30] PHASE 2 PLAN SUBMITTED
+  PIPELINE: Extraction → QA → Dedup → Layer Assignment → Curation
+  AGENTS: 10 sub-agents (mimo-v2.5)
+    - 8 Extractors (4 SPbSU + 4 MSU)
+    - 1 QA
+    - 1 Merge+Assign
+  TARGET: HUM_SOC/ART_SPORT ≥ 2000, Q2≥25%, v3.1.0 tag
+  STATUS: Waiting for user approval
