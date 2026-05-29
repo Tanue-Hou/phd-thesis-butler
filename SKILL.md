@@ -220,8 +220,13 @@ When building or extending the sentence bank (extracting templates from new univ
 
 The extraction SKILL.md documents the **assistant runtime** role. The references above document the **builder/construction** role.
 
-For layer assignment issues (GLOBAL/TECH_LIFE overlap, empty quality files), run:
-```
-python3 scripts/fix-v311-assets.py
-```
-This performs full layer reassignment, quality file generation, `___`→`[...]` migration, and PII scan. See `CHANGELOG.md` v3.1.1 for details.
+For layer assignment issues (GLOBAL/TECH_LIFE overlap, empty quality files), run `python3 scripts/fix-v311-assets.py`. This performs full layer reassignment, quality file generation, `___`→`[...]` migration, and PII scan. See `CHANGELOG.md` v3.1.1 for details.
+
+### Language Purity
+
+- `references/lang-purity-check.md` — 5-pass detection methodology: CJK scan, English detection (standard + aggressive), metadata remediation, garbage removal. Re-run before any release.
+- `scripts/lang_purity_check.py` — automated implementation of the 5-pass pipeline.
+
+### Document Consistency
+
+- `references/doc-consistency-guide.md` — single-source-of-truth pattern: SKILL.md frontmatter as canonical source, pre-commit verification checklist, trilingual README sync, release workflow audit.
