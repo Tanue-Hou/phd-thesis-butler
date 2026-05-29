@@ -1,0 +1,2 @@
+{"id": "G_DISC_001", "layer": "CLUSTER", "category": "DISCUSSION", "subtype": "limitation", "template": "Следует отметить, что [ограничение] может влиять на [аспект], что требует дополнительного исследования.", "when_to_use": "Обсуждение ограничений", "quality_score": 2, "cluster": "TECH_LIFE"}
+{"id": "G_DISC_002", "layer": "CLUSTER", "category": "DISCUSSION", "subtype": "interpretation", "template": "Полученные результаты можно объяснить тем, что [причина] приводит к [следствие].", "when_to_use": "Интерпретация результатов", "quality_score": 2, "cluster": "TECH_LIFE"}

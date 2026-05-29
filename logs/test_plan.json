@@ -1,0 +1,47 @@
+{
+  "discipline_inference": {
+    "cluster": "TECH_LIFE",
+    "cluster_name": "理工农医",
+    "discipline": "ENGINEERING",
+    "confidence": 0.7,
+    "source": "text"
+  },
+  "scene_inference": {
+    "category": "METHOD",
+    "subtype": "algorithm_design",
+    "confidence": 0.6
+  },
+  "polish_level": "L1",
+  "plan": [
+    {
+      "step": "retrieve_templates",
+      "fallback_chain": [
+        "DISCIPLINE(ENGINEERING).QUALITY2",
+        "CLUSTER(TECH_LIFE).QUALITY2",
+        "GLOBAL.QUALITY2",
+        "DISCIPLINE(ENGINEERING).QUALITY1",
+        "CLUSTER(TECH_LIFE).QUALITY1",
+        "GLOBAL.QUALITY1"
+      ],
+      "query": {
+        "category": "METHOD",
+        "subtype": "algorithm_design",
+        "need_utils": [
+          "CONSERVATIVE",
+          "CONNECTIVE",
+          "NUMERIC"
+        ]
+      }
+    },
+    {
+      "step": "polish_text",
+      "level": "L1"
+    },
+    {
+      "step": "consistency_check"
+    },
+    {
+      "step": "safety_check"
+    }
+  ]
+}

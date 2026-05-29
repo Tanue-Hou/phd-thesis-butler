@@ -1,0 +1,2 @@
+{"id": "G_EXP_001", "layer": "CLUSTER", "category": "EXPERIMENT", "subtype": "setup", "template": "Эксперимент проводился на [платформа] со следующими параметрами: [параметры].", "when_to_use": "Описание экспериментальной установки", "quality_score": 2, "cluster": "TECH_LIFE"}
+{"id": "G_EXP_002", "layer": "CLUSTER", "category": "EXPERIMENT", "subtype": "metrics", "template": "Качество [метод] оценивалось по показателям [метрика1], [метрика2] при условиях [условие].", "when_to_use": "Описание метрик оценки", "quality_score": 2, "cluster": "TECH_LIFE"}

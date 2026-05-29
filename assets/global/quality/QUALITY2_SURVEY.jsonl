@@ -1,0 +1,2 @@
+{"id": "G_SURV_001", "layer": "GLOBAL", "category": "SURVEY", "subtype": "gap", "template": "Анализ литературы показывает, что задача [задача] остаётся недостаточно изученной.", "when_to_use": "Выявление пробела в обзоре", "quality_score": 2}
+{"id": "G_SURV_002", "layer": "GLOBAL", "category": "SURVEY", "subtype": "comparison", "template": "В работах [автор1] и [автор2] предложены подходы к [задача], однако они имеют ограничения [ограничение].", "when_to_use": "Сравнение существующих подходов", "quality_score": 2}

@@ -1,0 +1,5 @@
+{"id": "U_CONS_001", "layer": "GLOBAL", "kind": "CONSERVATIVE", "template": "Можно предположить, что [утверждение].", "when_to_use": "Смягчение утверждения", "quality_score": 2}
+{"id": "U_CONS_002", "layer": "GLOBAL", "kind": "CONSERVATIVE", "template": "В рамках принятых допущений [утверждение].", "when_to_use": "Ограничение рамками модели", "quality_score": 2}
+{"id": "U_CONN_001", "layer": "GLOBAL", "kind": "CONNECTIVE", "template": "С другой стороны, [аспект].", "when_to_use": "Альтернативная точка зрения", "quality_score": 2}
+{"id": "U_NUM_001", "layer": "GLOBAL", "kind": "NUMERIC", "template": "[Показатель] увеличился на [X]% по сравнению с [базовый].", "when_to_use": "Отчёт об улучшении", "quality_score": 2}
+{"id": "U_NUM_002", "layer": "GLOBAL", "kind": "NUMERIC", "template": "Ошибка [метрика] составила [значение].", "when_to_use": "Отчёт об ошибках", "quality_score": 2}

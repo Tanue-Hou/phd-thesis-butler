@@ -1,0 +1,2 @@
+{"id": "G_CONC_001", "layer": "GLOBAL", "category": "CONCLUSION", "subtype": "summary", "template": "В данной работе предложен [вклад], который позволяет [результат].", "when_to_use": "Резюме основного вклада", "quality_score": 2}
+{"id": "G_CONC_002", "layer": "GLOBAL", "category": "CONCLUSION", "subtype": "future_work", "template": "Дальнейшие исследования могут быть направлены на [направление].", "when_to_use": "Перспективы дальнейших исследований", "quality_score": 2}

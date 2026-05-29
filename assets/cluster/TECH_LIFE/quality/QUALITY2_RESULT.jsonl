@@ -1,0 +1,2 @@
+{"id": "G_RES_001", "layer": "CLUSTER", "category": "RESULT", "subtype": "numeric_reporting", "template": "Результаты показывают, что [метод] обеспечивает [показатель] при [условие].", "when_to_use": "Представление численных результатов", "quality_score": 2, "cluster": "TECH_LIFE"}
+{"id": "G_RES_002", "layer": "CLUSTER", "category": "RESULT", "subtype": "comparison_table", "template": "В таблице [номер] приведено сравнение [метод1] и [метод2] по показателям [показатели].", "when_to_use": "Представление сравнительной таблицы", "quality_score": 2, "cluster": "TECH_LIFE"}

@@ -1,0 +1,2 @@
+{"id": "G_TRANS_001", "layer": "CLUSTER", "category": "TRANSITION", "subtype": "sequencing", "template": "Далее рассмотрим [следующий аспект] более подробно.", "when_to_use": "Переход к следующему разделу", "quality_score": 2, "cluster": "TECH_LIFE"}
+{"id": "G_TRANS_002", "layer": "CLUSTER", "category": "TRANSITION", "subtype": "contrast", "template": "С одной стороны, [аспект1]; с другой стороны, [аспект2].", "when_to_use": "Контрастное сопоставление аспектов", "quality_score": 2, "cluster": "TECH_LIFE"}

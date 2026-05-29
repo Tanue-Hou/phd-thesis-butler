@@ -1,0 +1,2 @@
+{"id": "G_MOD_001", "layer": "CLUSTER", "category": "MODEL", "subtype": "assumptions", "template": "В рамках данной работы приняты следующие допущения: [допущение1]; [допущение2].", "when_to_use": "Описание допущений модели", "quality_score": 2, "cluster": "TECH_LIFE"}
+{"id": "G_MOD_002", "layer": "CLUSTER", "category": "MODEL", "subtype": "mathematical_formulation", "template": "Математическая модель описывается системой уравнений: [уравнение1], [уравнение2].", "when_to_use": "Формальное описание модели", "quality_score": 2, "cluster": "TECH_LIFE"}

@@ -1,0 +1,2 @@
+{"id": "G_CONC_001", "layer": "CLUSTER", "category": "CONCLUSION", "subtype": "summary", "template": "В данной работе предложен [вклад], который позволяет [результат].", "when_to_use": "Резюме основного вклада", "quality_score": 2, "cluster": "TECH_LIFE"}
+{"id": "G_CONC_002", "layer": "CLUSTER", "category": "CONCLUSION", "subtype": "future_work", "template": "Дальнейшие исследования могут быть направлены на [направление].", "when_to_use": "Перспективы дальнейших исследований", "quality_score": 2, "cluster": "TECH_LIFE"}

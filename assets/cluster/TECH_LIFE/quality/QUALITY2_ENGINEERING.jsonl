@@ -1,0 +1,1 @@
+{"id": "G_ENG_001", "layer": "CLUSTER", "category": "ENGINEERING", "subtype": "deployment", "template": "Разработанная система была внедрена на [платформа] и показала [результат].", "when_to_use": "Описание практического внедрения", "quality_score": 2, "cluster": "TECH_LIFE"}

@@ -1,0 +1,39 @@
+{
+  "templates": [
+    {
+      "layer": "CLUSTER",
+      "category": "METHOD",
+      "subtype": "algorithm_design",
+      "template": "Предлагаемый алгоритм состоит из следующих этапов: [этап1]; [этап2]; [этап3].",
+      "when_to_use": "Описание этапов алгоритма",
+      "common_mistakes": [],
+      "quality_score": 2,
+      "strength": "neutral"
+    }
+  ],
+  "utils": [
+    {
+      "layer": "UTIL",
+      "kind": "CONSERVATIVE",
+      "template": "Можно предположить, что [утверждение].",
+      "when_to_use": "Смягчение утверждения",
+      "quality_score": 2
+    },
+    {
+      "layer": "UTIL",
+      "kind": "CONSERVATIVE",
+      "template": "В рамках принятых допущений [утверждение].",
+      "when_to_use": "Ограничение рамками модели",
+      "quality_score": 2
+    },
+    {
+      "layer": "UTIL",
+      "kind": "CONNECTIVE",
+      "template": "С другой стороны, [аспект].",
+      "when_to_use": "Альтернативная точка зрения",
+      "quality_score": 2
+    }
+  ],
+  "count": 1,
+  "fallback_used": 1
+}

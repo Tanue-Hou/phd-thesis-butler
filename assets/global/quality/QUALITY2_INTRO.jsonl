@@ -1,0 +1,3 @@
+{"id": "G_INTRO_001", "layer": "GLOBAL", "category": "INTRO", "subtype": "motivation", "template": "Актуальность данной работы обусловлена потребностью в [объект] для задач [область].", "when_to_use": "Обоснование актуальности", "quality_score": 2}
+{"id": "G_INTRO_002", "layer": "GLOBAL", "category": "INTRO", "subtype": "objective", "template": "Целью настоящей работы является разработка и исследование [объект] для [цель].", "when_to_use": "Формулировка цели", "quality_score": 2}
+{"id": "G_INTRO_003", "layer": "GLOBAL", "category": "INTRO", "subtype": "problem_statement", "template": "Несмотря на достижения в области [область], существующие подходы не в полной мере решают задачу [задача].", "when_to_use": "Постановка проблемы", "quality_score": 2}
