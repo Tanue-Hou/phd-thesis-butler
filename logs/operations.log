@@ -129,3 +129,18 @@ SKILL.md v3.0 written with all rules integrated
   Phase 2 will use Python subprocess-based serial queue:
   Each "agent" = standalone Python script called via subprocess
   Router + Retriever already built this way — same pattern for Extractors
+
+[2026-05-30 00:00] PHASE 2 PILOT — 30 jobs COMPLETE
+  Workers: 8 parallel, ThreadPoolExecutor
+  OK:  28/30 (93%)
+  DEAD: 2/30 (API errors after 3 retries)
+  Templates: 181
+  Avg per PDF: 6.5
+
+  G1 Gate: ✅ PASS (100% JSON valid, no ___, 100% field complete)
+  G2 Gate: ✅ PASS (Q2=65.2% ≥ 20%, Q0=0% ≤ 5%)
+
+  Categories: INTRO(118) SURVEY(23) METHOD(10) RESULT(7) DISCUSSION(7) etc.
+  By source: SPbSU(98) MSU(83)
+
+  NEXT: Full-scale extraction (1,316 jobs) with same 8-worker architecture
