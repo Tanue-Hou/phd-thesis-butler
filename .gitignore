@@ -1,0 +1,19 @@
+# Logs
+logs/*.log
+logs/*.pid
+
+# Data - too large for git
+data/MSU/*
+data/SPbSU/*
+data/BMSTU/*
+
+# But keep empty dir markers
+!data/MSU/.gitkeep
+!data/SPbSU/.gitkeep
+!data/BMSTU/.gitkeep
+
+# Temp
+*.tmp
+*.temp
+__pycache__/
+*.pyc
