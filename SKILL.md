@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
-description: "PhD Thesis Butler — Russian Academic Writing Sentence Bank (9,602 templates from 327 dissertations)"
-version: "2.1"
+description: "PhD Thesis Butler — Russian Academic Writing Sentence Bank (19,007 templates from 1,042 dissertations + 361 abstracts)"
+version: "3.1"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -10,7 +10,7 @@ version: "2.1"
 
 You are a **Russian academic writing assistant**. When loaded, automatically detect what section of a dissertation the user is writing and proactively offer relevant sentence templates. Do not wait for the user to ask — scan, detect, and serve.
 
-**Data**: 9,602 templates from 327 real dissertations, extracted via DIS (structural) + AREF (summative) channels, quality-scored 0–2.
+**Data**: 19,007 templates from 1,042 real dissertations + 361 abstracts, extracted via DIS (structural) + AREF (summative) channels, quality-scored 0–2.
 
 ---
 
@@ -121,11 +121,11 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 | File | Contents | Priority |
 |---|---|---|
-| `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | ~1,500 quality=2 DIS templates | ⭐⭐⭐ |
-| `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | ~500 quality=2 AREF templates | ⭐⭐⭐ |
+| `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 8,383 quality=2 DIS templates | ⭐⭐⭐ |
+| `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,228 quality=2 AREF templates | ⭐⭐⭐ |
 | `data/curated/quality/QUALITY2_UTILS.jsonl` | ~100 quality=2 UTIL patterns | ⭐⭐⭐ |
-| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 5,621 all-quality DIS templates | ⭐⭐ (fallback) |
-| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 3,573 all-quality AREF templates | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 11,980 all-quality DIS templates | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,619 all-quality AREF templates | ⭐⭐ (fallback) |
 | `data/curated/master/MASTER_UTILS.jsonl` | 408 all-quality UTIL patterns | ⭐⭐ (fallback) |
 
 ### Schema
@@ -166,13 +166,16 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 ```
 phd-thesis-butler/
-├── SKILL.md                     ← This file
+├── SKILL.md                     ← This file (assistant-facing runtime role)
 ├── README.md                    ← Public methodology documentation
 ├── .gitignore
 ├── references/
-│   ├── FULL_CLASSIFICATION.yaml
-│   ├── CROSS_CATEGORY_MAP.md
-│   └── INDEX_GUIDE.md
+│   ├── FULL_CLASSIFICATION.yaml ← Full classification taxonomy
+│   ├── CROSS_CATEGORY_MAP.md    ← Cross-category mapping rules
+│   ├── INDEX_GUIDE.md           ← Layer/cluster/discipline index
+│   ├── dissertation-sources.md  ← University source discovery (MSU/SPbSU/RSL/disserCat)
+│   ├── batch-download-tips.md   ← Download resilience & parsing techniques
+│   └── pipeline-extraction.md   ← Phase 2 extraction pipeline (DIS+AREF dual channel, queue architecture, G1-G5 gates)
 ├── schemas/
 │   └── sentencebank_entry.schema.v2_1.json
 ├── sub_skills/
@@ -191,7 +194,17 @@ phd-thesis-butler/
 │   └── utils_core/              ← UTILS (connective/hedging/numeric)
 └── data/
     └── curated/
-        ├── master/              ← Full corpus (9,602 entries)
-        ├── quality/             ← Quality=2 selections
+        ├── master/              ← Full corpus (19,007 entries)
+        ├── quality/             ← Quality=2 selections (10,611 entries)
         └── gaps/                ← Coverage gap analysis
 ```
+
+## Build Pipeline Reference
+
+When building or extending the sentence bank (extracting templates from new university PDFs), see:
+
+- `references/pipeline-extraction.md` — full dual-channel (DIS+AREF) pipeline architecture: job generation, queue management, worker implementation, G1-G5 gates, API rate limiting
+- `references/batch-download-tips.md` — source-specific download techniques (MSU, SPbSU, disserCat)
+- `references/dissertation-sources.md` — discoverable source metadata and APIs
+
+The extraction SKILL.md documents the **assistant runtime** role. The references above document the **builder/construction** role.
