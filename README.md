@@ -136,7 +136,8 @@ Each layer has a `master/` directory with full data and a `quality/` directory w
 
 | Version | Date | Milestone |
 |---------|------|-----------|
-| **v3.1.1** | 2026-05 | Asset layer fix: overlap elimination, placeholder migration, PII check, GLOBAL/TECH_LIME/HUM_SOC zero-overlap verified |
+| **v3.2** | 2026-05 | Language purity cleanup: removed 24 CN + 1,944 EN templates, 1,570 metadata translated; all templates pure Russian |
+| **v3.1.1** | 2026-05 | Asset layer fix: overlap elimination, placeholder migration, PII check, GLOBAL/TECH_LIFE/HUM_SOC zero-overlap verified |
 | **v3.1.0** | 2026-05 | Phase 2: MSU+SPbSU dual-channel pipeline (1,042 DIS + 361 AREF), 19,007 total, 3-layer architecture |
 | **v2.1** | 2026-05 | Final schema (v2.1), PII sanitization complete, 9,602 entries, gap analysis, JSON schema strict mode |
 | **v2.0** | 2026-05 | Full-scale extraction (5,695 → 9,602), quality scoring introduced, 13 sub-skills |
@@ -145,16 +146,17 @@ Each layer has a `master/` directory with full data and a `quality/` directory w
 
 ---
 
-## Current Build (v3.1.1)
+## Current Build (v3.2)
 
 | Metric | DIS | AREF | UTILS | Total |
 |--------|-----|------|-------|-------|
 | Source dissertations | 1,042 | 361 | — | **1,403 unique** |
 | Source universities | 3 (BMSTU + MSU + SPbSU) | — | — | **3** |
-| Total templates | **11,980** | **6,619** | **408** | **19,007** |
+| Total templates | **10,124** | **6,587** | **328** | **17,039** |
+| Language | Pure Russian ✅ | Pure Russian ✅ | Pure Russian ✅ | **100% pure** |
 | Categories / kinds | 11 | 14 | 3 | **28** |
 | Quality=2 (excellent) | **8,383** | **2,228** | ~100 | **~10,711** |
-| Quality=1 (good) | ~3,050 | ~3,700 | ~250 | **~7,000** |
+| Quality=1 (good) | ~1,200 | ~3,400 | ~180 | **~4,780** |
 | Quality=0 (informative) | ~550 | ~700 | ~50 | **~1,300** |
 
 ### 3-Layer Architecture
@@ -304,12 +306,12 @@ Quality distribution in the current build: **~2,000 quality=2 / ~6,250 quality=1
 
 ## Files
 
-### Master (full deduplicated corpus)
+### Master (full deduplicated corpus, pure Russian)
 | File | Source | Records |
 |------|--------|---------|
-| `MASTER_SENTENCEBANK_DIS.jsonl` | Dissertation body | 11,980 |
-| `MASTER_SENTENCEBANK_AREF.jsonl` | Author's abstract | 6,619 |
-| `MASTER_UTILS.jsonl` | Functional language | 408 |
+| `MASTER_SENTENCEBANK_DIS.jsonl` | Dissertation body | 10,124 |
+| `MASTER_SENTENCEBANK_AREF.jsonl` | Author's abstract | 6,587 |
+| `MASTER_UTILS.jsonl` | Functional language | 328 |
 
 ### Quality (filtered subsets)
 | File | Description |
@@ -522,6 +524,7 @@ If you use this resource in your work, please cite:
 
 | 版本 | 日期 | 里程碑 |
 |------|------|--------|
+| **v3.2** | 2026-05 | 语言纯净度清洗：删除 24 条中文 + 1,944 条英文模板，修复 1,570 处中文元数据；所有模板为纯正俄语 |
 | **v3.1.1** | 2026-05 | 资产修复：消除层级重叠、占位符迁移、PII 脱敏，GLOBAL/TECH_LIFE/HUM_SOC 零重叠验证 |
 | **v3.1.0** | 2026-05 | Phase 2：MSU+SPbSU 双通道抽取上线，19,007 条，三级资产架构 |
 | **v2.1** | 2026-05 | 最终 schema (v2.1)，PII 脱敏完成，9,602 条，缺口分析，JSON schema 严格模式 |
@@ -531,16 +534,17 @@ If you use this resource in your work, please cite:
 
 ---
 
-## 当前数据统计（v3.1.1）
+## 当前数据统计（v3.2）
 
 | 指标 | DIS | AREF | UTILS | 合计 |
 |--------|-----|------|-------|------|
 | 来源论文 | 1,042 | 361 | — | **1,403 篇** |
 | 来源高校 | 3 (BMSTU + MSU + SPbSU) | — | — | **3** |
-| 模板总数 | **11,980** | **6,619** | **408** | **19,007** |
+| 模板总数 | **10,124** | **6,587** | **328** | **17,039** |
+| 语言纯度 | 纯俄语 ✅ | 纯俄语 ✅ | 纯俄语 ✅ | **100% 纯正** |
 | 类别/种类 | 11 | 14 | 3 | **28** |
 | Quality=2（优秀） | **8,383** | **2,228** | ~100 | **~10,711** |
-| Quality=1（可用） | ~3,050 | ~3,700 | ~250 | **~7,000** |
+| Quality=1（可用） | ~1,200 | ~3,400 | ~180 | **~4,780** |
 | Quality=0（参考） | ~550 | ~700 | ~50 | **~1,300** |
 
 ### 三级资产架构
