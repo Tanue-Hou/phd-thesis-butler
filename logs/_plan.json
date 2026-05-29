@@ -7,8 +7,8 @@
     "source": "default"
   },
   "scene_inference": {
-    "category": "INTRO",
-    "subtype": "motivation",
+    "category": "RESULT",
+    "subtype": "numeric_reporting",
     "confidence": 0.6
   },
   "polish_level": "L1",
@@ -24,8 +24,8 @@
         "GLOBAL.QUALITY1"
       ],
       "query": {
-        "category": "INTRO",
-        "subtype": "motivation",
+        "category": "RESULT",
+        "subtype": "numeric_reporting",
         "need_utils": [
           "CONSERVATIVE",
           "CONNECTIVE",

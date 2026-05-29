@@ -1,0 +1,20 @@
+{
+  "templates": [
+    {
+      "layer": "cluster/TECH_LIFE",
+      "category": "RESULT",
+      "subtype": "numeric_reporting",
+      "template": "Значение ___ составило ___ при ___",
+      "when_to_use": "Reporting measurement results",
+      "common_mistakes": [
+        "Missing units",
+        "No uncertainty"
+      ],
+      "quality_score": 2,
+      "strength": "neutral"
+    }
+  ],
+  "utils": [],
+  "count": 1,
+  "fallback_used": 1
+}

@@ -15,6 +15,14 @@ data/BMSTU/*
 !data/SPbSU/.gitkeep
 !data/BMSTU/.gitkeep
 
+# Generated artifacts - not tracked
+data/raw/
+data/merged/
+data/classified/
+queue/
+assets/cluster/*.jsonl
+assets/discipline/*.jsonl
+
 # Temp
 *.tmp
 *.temp

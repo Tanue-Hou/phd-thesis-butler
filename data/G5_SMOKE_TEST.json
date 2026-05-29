@@ -1,0 +1,40 @@
+{
+  "phase": "G5 Smoke Test",
+  "layers": {
+    "HUM_SOC": {
+      "total": 5150,
+      "Q2%": 64.0,
+      "Q0": 26
+    },
+    "ART_SPORT": {
+      "total": 4895,
+      "Q2%": 67.2,
+      "Q0": 18
+    }
+  },
+  "sample_disciplines": {
+    "физико-математические науки": {
+      "ok": true
+    },
+    "биологические науки": {
+      "ok": true
+    },
+    "исторические науки": {
+      "ok": true
+    },
+    "экономические науки": {
+      "ok": true
+    },
+    "технические науки": {
+      "ok": true
+    }
+  },
+  "zero_overlap": true,
+  "gaps_p0": 1,
+  "g5_pass": true,
+  "checks": [
+    "✅ HUM_SOC >= 2000 & Q2 >= 25%",
+    "✅ ART_SPORT >= 2000 & Q2 >= 25%",
+    "✅ Zero overlap = 0"
+  ]
+}

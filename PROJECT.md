@@ -2,7 +2,7 @@
 
 ## 项目范围
 
-从俄罗斯多所高校和公开数据库收集学位论文（диссертации + авторефераты），扩展现有的俄语学术写作句式模板库（当前 9,602 条，327 篇）。
+从俄罗斯多所高校和公开数据库收集学位论文（диссертации + авторефераты），扩展现有的俄语学术写作句式模板库（当前 19,747 条，1,403 篇论文+摘要）。
 
 包括：
 - 调研各大学公式论文公开来源
@@ -22,15 +22,13 @@ PhD Thesis Butler, disserCat, dissovet.msu.ru, disser.spbu.ru, ВАК, авто�
 
 ## 当前状态
 
-active - 5 智能体润色系统构建中
+v3.1.0 — Phase 2 DIS+AREF 双通道全量抽取完成，G1–G5 全部通过
 
 ## 最近更新
 
-2026-05-29: 5 Agent pipeline 构建完成并通过测试
-- Router (学科/场景推断) ✅
-- Retriever (3层回退链) ✅  
-- Polisher (三级润色, 待API key验证) ✅
-- Consistency (一致性检查) ✅
-- Safety (安全审查) ✅
-- 样本数据: 22 GLOBAL模板 + 5 UTILS + CLUSTER副本
-- 管线测试: Router→Retriever→Consistency→Safety 全部通过
+2026-05-30: Phase 2 Complete — DIS+AREF Pipeline
+- Phase 2 双通道全量抽取: DIS 1,042 ✅ / AREF 361 ✅
+- Master/Worker 文件队列并行架构（20 Workers）
+- G1 抽取 → G2 QA → G3 归并 → G4 归层 → G5 上线 全流程
+- 10,045 条去重模板（HUM_SOC 5,150 + ART_SPORT 4,895）
+- 23 categories, 34 学科, Zero Overlap = 0
