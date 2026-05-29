@@ -118,3 +118,14 @@ SKILL.md v3.0 written with all rules integrated
     - 1 Merge+Assign
   TARGET: HUM_SOC/ART_SPORT ≥ 2000, Q2≥25%, v3.1.0 tag
   STATUS: Waiting for user approval
+
+[2026-05-29 23:40] DELEGATION PROVIDER CACHE — DIAGNOSIS
+  Config files: ✅ all correct (xiaomi, no holographic)
+  Cache/tmp cleaned: ✅
+  Running session: ❌ still has cached 'holographic' from session start
+  Root cause: config cached in-memory at session init, restart required
+  Decision: fallback to SERIAL QUEUE (no delegation)
+
+  Phase 2 will use Python subprocess-based serial queue:
+  Each "agent" = standalone Python script called via subprocess
+  Router + Retriever already built this way — same pattern for Extractors
