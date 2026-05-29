@@ -100,3 +100,12 @@ P1 ✅ Hit threshold: >=3 templates per layer to stop fallback
 P2 ✅ Output includes hit layer info
 
 SKILL.md v3.0 written with all rules integrated
+
+[2026-05-29 23:15] v3.0.0 FROZEN — All 6 tasks complete
+  T1: PROJECT_BASELINE_v3.md ✅
+  T2: 3 CLUSTER skeletons (HUM_SOC, ART_SPORT) + Router updated ✅
+  T3: LAYER_ASSIGNMENT_RULES.md ✅
+  T4: Router output contract locked (JSON, 16 fields) ✅
+  T5: smoke_test.sh — ALL 5 TESTS PASSED ✅
+  T6: TRAINING_PLAN_DISCIPLINE_FILL.md ✅
+  Git tag: v3.0.0
