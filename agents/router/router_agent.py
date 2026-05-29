@@ -4,7 +4,7 @@ Router Agent — 学科推断 + 场景推断 + 执行计划输出
 使用 mimo-v2.5 进行轻量文本分析
 """
 
-import json, os, re, sys, subprocess
+import json, os, sys, subprocess, re, yaml
 from pathlib import Path
 
 BASE = Path("/mnt/d/Hermes/01_Active_Projects/PhD_Thesis_Butler")
@@ -115,6 +115,9 @@ def infer_discipline(text, filepath="", config={}):
     scores = {}
     for disc, signals in discipline_signals.items():
         scores[disc] = sum(1 for s in signals if s in text_lower)
+
+    if not scores or max(scores.values()) == 0:
+        return {"discipline": "ENGINEERING", "cluster": "TECH_LIFE", "source": "default", "confidence": 0.3}
 
     best = max(scores, key=scores.get)
     if scores[best] >= 2:

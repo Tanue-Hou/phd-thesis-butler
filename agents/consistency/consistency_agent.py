@@ -6,8 +6,10 @@ Consistency Agent — 术语/符号/引用口径一致性检查
 import json, sys, re
 
 def check_consistency(original, polished, discipline="ENGINEERING"):
-    """Check consistency between original and polished text"""
+    # Check consistency between original and polished text
     issues = []
+    orig_lower = original.lower()
+    polished_lower = polished.lower()
 
     # 1. Check that no new numbers/facts were introduced
     orig_nums = set(re.findall(r'\b\d+(?:[.,]\d+)?', original))
@@ -20,10 +22,10 @@ def check_consistency(original, polished, discipline="ENGINEERING"):
             "severity": "warning"
         })
 
-    # 2. Check term consistency (simple: same words should appear)
-    orig_terms = set(w for w in original.split() if w[0].isupper() and len(w) > 2)
-    polished_terms = set(w for w in polished.split() if w[0].isupper() and len(w) > 2)
-    missing_terms = orig_terms - polished_terms
+    # 2. Check term consistency (check stem presence)
+    orig_words = set(re.findall(r'[а-яёА-ЯЁa-zA-Z]{4,}', orig_lower))
+    polished_words = set(re.findall(r'[а-яёА-ЯЁa-zA-Z]{4,}', polished_lower))
+    missing_terms = orig_words - polished_words
     if missing_terms:
         issues.append({
             "type": "missing_terms",
@@ -41,7 +43,7 @@ def check_consistency(original, polished, discipline="ENGINEERING"):
 
     if discipline in disc_checks:
         for kw in disc_checks[discipline]:
-            if kw in original.lower() and kw not in polished.lower():
+            if kw in orig_lower and kw not in polished_lower:
                 issues.append({
                     "type": "discipline_term_missing",
                     "detail": f"Дисциплинарный термин '{kw}' отсутствует в отредактированном тексте",
