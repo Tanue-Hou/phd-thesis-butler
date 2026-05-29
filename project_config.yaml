@@ -1,0 +1,7 @@
+# PhD Thesis Butler - Project Configuration
+# User sets discipline once, system remembers
+
+discipline: auto          # auto | MEDICINE | ECONOMICS | MATHEMATICS | ...
+cluster: auto             # auto | TECH_LIFE | HUM_SOC | MATH_PHYS
+confidence: 0.0
+last_updated: ""
