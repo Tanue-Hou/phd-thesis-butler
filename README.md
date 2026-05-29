@@ -5,7 +5,7 @@
 
 <br>
 
-A **sentence template bank** for **Russian academic writing**. Extracted from 300+ candidate and doctoral dissertations (кандидатские / докторские), organized into a dual-channel classification (DIS + AREF), ready to use as a loadable skill for **LLM-based writing agents** (Claude, Hermes, Codex, etc.).
+A **sentence template bank** for **Russian academic writing**. Extracted from **1,042 dissertations + 361 abstracts** across 3 universities (BMSTU, MSU, SPbSU), organized into a **3-layer asset architecture** (GLOBAL → CLUSTER → DISCIPLINE), with **19,007 deduplicated templates** ready to use as a loadable skill for **LLM-based writing agents**.
 
 > This project provides **portable rhetorical patterns** — template sentences with slot variables. It does **not** copy or redistribute original dissertation text.
 
@@ -50,12 +50,13 @@ User request → Detect writing scene → Map to category/subtype
 
 ## Data Pipeline: How the Templates Were Built
 
-### Phase 1: Corpus Collection (300+ dissertations)
+### Phase 1: Corpus Collection (1,042 dissertations + 361 abstracts)
 
 - Source: publicly defended Russian candidate & doctoral dissertations (2015–2025)
+- Three universities: **BMSTU** (327 dissertations), **MSU** (589 dissertations + 587 abstracts), **SPbSU** (727 dissertations)
 - Two document types per dissertation:
   - **DIS** (диссертация / full dissertation text)
-  - **AREF** (автореферат / author's abstract, ~1–2 pages)
+  - **AREF** (автореферат / author's abstract, ~16–24 pages)
 
 ### Phase 2: Template Extraction (LLM-assisted)
 
@@ -107,7 +108,19 @@ Each batch of ~15 dissertations went through this cycle:
 - **Coverage Check**: compares extracted categories/subtypes against `FULL_CLASSIFICATION.yaml` specification
 - **Gap Re-extraction**: P0/P1 gaps trigger targeted re-extraction on the same source PDFs
 
-### Phase 4: Quality Filtering & Curation
+### Phase 4: 3-Layer Asset Architecture
+
+After extraction, templates are classified into three layers:
+
+| Layer | Name | Entries | Description |
+|-------|------|---------|-------------|
+| **L0** | **GLOBAL** | 188 | Cross-cluster universal templates (quality=2 only) |
+| **L1** | **CLUSTER** | 9,857 | Discipline clusters: TECH_LIFE (5,802) + HUM_SOC (4,055) |
+| **L2** | **DISCIPLINE** | ~10,045 | Per-discipline files across 34 subjects |
+
+Each layer has a `master/` directory with full data and a `quality/` directory with Q2-filtered subsets per category. Layers have **zero template overlap** — every template appears in exactly one layer.
+
+### Phase 5: Quality Filtering & Curation
 
 - **Aggregation**: all batch outputs merged, deduplicated (by paper_id + category + subtype + template text)
 - **Quality scoring**: each template rated 0–2 based on portability and slot design
@@ -123,6 +136,8 @@ Each batch of ~15 dissertations went through this cycle:
 
 | Version | Date | Milestone |
 |---------|------|-----------|
+| **v3.1.1** | 2026-05 | Asset layer fix: overlap elimination, placeholder migration, PII check, GLOBAL/TECH_LIME/HUM_SOC zero-overlap verified |
+| **v3.1.0** | 2026-05 | Phase 2: MSU+SPbSU dual-channel pipeline (1,042 DIS + 361 AREF), 19,007 total, 3-layer architecture |
 | **v2.1** | 2026-05 | Final schema (v2.1), PII sanitization complete, 9,602 entries, gap analysis, JSON schema strict mode |
 | **v2.0** | 2026-05 | Full-scale extraction (5,695 → 9,602), quality scoring introduced, 13 sub-skills |
 | **v1.0** | 2026-05 | Classification system design, pilot (236 entries from 9 papers), 13 sub-skills architecture |
@@ -130,16 +145,27 @@ Each batch of ~15 dissertations went through this cycle:
 
 ---
 
-## Current Build (v2.1)
+## Current Build (v3.1.1)
 
 | Metric | DIS | AREF | UTILS | Total |
 |--------|-----|------|-------|-------|
-| Source dissertations | 300+ | 300+ | — | **327 unique** |
-| Total templates | **5,621** | **3,573** | **408** | **9,602** |
+| Source dissertations | 1,042 | 361 | — | **1,403 unique** |
+| Source universities | 3 (BMSTU + MSU + SPbSU) | — | — | **3** |
+| Total templates | **11,980** | **6,619** | **408** | **19,007** |
 | Categories / kinds | 11 | 14 | 3 | **28** |
-| Quality=2 (excellent) | ~1,200 | ~700 | ~100 | **~2,000** |
-| Quality=1 (good) | ~3,500 | ~2,500 | ~250 | **~6,250** |
-| Quality=0 (informative) | ~900 | ~350 | ~50 | **~1,300** |
+| Quality=2 (excellent) | **8,383** | **2,228** | ~100 | **~10,711** |
+| Quality=1 (good) | ~3,050 | ~3,700 | ~250 | **~7,000** |
+| Quality=0 (informative) | ~550 | ~700 | ~50 | **~1,300** |
+
+### 3-Layer Architecture
+
+| Layer | Name | Entries | Q2 entries |
+|-------|------|---------|------------|
+| L0 | GLOBAL (cross-cluster) | 188 | 188 (100%) |
+| L1 | TECH_LIFE (technical) | 5,802 | 3,911 (67.4%) |
+| L1 | HUM_SOC (humanities) | 4,055 | 2,484 (61.3%) |
+| L2 | DISCIPLINE (34 subjects) | ~10,045 | 6,583 (65.5%) |
+| | **Zero overlap** | **0** | — |
 
 ---
 
@@ -281,17 +307,25 @@ Quality distribution in the current build: **~2,000 quality=2 / ~6,250 quality=1
 ### Master (full deduplicated corpus)
 | File | Source | Records |
 |------|--------|---------|
-| `MASTER_SENTENCEBANK_DIS.jsonl` | Dissertation body | 5,621 |
-| `MASTER_SENTENCEBANK_AREF.jsonl` | Author's abstract | 3,573 |
+| `MASTER_SENTENCEBANK_DIS.jsonl` | Dissertation body | 11,980 |
+| `MASTER_SENTENCEBANK_AREF.jsonl` | Author's abstract | 6,619 |
 | `MASTER_UTILS.jsonl` | Functional language | 408 |
 
 ### Quality (filtered subsets)
 | File | Description |
 |------|-------------|
-| `QUALITY2_SELECTION_DIS.jsonl` | DIS templates with quality_score ≥ 2 |
-| `QUALITY2_SELECTION_AREF.jsonl` | AREF templates with quality_score ≥ 2 |
+| `QUALITY2_SELECTION_DIS.jsonl` | DIS templates with quality_score ≥ 2 (8,383) |
+| `QUALITY2_SELECTION_AREF.jsonl` | AREF templates with quality_score ≥ 2 (2,228) |
 | `QUALITY2_UTILS.jsonl` | UTIL phrases with quality_score ≥ 2 |
 | `TOP50_BY_CATEGORY/*.md` | Top 50 templates per category, in Markdown |
+
+### Assets (3-layer structure)
+| Layer | Directory | Description |
+|-------|-----------|-------------|
+| L0 | `assets/global/` | Cross-cluster universal templates (188) |
+| L1 | `assets/cluster/TECH_LIFE/` | Technical/life sciences cluster (5,802) |
+| L1 | `assets/cluster/HUM_SOC/` | Humanities/social sciences (4,055) |
+| L2 | `assets/discipline/` | Per-discipline files (34 subjects) |
 
 ### Gaps (coverage reports)
 | File | Description |
@@ -386,7 +420,7 @@ If you use this resource in your work, please cite:
 
 <br>
 
-一个面向**俄语学术写作**的句式模板库（Sentence Bank）。从 300+ 篇俄罗斯候选/博士论文（кандидатские / докторские диссертации）中抽取，按 DIS + AREF 双通道分类，可作为 **LLM 写作智能体**（Claude、Hermes、Codex 等）的可加载技能库。
+一个面向**俄语学术写作**的句式模板库（Sentence Bank）。从 **3 所高校（BMSTU + MSU + SPbSU）、1,042 篇论文 + 361 篇摘要**中抽取，按 **三级资产架构**（GLOBAL → CLUSTER → DISCIPLINE）组织，共 **19,007 条去重模板**，可作为 **LLM 写作智能体**的可加载技能库。
 
 > 本项目提供**可迁移的修辞模式**（带槽位的模板句式），**不复制或再分发**原论文受著作权保护的文本内容。
 
@@ -419,9 +453,10 @@ If you use this resource in your work, please cite:
 
 ## 数据处理流程
 
-### 阶段一：语料收集（300+ 篇论文）
+### 阶段一：语料收集（1,042 篇论文 + 361 篇摘要）
 
 - 来源：2015–2025 年在公开数据库中可获取的俄罗斯学位论文
+- 三所高校：**BMSTU**（327 篇）、**MSU**（589 篇论文 + 587 篇摘要）、**SPbSU**（727 篇）
 - 每篇论文有两种文档：
   - **DIS**（диссертация / 论文全文）
   - **AREF**（автореферат / 作者摘要）
@@ -487,6 +522,8 @@ If you use this resource in your work, please cite:
 
 | 版本 | 日期 | 里程碑 |
 |------|------|--------|
+| **v3.1.1** | 2026-05 | 资产修复：消除层级重叠、占位符迁移、PII 脱敏，GLOBAL/TECH_LIFE/HUM_SOC 零重叠验证 |
+| **v3.1.0** | 2026-05 | Phase 2：MSU+SPbSU 双通道抽取上线，19,007 条，三级资产架构 |
 | **v2.1** | 2026-05 | 最终 schema (v2.1)，PII 脱敏完成，9,602 条，缺口分析，JSON schema 严格模式 |
 | **v2.0** | 2026-05 | 全量抽取（5,695 → 9,602），引入质量评分，13 个子 skill |
 | **v1.0** | 2026-05 | 分类体系设计，试点 9 篇 236 条，13 子 skill 架构 |
@@ -494,16 +531,27 @@ If you use this resource in your work, please cite:
 
 ---
 
-## 当前数据统计（v2.1）
+## 当前数据统计（v3.1.1）
 
 | 指标 | DIS | AREF | UTILS | 合计 |
 |--------|-----|------|-------|------|
-| 来源论文 | 300+ | 300+ | — | **327 篇** |
-| 模板总数 | **5,621** | **3,573** | **408** | **9,602** |
+| 来源论文 | 1,042 | 361 | — | **1,403 篇** |
+| 来源高校 | 3 (BMSTU + MSU + SPbSU) | — | — | **3** |
+| 模板总数 | **11,980** | **6,619** | **408** | **19,007** |
 | 类别/种类 | 11 | 14 | 3 | **28** |
-| Quality=2（优秀） | ~1,200 | ~700 | ~100 | **~2,000** |
-| Quality=1（可用） | ~3,500 | ~2,500 | ~250 | **~6,250** |
-| Quality=0（参考） | ~900 | ~350 | ~50 | **~1,300** |
+| Quality=2（优秀） | **8,383** | **2,228** | ~100 | **~10,711** |
+| Quality=1（可用） | ~3,050 | ~3,700 | ~250 | **~7,000** |
+| Quality=0（参考） | ~550 | ~700 | ~50 | **~1,300** |
+
+### 三级资产架构
+
+| 层级 | 名称 | 条数 | Q2 |
+|------|------|------|----|
+| L0 | GLOBAL（跨学科通用） | 188 | 188 (100%) |
+| L1 | TECH_LIFE（技术/生命科学） | 5,802 | 3,911 (67.4%) |
+| L1 | HUM_SOC（人文/社会科学） | 4,055 | 2,484 (61.3%) |
+| L2 | DISCIPLINE（34 个学科） | ~10,045 | 6,583 (65.5%) |
+| | 跨层零重叠 | **0** | — |
 
 ---
 

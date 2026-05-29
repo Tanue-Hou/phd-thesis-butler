@@ -208,3 +208,9 @@ When building or extending the sentence bank (extracting templates from new univ
 - `references/dissertation-sources.md` — discoverable source metadata and APIs
 
 The extraction SKILL.md documents the **assistant runtime** role. The references above document the **builder/construction** role.
+
+For layer assignment issues (GLOBAL/TECH_LIFE overlap, empty quality files), run:
+```
+python3 scripts/fix-v311-assets.py
+```
+This performs full layer reassignment, quality file generation, `___`→`[...]` migration, and PII scan. See `CHANGELOG.md` v3.1.1 for details.

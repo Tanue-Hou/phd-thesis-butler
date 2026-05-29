@@ -259,9 +259,99 @@ HUM_SOC_SUBJECTS = {
 }
 ```
 
-详见 `batch-extraction-pipeline` skill 的 `references/g3-g5-pipeline-implementation.md`。
+详见 `agents/g3_merge.py`、`agents/g4_classify.py`、`agents/g5_smoke_test.py`（Phase 2 项目目录）。
 
-## 已知问题
+## G3–G5 Pipeline (Post-Extraction)
+
+After G1+G2 pass for both DIS and AREF channels, run the 3-stage post-processing pipeline:
+
+### G3 Merge (`g3_merge.py`)
+
+1. Load all raw JSONL from `data/raw/{MSU,SPbSU,AREF/MSU}/*.jsonl`
+2. Deduplicate by `template` text (exact match)
+3. **Critical: Category normalization** — merge typos/rare variants (DISCUYSIS→DISCUSSION, METHODOLOGY→METHOD, etc.) See full mapping below
+4. Write per-category files to `data/merged/by_category/`
+5. G3 Gate: each category ≥ 3 entries
+
+**Known categories after normalization**: INTRO, SURVEY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION, TRANSITION, FORMAL_DEFS, АКТУАЛЬНОСТЬ, НОВИЗНА, ЦЕЛЬ_ЗАДАЧИ, ОБЪЕКТ_ПРЕДМЕТ, МЕТОДЫ, ПОЛОЖЕНИЯ, ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ, ПРАКТИЧЕСКАЯ_ЗНАЧИМОСТЬ, АПРОБАЦИЯ, ВЫВОДЫ, ПЕРСПЕКТИВЫ, ДОСТОВЕРНОСТЬ, СТЕПЕНЬ_РАЗРАБОТАННОСТИ (~23 core categories)
+
+### G4 Classify (`g4_classify.py`)
+
+1. Assign each entry to a discipline (from `subject` field)
+2. Assign to layer (HUM_SOC / ART_SPORT per LAYER_ASSIGNMENT_RULES.md)
+3. **Subject normalization is critical**: replace underscores→spaces, handle nominative+genitive cases
+4. Write per-layer files to `assets/cluster/{HUM_SOC,ART_SPORT,TECH_LIFE}/`
+5. Write per-discipline files to `assets/discipline/`
+6. G4 Gate: zero overlap between layers
+
+### G5 Smoke Test (`g5_smoke_test.py`)
+
+1. Report HUM_SOC / ART_SPORT template count + Q2%
+2. Check 5 sample disciplines for K=3 availability
+3. Verify zero overlap
+4. Report P0 gap list
+5. G5 Gate: each layer ≥ 2,000 entries AND Q2 ≥ 25%
+
+## Post-Processing: Asset Layer Rebuild (v3.1.1+)
+
+After G4 but before production, a second-pass layer reassignment is needed to ensure:
+
+1. **GLOBAL (L0)** — templates appearing in ≥2 clusters (quality must be ≥2)
+2. **TECH_LIFE (L1)** — technical/life sciences cluster
+3. **HUM_SOC (L1)** — humanities/social sciences cluster
+4. **Zero overlap verification** — no template appears in >1 layer
+
+The algorithm (implemented in `fix_v311_assets.py`):
+
+```python
+# Track per-template cluster distribution
+template_clusters = defaultdict(set)
+for e in all_entries:
+    template_clusters[e["template"]].add(discipline_to_cluster(e["subject"]))
+
+# Assign each entry to layer
+for e in all_entries:
+    n_clusters = len(template_clusters[e["template"]])
+    if n_clusters >= 2 and e["quality_score"] == 2:
+        assign_to("GLOBAL")
+    else:
+        assign_to(cluster_from_subject(e["subject"]))
+```
+
+### Quality File Generation per Layer
+
+Each layer's `quality/` directory should contain per-category Q2=2 files:
+- `QUALITY2_{CATEGORY}.jsonl` — Q2 entries for that category
+- `QUALITY2_ALL.jsonl` — all Q2 entries combined
+- `UTILS.jsonl` — utility patterns
+
+Generate with:
+```python
+q2 = [e for e in layer_entries if e.get("quality_score") == 2]
+by_cat = defaultdict(list)
+for e in q2: by_cat[e["category"]].append(e)
+for cat, entries in by_cat.items():
+    write_jsonl(f"quality/QUALITY2_{cat}.jsonl", entries)
+write_jsonl("quality/QUALITY2_ALL.jsonl", q2)
+```
+
+## v3.1.1 Asset Fix Recipe
+
+When GLOBAL and TECH_LIFE quality files show 100% overlap (identical templates in EXPERIMENT/METHOD/MODEL/RESULT/SURVEY), run:
+
+```bash
+python3 agents/fix_v311_assets.py
+```
+
+This single script performs:
+1. Load classified master (10,045 entries)
+2. Reassign layers per LAYER_ASSIGNMENT_RULES (template-cluster distribution)
+3. Populate master/MASTER.jsonl for each layer
+4. Generate non-overlapping quality files per category per layer
+5. Migrate `___` → `[...]` placeholders in all UTILS files
+6. PII scan (known names, emails, phones, URLs)
+7. Verify zero overlap across all layers
+8. Write v3.1.1_FIX_REPORT.json
 
 | 问题 | 解决方法 |
 |-------|-----------|
