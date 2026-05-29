@@ -32,7 +32,7 @@
 
 ---
 
-## 二、当前规模（v3.2.1 唯一真源口径）
+## 二、当前规模（v3.2.1）
 
 | 指标 | 数值 |
 |------|------|
@@ -60,9 +60,9 @@
 
 ---
 
-## 三、"训练过程"说明
+## 三、Skill 制作过程
 
-> **本项目不做模型微调（fine-tuning）** 。"训练"指构建和改进模板资产的流水线，通过多级门控确保质量。
+Skill 制作分为四个阶段，通过多级门控确保质量。
 
 ### Phase 1：语料收集（Corpus Collection）
 
@@ -352,7 +352,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 2. Масштаб (v3.2.1 — единый источник истины)
+## 2. Масштаб (v3.2.1)
 
 | Показатель | Значение |
 |-----------|----------|
@@ -379,7 +379,9 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 3. Процесс построения активов
+## 3. Процесс создания
+
+Создание навыка проходит четыре фазы с многоуровневыми gate-проверками.
 
 ### Фаза 1: Сбор корпуса
 - 1 042 диссертации + 361 автореферат из нескольких российских университетов
@@ -532,7 +534,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 2. Current Scale (v3.2.1 — Single Source of Truth)
+## 2. Current Scale (v3.2.1)
 
 | Metric | Value |
 |--------|-------|
@@ -560,9 +562,9 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 3. Asset-Building Pipeline (Not Model Fine-Tuning)
+## 3. Asset-Building Pipeline
 
-> This project does **not** fine-tune a language model. "Training" refers to building template assets through a gated pipeline.
+The skill is built through a four-phase gated pipeline.
 
 ### Phase 1: Corpus Collection
 
