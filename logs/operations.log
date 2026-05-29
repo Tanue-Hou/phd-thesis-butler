@@ -84,3 +84,19 @@ GLOBAL LAYER QUALITY:
   Категорий: 27
 
 Offline-полировщик: удалён (только API-режим)
+
+[2026-05-29 22:20] ACTION: Удалены Polisher/Consistency/Safety, SKILL.md переписан
+  Концепция: система только retrieves шаблоны, полировка — агенту пользователя
+  SKILL.md: agent-facing инструкция (детекция→поиск→применение→вывод)
+  Агенты: Router (helper) + Retriever (helper) — опциональны
+
+[2026-05-29 22:45] ALL ISSUES FIXED:
+
+P0 ✅ GLOBAL vs CLUSTER separated (GLOBAL=1,764 / CLUSTER=7,728, zero overlap)
+P0 ✅ Placeholders unified to [...] only
+P1 ✅ Two-stage inference (cluster→discipline) + exclusion rules
+P1 ✅ Scene priority rules (FORMAL_DEFS > MODEL > EXPERIMENT > ...)
+P1 ✅ Hit threshold: >=3 templates per layer to stop fallback
+P2 ✅ Output includes hit layer info
+
+SKILL.md v3.0 written with all rules integrated
