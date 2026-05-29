@@ -60,11 +60,8 @@ def run_pipeline(text, filepath="", config_path="", level="L1"):
             "--level", level, "--discipline", discipline,
             "--output", str(polished_file)],
             capture_output=True, timeout=70)
-    else:
-        # Offline mode: rules-based polishing
-        polished = offline_polish(text, templates, level, discipline)
-        with open(polished_file, 'w', encoding='utf-8') as f:
-            json.dump(polished, f, ensure_ascii=False, indent=2)
+    # No API key available — cannot polish
+    return {"error": "XIAOMI_API_KEY not configured", "polished": text, "changes": []}
     
     with open(polished_file) as f:
         polished_result = json.load(f)
@@ -113,37 +110,7 @@ def run_pipeline(text, filepath="", config_path="", level="L1"):
     return output
 
 
-def offline_polish(text, templates, level, discipline):
-    """Offline rules-based polishing (no API key needed)"""
-    polished = text
-    
-    # Basic rule-based fixes
-    # 1. Remove "Во-первых" paragraph openers (not academic)
-    polished = re.sub(r'^Во-первых,\s*', '', polished)
-    polished = re.sub(r'^Во-вторых,\s*', '', polished)
-    
-    # 2. Strengthen weak connectors
-    polished = polished.replace(' и т.д.', ' и др.')
-    polished = polished.replace('и так далее', 'и тому подобное')
-    
-    # 3. Add academic hedging where appropriate
-    if 'лучше' in polished:
-        polished = polished.replace('лучше', 'обеспечивает более высокую эффективность')
-    if 'хуже' in polished:
-        polished = polished.replace('хуже', 'уступает по показателю')
-    if 'хороший' in polished or 'хорошие' in polished:
-        polished = re.sub(r'хорош[ие]', 'высокие', polished)
-    
-    changes = ["Применены базовые правила академического стиля"]
-    
-    if templates.get("templates"):
-        tmpl = templates["templates"][0].get("template", "")
-        changes.append(f"Шаблон-ориентир: {tmpl[:50]}...")
-    
-    if templates.get("utils"):
-        changes.append(f"Добавлены консервативные конструкции")
-    
-    return {"polished": polished, "changes": changes, "level": level, "discipline": discipline, "mode": "offline"}
+
 
 
 if __name__ == "__main__":
