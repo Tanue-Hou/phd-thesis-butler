@@ -24,3 +24,9 @@
 
 [2026-05-29 20:15] ACTION: Остановка загрузки МГУ (по запросу пользователя)
   STATUS: остановлено
+
+[2026-05-29 20:20] ACTION: Разработка плана мультиагентной системы
+  PLAN: tasks/20260529_MultiAgent_Polish_System_Plan_v01.md
+  AGENTS: Router → Retriever → Polisher → Consistency → Safety
+  MODEL: mimo-v2.5 (все агенты)
+  STATUS: план готов, ожидает утверждения
