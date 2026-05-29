@@ -5,7 +5,7 @@
 
 <br>
 
-A **sentence template bank** for **Russian academic writing**. Extracted from **1,042 dissertations + 361 abstracts** across 3 universities (BMSTU, MSU, SPbSU), organized into a **3-layer asset architecture** (GLOBAL → CLUSTER → DISCIPLINE), with **19,007 deduplicated templates** ready to use as a loadable skill for **LLM-based writing agents**.
+A **sentence template bank** for **Russian academic writing**. Extracted from **1,042 dissertations + 361 abstracts** across 3 universities (BMSTU, MSU, SPbSU), organized into a **3-layer asset architecture** (GLOBAL → CLUSTER → DISCIPLINE), with **16,735 pure Russian templates** ready to use as a loadable skill for **LLM-based writing agents**. After v3.2 language purity cleanup, all Chinese and English templates have been removed.
 
 > This project provides **portable rhetorical patterns** — template sentences with slot variables. It does **not** copy or redistribute original dissertation text.
 
@@ -50,10 +50,11 @@ User request → Detect writing scene → Map to category/subtype
 
 ## Data Pipeline: How the Templates Were Built
 
-### Phase 1: Corpus Collection (1,042 dissertations + 361 abstracts)
+### Phase 1: Corpus Collection (1,403 unique papers — 1,042 dissertations + 361 usable abstracts)
 
 - Source: publicly defended Russian candidate & doctoral dissertations (2015–2025)
-- Three universities: **BMSTU** (327 dissertations), **MSU** (589 dissertations + 587 abstracts), **SPbSU** (727 dissertations)
+- Three universities: **BMSTU** (327 dissertations, no abstracts), **MSU** (589 dissertations + 587 abstracts → 361 usable after OCR filtering), **SPbSU** (727 dissertations, 2 abstracts — SPbSU does not publish abstracts)
+- Only PDFs with extractable text were processed. Scanned PDFs (~20% of MSU+SPbSU corpus, 274 DIS + 226 AREF) were excluded from the extraction pipeline.
 - Two document types per dissertation:
   - **DIS** (диссертация / full dissertation text)
   - **AREF** (автореферат / author's abstract, ~16–24 pages)
@@ -110,15 +111,15 @@ Each batch of ~15 dissertations went through this cycle:
 
 ### Phase 4: 3-Layer Asset Architecture
 
-After extraction, templates are classified into three layers:
+After extraction, templates are classified into three layers (v3.2 counts):
 
 | Layer | Name | Entries | Description |
 |-------|------|---------|-------------|
-| **L0** | **GLOBAL** | 188 | Cross-cluster universal templates (quality=2 only) |
-| **L1** | **CLUSTER** | 9,857 | Discipline clusters: TECH_LIFE (5,802) + HUM_SOC (4,055) |
+| **L0** | **GLOBAL** | 185 | Cross-cluster universal templates (quality=2 only) |
+| **L1** | **CLUSTER** | 9,734 | Discipline clusters: TECH_LIFE (5,699) + HUM_SOC (4,035) |
 | **L2** | **DISCIPLINE** | ~10,045 | Per-discipline files across 34 subjects |
 
-Each layer has a `master/` directory with full data and a `quality/` directory with Q2-filtered subsets per category. Layers have **zero template overlap** — every template appears in exactly one layer.
+Each layer has a `master/` directory with full data and a `quality/` directory with Q2-filtered subsets per category. Layers have **zero template overlap** — every template appears in exactly one layer. Total unique templates across all layers: **16,735** (DIS 9,863 + AREF 6,568 + UTILS 304).
 
 ### Phase 5: Quality Filtering & Curation
 
@@ -152,7 +153,7 @@ Each layer has a `master/` directory with full data and a `quality/` directory w
 |--------|-----|------|-------|-------|
 | Source dissertations | 1,042 | 361 | — | **1,403 unique** |
 | Source universities | 3 (BMSTU + MSU + SPbSU) | — | — | **3** |
-| Total templates | **10,124** | **6,587** | **328** | **17,039** |
+| Total templates | **9,863** | **6,568** | **304** | **16,735** |
 | Language | Pure Russian ✅ | Pure Russian ✅ | Pure Russian ✅ | **100% pure** |
 | Categories / kinds | 11 | 14 | 3 | **28** |
 | Quality=2 (excellent) | **8,383** | **2,228** | ~100 | **~10,711** |
@@ -163,9 +164,9 @@ Each layer has a `master/` directory with full data and a `quality/` directory w
 
 | Layer | Name | Entries | Q2 entries |
 |-------|------|---------|------------|
-| L0 | GLOBAL (cross-cluster) | 188 | 188 (100%) |
-| L1 | TECH_LIFE (technical) | 5,802 | 3,911 (67.4%) |
-| L1 | HUM_SOC (humanities) | 4,055 | 2,484 (61.3%) |
+| L0 | GLOBAL (cross-cluster) | 185 | 185 (100%) |
+| L1 | TECH_LIFE (technical) | 5,699 | 3,911 (68.6%) |
+| L1 | HUM_SOC (humanities) | 4,035 | 2,484 (61.6%) |
 | L2 | DISCIPLINE (34 subjects) | ~10,045 | 6,583 (65.5%) |
 | | **Zero overlap** | **0** | — |
 
@@ -324,9 +325,9 @@ Quality distribution in the current build: **~2,000 quality=2 / ~6,250 quality=1
 ### Assets (3-layer structure)
 | Layer | Directory | Description |
 |-------|-----------|-------------|
-| L0 | `assets/global/` | Cross-cluster universal templates (188) |
-| L1 | `assets/cluster/TECH_LIFE/` | Technical/life sciences cluster (5,802) |
-| L1 | `assets/cluster/HUM_SOC/` | Humanities/social sciences (4,055) |
+| L0 | `assets/global/` | Cross-cluster universal templates (185) |
+| L1 | `assets/cluster/TECH_LIFE/` | Technical/life sciences cluster (5,699) |
+| L1 | `assets/cluster/HUM_SOC/` | Humanities/social sciences (4,035) |
 | L2 | `assets/discipline/` | Per-discipline files (34 subjects) |
 
 ### Gaps (coverage reports)
@@ -418,6 +419,87 @@ If you use this resource in your work, please cite:
 <br>
 
 <details>
+<summary><strong>🇷🇺 Русский</strong></summary>
+
+<br>
+
+**Банк шаблонов** для **академического письма на русском языке**. Извлечён из **1 042 диссертаций + 361 автореферата** из 3 университетов (МГТУ им. Баумана, МГУ, СПбГУ), организован в **3-уровневую архитектуру** (GLOBAL → CLUSTER → DISCIPLINE). Всего **16 735 шаблонов**, прошедших проверку на языковую чистоту (удалены все китайские и английские вкрапления).
+
+> Проект предоставляет **переносимые риторические паттерны** — шаблонные предложения со слотами. Он **не копирует и не распространяет** исходный текст диссертаций.
+
+---
+
+## Текущая сборка (v3.2)
+
+| Показатель | DIS | AREF | UTILS | Всего |
+|-----------|-----|------|-------|-------|
+| Источники | 1 042 дисс. | 361 авт. | — | **1 403** |
+| Университеты | 3 (МГТУ+МГУ+СПбГУ) | — | — | **3** |
+| Всего шаблонов | **9 863** | **6 568** | **304** | **16 735** |
+| Язык | Чистый русский ✅ | Чистый русский ✅ | Чистый русский ✅ | **100%** |
+| Категорий | 11 | 14 | 3 | **28** |
+| Quality=2 | **8 383** | **2 228** | ~100 | **~10 711** |
+
+### 3-уровневая архитектура
+
+| Уровень | Название | Записей | Q2 |
+|---------|----------|---------|-----|
+| L0 | GLOBAL (междисциплинарные) | 185 | 185 (100%) |
+| L1 | TECH_LIFE (технические науки) | 5 699 | 3 911 (68,6%) |
+| L1 | HUM_SOC (гуманитарные науки) | 4 035 | 2 484 (61,6%) |
+| L2 | DISCIPLINE (34 дисциплины) | ~10 045 | 6 583 (65,5%) |
+| | **Нулевое пересечение** | **0** | — |
+
+---
+
+## Цель
+
+Помочь исследователям, пишущим диссертации на русском языке, находить и использовать устоявшиеся риторические конструкции для каждого раздела работы — от введения до заключения.
+
+Шаблоны извлечены из реальных кандидатских и докторских диссертаций (2015–2025), защищённых в открытых диссертационных советах.
+
+---
+
+## Установка
+
+### Hermes (рекомендуется)
+```bash
+hermes skill install github:Tanue-Hou/phd-thesis-butler
+# Загрузка:
+/skill phd-thesis-butler
+```
+
+### Claude Code
+```bash
+git clone https://github.com/Tanue-Hou/phd-thesis-butler.git ~/.claude/skills/phd-thesis-butler
+```
+
+### Codex CLI
+```bash
+git clone https://github.com/Tanue-Hou/phd-thesis-butler.git
+```
+
+---
+
+## Отказ от ответственности
+
+Данный репозиторий предоставляет **только шаблонные фразы** для помощи в академическом письме. Все шаблоны извлечены из **общедоступных диссертаций**. Пользователь несёт полную ответственность за:
+- проверку фактической точности
+- соблюдение правил цитирования
+- проверку на плагиат
+- адаптацию шаблонов к своей предметной области
+
+---
+
+## Лицензия
+
+**CC BY 4.0** — Creative Commons Attribution 4.0 International
+
+</details>
+
+<br>
+
+<details
 <summary><strong>🇨🇳 中文</strong></summary>
 
 <br>
@@ -455,10 +537,11 @@ If you use this resource in your work, please cite:
 
 ## 数据处理流程
 
-### 阶段一：语料收集（1,042 篇论文 + 361 篇摘要）
+### 阶段一：语料收集（1,403 篇独立论文 — 1,042 篇正文 + 361 篇可提取摘要）
 
 - 来源：2015–2025 年在公开数据库中可获取的俄罗斯学位论文
-- 三所高校：**BMSTU**（327 篇）、**MSU**（589 篇论文 + 587 篇摘要）、**SPbSU**（727 篇）
+- 三所高校：**BMSTU**（327 篇正文，无摘要）、**MSU**（589 篇正文 + 587 篇摘要 → OCR 过滤后 361 篇可用）、**SPbSU**（727 篇正文，2 篇摘要 — SPbSU 不公开摘要）
+- 仅处理可提取文本的 PDF。扫描版 PDF（MSU+SPbSU 约 20%，274 篇正文 + 226 篇摘要）已从抽取管线中排除
 - 每篇论文有两种文档：
   - **DIS**（диссертация / 论文全文）
   - **AREF**（автореферат / 作者摘要）
@@ -540,7 +623,7 @@ If you use this resource in your work, please cite:
 |--------|-----|------|-------|------|
 | 来源论文 | 1,042 | 361 | — | **1,403 篇** |
 | 来源高校 | 3 (BMSTU + MSU + SPbSU) | — | — | **3** |
-| 模板总数 | **10,124** | **6,587** | **328** | **17,039** |
+| 模板总数 | **9,863** | **6,568** | **304** | **16,735** |
 | 语言纯度 | 纯俄语 ✅ | 纯俄语 ✅ | 纯俄语 ✅ | **100% 纯正** |
 | 类别/种类 | 11 | 14 | 3 | **28** |
 | Quality=2（优秀） | **8,383** | **2,228** | ~100 | **~10,711** |
@@ -551,9 +634,9 @@ If you use this resource in your work, please cite:
 
 | 层级 | 名称 | 条数 | Q2 |
 |------|------|------|----|
-| L0 | GLOBAL（跨学科通用） | 188 | 188 (100%) |
-| L1 | TECH_LIFE（技术/生命科学） | 5,802 | 3,911 (67.4%) |
-| L1 | HUM_SOC（人文/社会科学） | 4,055 | 2,484 (61.3%) |
+| L0 | GLOBAL（跨学科通用） | 185 | 185 (100%) |
+| L1 | TECH_LIFE（技术/生命科学） | 5,699 | 3,911 (68.6%) |
+| L1 | HUM_SOC（人文/社会科学） | 4,035 | 2,484 (61.6%) |
 | L2 | DISCIPLINE（34 个学科） | ~10,045 | 6,583 (65.5%) |
 | | 跨层零重叠 | **0** | — |
 

@@ -10,7 +10,7 @@ version: "3.2"
 
 You are a **Russian academic writing assistant**. When loaded, automatically detect what section of a dissertation the user is writing and proactively offer relevant sentence templates. Do not wait for the user to ask — scan, detect, and serve.
 
-**Data**: 17,039 pure Russian templates from 1,042 real dissertations + 361 abstracts, extracted via DIS (structural) + AREF (summative) channels, quality-scored 0–2. All non-Russian (Chinese, English) templates and metadata have been removed.
+**Data**: 16,735 pure Russian templates from 1,042 real dissertations + 361 abstracts, extracted via DIS (structural) + AREF (summative) channels, quality-scored 0–2. All non-Russian (Chinese, English) templates and metadata have been removed.
 
 ---
 
@@ -124,9 +124,9 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 | `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 8,383 quality=2 DIS templates | ⭐⭐⭐ |
 | `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,228 quality=2 AREF templates | ⭐⭐⭐ |
 | `data/curated/quality/QUALITY2_UTILS.jsonl` | ~100 quality=2 UTIL patterns | ⭐⭐⭐ |
-| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 10,124 pure Russian DIS templates | ⭐⭐ (fallback) |
-| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,587 pure Russian AREF templates | ⭐⭐ (fallback) |
-| `data/curated/master/MASTER_UTILS.jsonl` | 328 pure Russian UTIL patterns | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 9,863 pure Russian DIS templates | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,568 pure Russian AREF templates | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_UTILS.jsonl` | 304 pure Russian UTIL patterns | ⭐⭐ (fallback) |
 
 ### Schema
 
@@ -205,7 +205,7 @@ phd-thesis-butler/
 │   └── utils_core/              ← UTILS (connective/hedging/numeric)
 └── data/
     └── curated/
-        ├── master/              ← Full corpus (19,007 entries)
+        ├── master/              ← Full corpus (16,735 entries)
         ├── quality/             ← Quality=2 selections (10,611 entries)
         └── gaps/                ← Coverage gap analysis
 ```
