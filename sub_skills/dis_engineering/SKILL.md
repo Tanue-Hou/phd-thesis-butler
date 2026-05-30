@@ -1,47 +1,37 @@
 ---
 name: phd-thesis-butler/dis_engineering
-description: "ENGINEERING 句式模板与用法"
-version: "2.1"
-model: xiaomi mimo v2.5
+description: "工程实现 — ENGINEERING sentence templates"
+version: "3.3"
 ---
 
-# DIS ENGINEERING — 工程实现句式库
+# ENGINEERING — 工程实现（Инженерия）
 
-## 用途
+## Purpose
 
-写作工程实现部分：部署说明、实时性分析、资源占用、可复现性。
+工程实现句式模板，用于博士论文Инженерия章节的写作辅助。
 
-## 分类
+## Category
 
-### ENGINEERING
-- deployment / real_time / resource_usage
-- code_reproducibility / practical_complexity
+**ENGINEERING** — 工程实现
 
-## 检索方法
+Relevant subtypes: архитектура системы, внедрение, практическая реализация
 
-1. 识别你的写作子场景（参考 CROSS_CATEGORY_MAP.md）
-2. 定位到对应的 subtype
-3. 加载本 skill 后，检索 references/ 目录文件：
-   - `QUALITY2_SELECTION.jsonl` — 高质量模板（quality=2）, 可直接 grep
-   - `TOP50.md` — 该 category 最常用的 50 种句式模式
-   - `FULL_INDEX.jsonl` — 完整库（含 quality=1）
+## Retrieval files (in priority order)
 
-## 质量门槛
+1. `assets/discipline/технические_науки.jsonl` — discipline-specific templates (default)
+2. `assets/cluster/TECH_LIFE/quality/QUALITY2_ENGINEERING.jsonl` — cluster-level quality templates
+3. `assets/global/quality/QUALITY2_ENGINEERING.jsonl` — cross-cluster templates
+4. `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` — flat fallback (for DIS)
+5. `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` — deep fallback (full corpus)
 
-- 仅使用 quality_score=2 的条目（看 QUALITY2_SELECTION）
-- quality=1 的条目需要人工判断场景匹配度
-- quality=0 的条目不进本 skill
+## Quality Rules
 
-## 常见误用
+- quality_score=2: auto-serve (field-independent, most portable)
+- quality_score=1: use only if quality=2 yields <3 results
+- quality_score=0: never auto-serve
 
-• real_time 要给出具体延迟/周期数据
-• resource_usage 要涵盖内存/算力/存储
-• code_reproducibility 要提供实际访问方式
+## Common pitfalls
 
-## 文件说明
-
-| 文件 | 位置 | 更新方式 |
-|------|------|---------|
-| QUALITY2_SELECTION.jsonl | references/ | 自动生成（aggregate 产出） |
-| TOP50.md | references/ | 自动生成（generate_top50.py） |
-| FULL_INDEX.jsonl | references/ | 自动生成（aggregate 产出） |
+- Do not use templates without adapting `[...]` slots to the user's domain
+- Always adjust number, case, and tense to match the user's context
+- Never translate Russian templates to English or Chinese

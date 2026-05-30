@@ -272,10 +272,15 @@ UTILS: 304
 │   ├── INDEX_GUIDE.md                      ← 使用索引指南
 │   └── pipeline-extraction.md              ← Phase 2 管线说明
 │
+├── scripts/
+│   ├── retrieve_templates.py              ← 确定性三层检索脚本
+│   └── validate_skill_assets.py           ← 全量验证脚本
+├── evals/
+│   └── evals.json                         ← 最小测试集（10 cases）
 ├── schemas/
 │   └── sentencebank_entry.schema.v2_1.json ← JSON Schema
 │
-└── sub_skills/                             ← 13 个子 skill（按需加载）
+├── sub_skills/                            ← 13 个子 skill（按需加载）
     ├── dis_intro/SKILL.md
     ├── dis_survey/SKILL.md
     ├── dis_method/SKILL.md

@@ -1,48 +1,37 @@
 ---
 name: phd-thesis-butler/dis_method
-description: "METHOD 句式模板与用法"
-version: "2.1"
-model: xiaomi mimo v2.5
+description: "方法 — METHOD sentence templates"
+version: "3.3"
 ---
 
-# DIS METHOD — 方法算法句式库
+# METHOD — 方法（Метод）
 
-## 用途
+## Purpose
 
-写作方法部分：概述流程、定义输入输出、描述算法步骤、说明参数和复杂度。
+方法句式模板，用于博士论文Метод章节的写作辅助。
 
-## 分类
+## Category
 
-### METHOD
-- pipeline_overview / input_output / algorithm_steps
-- parameter_setting / complexity / stability_claims_conservative
-- implementation_details / ablation_plan
+**METHOD** — 方法
 
-## 检索方法
+Relevant subtypes: алгоритм, процедура, подход, критерий, pipeline
 
-1. 识别你的写作子场景（参考 CROSS_CATEGORY_MAP.md）
-2. 定位到对应的 subtype
-3. 加载本 skill 后，检索 references/ 目录文件：
-   - `QUALITY2_SELECTION.jsonl` — 高质量模板（quality=2）, 可直接 grep
-   - `TOP50.md` — 该 category 最常用的 50 种句式模式
-   - `FULL_INDEX.jsonl` — 完整库（含 quality=1）
+## Retrieval files (in priority order)
 
-## 质量门槛
+1. `assets/discipline/технические_науки.jsonl` — discipline-specific templates (default)
+2. `assets/cluster/TECH_LIFE/quality/QUALITY2_METHOD.jsonl` — cluster-level quality templates
+3. `assets/global/quality/QUALITY2_METHOD.jsonl` — cross-cluster templates
+4. `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` — flat fallback (for DIS)
+5. `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` — deep fallback (full corpus)
 
-- 仅使用 quality_score=2 的条目（看 QUALITY2_SELECTION）
-- quality=1 的条目需要人工判断场景匹配度
-- quality=0 的条目不进本 skill
+## Quality Rules
 
-## 常见误用
+- quality_score=2: auto-serve (field-independent, most portable)
+- quality_score=1: use only if quality=2 yields <3 results
+- quality_score=0: never auto-serve
 
-• algorithm_steps 要有足够细节使其可复现
-• complexity 需同时分析时间和空间
-• stability_claims_conservative 要用保守措辞
+## Common pitfalls
 
-## 文件说明
-
-| 文件 | 位置 | 更新方式 |
-|------|------|---------|
-| QUALITY2_SELECTION.jsonl | references/ | 自动生成（aggregate 产出） |
-| TOP50.md | references/ | 自动生成（generate_top50.py） |
-| FULL_INDEX.jsonl | references/ | 自动生成（aggregate 产出） |
+- Do not use templates without adapting `[...]` slots to the user's domain
+- Always adjust number, case, and tense to match the user's context
+- Never translate Russian templates to English or Chinese

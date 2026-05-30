@@ -1,0 +1,82 @@
+[
+  {
+    "id": "model_cn_instruction",
+    "scenario": "User requests Russian thesis model templates in Chinese",
+    "prompt": "请给我俄语博士论文建模章节中描述控制导向车辆动力学模型的句式",
+    "expected_behavior": "Detect MODEL category, serve Russian templates, explanation can be Chinese",
+    "expected_category": "MODEL",
+    "expected_output_language": "Russian (templates), Chinese (explanation allowed)"
+  },
+  {
+    "id": "intro_ru_text",
+    "scenario": "User writes introduction text in Russian",
+    "prompt": "Актуальность исследования обусловлена необходимостью повышения безопасности движения на дорогах. В последние годы большое внимание уделяется разработке систем активной безопасности и интегрированного управления шасси.",
+    "expected_behavior": "Detect INTRO section, serve relevance/motivation templates in Russian",
+    "expected_category": "INTRO",
+    "expected_output_language": "Russian only"
+  },
+  {
+    "id": "method_ru_text",
+    "scenario": "User writes method description in Russian",
+    "prompt": "Предлагаемый алгоритм включает этапы фильтрации, оценки параметров и адаптивного обновления. На первом этапе выполняется предварительная обработка измерений.",
+    "expected_behavior": "Detect METHOD section, serve algorithm/pipeline templates in Russian",
+    "expected_category": "METHOD",
+    "expected_output_language": "Russian only"
+  },
+  {
+    "id": "aref_novelty",
+    "scenario": "User requests автореферат novelty templates in Chinese",
+    "prompt": "帮我写 автореферат 里的 научная новизна 句式",
+    "expected_behavior": "Detect AREF/НОВИЗНА category, serve novelty templates in Russian",
+    "expected_category": "НОВИЗНА",
+    "expected_output_language": "Russian (templates), Chinese (explanation allowed)"
+  },
+  {
+    "id": "non_trigger_general_cn",
+    "scenario": "User asks a general question in Chinese without mentioning Russian thesis",
+    "prompt": "今天帮我看看论文结构怎么安排",
+    "expected_behavior": "Do NOT serve Russian templates. Ask clarifying question or respond without template suggestions.",
+    "expected_category": "NONE",
+    "expected_output_language": "Chinese or Russian (no templates)"
+  },
+  {
+    "id": "conclusion_ru",
+    "scenario": "User writes conclusion text in Russian",
+    "prompt": "Основные результаты работы состоят в следующем: разработан метод оценки сил в шинах, предложен алгоритм адаптации, проведена экспериментальная валидация.",
+    "expected_behavior": "Detect CONCLUSION section, serve summary/contribution templates",
+    "expected_category": "CONCLUSION",
+    "expected_output_language": "Russian only"
+  },
+  {
+    "id": "result_en_request",
+    "scenario": "User requests results section templates in English",
+    "prompt": "Give me Russian dissertation templates for presenting numerical results",
+    "expected_behavior": "Detect RESULT intent, serve Russian templates, English explanation allowed",
+    "expected_category": "RESULT",
+    "expected_output_language": "Russian (templates), English (explanation allowed)"
+  },
+  {
+    "id": "discussion_analysis",
+    "scenario": "User writes analysis text in Russian",
+    "prompt": "Полученные результаты позволяют предположить, что наблюдаемое улучшение точности связано с эффективной адаптацией параметров модели. Однако следует отметить ограничения предложенного подхода.",
+    "expected_behavior": "Detect DISCUSSION section, serve interpretation/limitations templates",
+    "expected_category": "DISCUSSION",
+    "expected_output_language": "Russian only"
+  },
+  {
+    "id": "transition_request",
+    "scenario": "User asks for transition phrases in Chinese",
+    "prompt": "给我一些俄语博士论文的过渡句，比如从综述到方法的过渡",
+    "expected_behavior": "Detect TRANSITION, serve Russian transition templates, Chinese explanation allowed",
+    "expected_category": "TRANSITION",
+    "expected_output_language": "Russian (templates), Chinese (explanation)"
+  },
+  {
+    "id": "model_assumptions",
+    "scenario": "User writes model assumptions in Russian",
+    "prompt": "При построении модели предполагается, что транспортное средство движется по горизонтальной дороге, а углы поворота колёс малы.",
+    "expected_behavior": "Detect MODEL section, serve model_assumptions templates",
+    "expected_category": "MODEL",
+    "expected_output_language": "Russian only"
+  }
+]

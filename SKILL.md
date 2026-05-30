@@ -114,7 +114,7 @@ Format each template as follows:
 ```
 📌 [when_to_use]
 ────────────────────────────────────────
-{text}
+{template}
 ────────────────────────────────────────
 ⚠️ common_mistakes
 ```
@@ -193,7 +193,7 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 | `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl` | TECH_LIFE / HUM_SOC quality-split files | ⭐⭐⭐ L1 |
 | `assets/cluster/{CLUSTER}/master/MASTER.jsonl` | Full cluster corpus (TECH_LIFE=5,699, HUM_SOC=4,035) | ⭐⭐ L1 fallback |
 | `assets/global/quality/QUALITY2_{CATEGORY}.jsonl` | 185 quality=2 cross-discipline templates | ⭐⭐⭐ L0 |
-| `assets/global/master/MASTER.jsonl` | Full global corpus (1,764 entries) | ⭐⭐ L0 fallback |
+| `assets/global/master/MASTER.jsonl` | Full global corpus (1,284 entries) | ⭐⭐ L0 fallback |
 
 ### Taxonomy reference files
 
@@ -217,16 +217,18 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 ```json
 {
-  "id": "DIS_INTRO_0427",
-  "text": "В последние годы [Область] привлекает всё большее внимание...",
-  "kind": "problem_statement",
-  "subtype": "relevance_opening",
+  "paper_id": "1090",
   "source": "DIS",
+  "record_type": "TEMPLATE",
   "category": "INTRO",
+  "subtype": "objective",
+  "template": "Целью диссертационной работы является разработка и исследование [объект] для повышения [эффективность].",
+  "slots": ["объект", "эффективность"],
+  "when_to_use": "Во введении при формулировании цели.",
+  "common_mistakes": ["Цель слишком общая", "Не указан ожидаемый результат"],
+  "strength": "neutral",
   "quality_score": 2,
-  "semantic_tags": ["relevance", "opening", "trend"],
-  "when_to_use": "Для открытия введения...",
-  "common_mistakes": "Не злоупотребляйте..."
+  "schema_version": "2.1"
 }
 ```
 
@@ -236,27 +238,35 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 This skill contains **only pure Russian academic templates**. No Chinese, English, or other languages.
 
-When serving templates to the user:
-- **All template output must be in Russian** — templates, explanations, and usage advice
-- **All slot names should be in Russian** where possible (e.g. `[метод]` instead of `[method]`)
-- **Never translate Russian templates to another language** — the user is writing a Russian thesis
-- **Common mistakes and usage notes must be in Russian**
-- If the user writes in Chinese or English, **still respond in Russian** regarding template suggestions
+### Language Strategy
 
-Violation of these rules is a critical bug. The sentence bank is curated for pure Russian academic writing only.
+| User language | User intent | Agent behavior |
+|---|---|---|
+| Russian | Write/rewrite thesis section | ✅ Detect section → serve Russian templates → Russian explanation |
+| Russian | General question | ✅ Respond in Russian |
+| Chinese | Specifically ask for Russian thesis help (e.g. "帮我写俄语博士论文的...", "给我автореферат的...") | ✅ Detect intent → **explanation can be Chinese** → **templates must be Russian** |
+| Chinese | General/non-academic question | ❌ Do not trigger template suggestions |
+| English | Ask for Russian thesis templates | ✅ Same as "Chinese with thesis request" — explanation in English, templates in Russian |
+| English | General question | ❌ Do not trigger |
 
-### Documentation Style (User Preference)
+When serving templates:
+- **Template text, slot content, common_mistakes must be in Russian**
+- **when_to_use, function descriptions** — Russian preferred, but can be in user's control language if explicitly requested
+- **Never translate a Russian template to English or Chinese** — the user is writing a Russian thesis
+- All slot names should be in Russian where possible (e.g. `[метод]` instead of `[method]`)
 
-- **No 中二/exaggerated terms** — avoid "единственный источник истины" / "唯一真源". Use plain version numbers (e.g. "v3.3").
-- **Concise section titles** — no quotes around headers, no appended parenthetical explanations. "Skill 制作过程" not 「"训练过程"说明」.
-- **Factual changelog** — state what changed, not superlatives about how great the change is.
-- **Russian-first output** — all agent prompts, explanations, and messages must be in Russian (never Chinese or English) when serving this skill.
+**Default discipline** when not explicitly specified: `технические науки` / `TECH_LIFE` (suitable for vehicle engineering, mechanical engineering, control systems).
+
+Violation of these rules is a critical bug.
+
+### Runtime Rules
 
 | Scenario | Behavior |
 |---|---|
-| User writes in Chinese (no Russian) | ❌ Do NOT trigger Russian template suggestions |
-| User writes in English | ❌ Do NOT trigger (unless mixed with Russian keywords) |
-| User says "не надо"/"не сейчас" / "不用管" | Stop auto-detection for this session, stay silent |
+| User writes in Chinese about non-academic topics | ❌ Do NOT trigger Russian template suggestions |
+| User writes in Chinese and explicitly requests "俄语论文表达" / "автореферат" / "диссертация фразы" | ✅ Trigger. Explain in Chinese, serve Russian templates |
+| User writes in Russian academic text | ✅ Detect section → serve templates → explain in Russian |
+| User says "не надо" / "не сейчас" / "不用管" | Stop auto-detection for this session, stay silent |
 | User pastes a large block of text | Parse the last paragraph only for detection |
 | User writes across multiple sections | Detect based on the last paragraph only |
 | User explicitly asks about a section | Skip detection — directly serve that section's templates |
@@ -272,13 +282,16 @@ phd-thesis-butler/
 ├── SKILL.md                     ← This file (assistant-facing runtime role)
 ├── README.md                    ← Public methodology documentation
 ├── .gitignore
+├── BUILD_INFO.json                    ← Build metadata
 ├── references/
 │   ├── FULL_CLASSIFICATION.yaml ← Full classification taxonomy
 │   ├── CROSS_CATEGORY_MAP.md    ← Cross-category mapping rules
-│   ├── INDEX_GUIDE.md           ← Layer/cluster/discipline index
-│   ├── dissertation-sources.md  ← University source discovery (MSU/SPbSU/RSL/disserCat)
-│   ├── batch-download-tips.md   ← Download resilience & parsing techniques
-│   └── pipeline-extraction.md   ← Phase 2 extraction pipeline (DIS+AREF dual channel, queue architecture, G1-G5 gates)
+│   └── INDEX_GUIDE.md           ← Layer/cluster/discipline index
+├── scripts/
+│   ├── retrieve_templates.py          ← Deterministic 3-layer retrieval
+│   └── validate_skill_assets.py       ← Full asset validation
+├── evals/
+│   └── evals.json                     ← Minimal test suite (10 cases)
 ├── schemas/
 │   └── sentencebank_entry.schema.v2_1.json
 ├── sub_skills/
@@ -304,13 +317,10 @@ phd-thesis-butler/
 
 ## Build Pipeline Reference
 
-When building or extending the sentence bank (extracting templates from new university PDFs), see:
+The extraction pipeline and asset-building process are documented in the project's internal repository (not part of this skill distribution). For methodology details, see:
 
-- `references/pipeline-extraction.md` — full dual-channel (DIS+AREF) pipeline architecture: job generation, queue management, worker implementation, G1-G5 gates, API rate limiting
-- `references/batch-download-tips.md` — source-specific download techniques (MSU, SPbSU, disserCat)
-- `references/dissertation-sources.md` — discoverable source metadata and APIs
-
-The extraction SKILL.md documents the **assistant runtime** role. The references above document the **builder/construction** role.
+- `CHANGELOG.md` — full version history with phase-by-phase build records
+- `assets/references/v3.3_validation_report.md` — validation report for current release
 
 ### Language Purity
 
