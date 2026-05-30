@@ -163,9 +163,6 @@ If user agrees, apply the following **polishing constraints**:
 
 ---
 
-
----
-
 ## Semantic Mapping Guide
 
 When the user's phrasing doesn't exactly match standardized subtype names, use this semantic mapping:
@@ -209,12 +206,6 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 | File | Contents | Priority |
 |---|---|---|
-| `assets/global/master/MASTER.jsonl` | L0 GLOBAL — 1,764 cross-cluster templates (INTRO + TRANSITION + UTILS) | ⭐⭐⭐ |
-| `assets/cluster/TECH_LIFE/master/MASTER.jsonl` | L1 TECH_LIFE — 5,699 technical/science templates | ⭐⭐⭐ |
-| `assets/cluster/HUM_SOC/master/MASTER.jsonl` | L1 HUM_SOC — 4,035 humanities/social templates | ⭐⭐⭐ |
-| `assets/discipline/*.jsonl` | L2 DISCIPLINE — per-discipline files (34 subjects) | ⭐⭐ |
-| `assets/references/standard_taxonomy_v3.3.json` | Standardized taxonomy: 25 categories, 1,448 subtypes | ⭐⭐⭐ |
-| `assets/references/subtype_mapping_v3.3.json` | Semantic mapping: 6,866 old → 1,662 standardized subtypes | ⭐⭐⭐ |
 | `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 8,383 quality=2 DIS templates | ⭐⭐ (fallback) |
 | `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,228 quality=2 AREF templates | ⭐⭐ (fallback) |
 | `data/curated/quality/QUALITY2_UTILS.jsonl` | ~100 quality=2 UTIL patterns | ⭐⭐ (fallback) |
@@ -253,6 +244,13 @@ When serving templates to the user:
 - If the user writes in Chinese or English, **still respond in Russian** regarding template suggestions
 
 Violation of these rules is a critical bug. The sentence bank is curated for pure Russian academic writing only.
+
+### Documentation Style (User Preference)
+
+- **No 中二/exaggerated terms** — avoid "единственный источник истины" / "唯一真源". Use plain version numbers (e.g. "v3.3").
+- **Concise section titles** — no quotes around headers, no appended parenthetical explanations. "Skill 制作过程" not 「"训练过程"说明」.
+- **Factual changelog** — state what changed, not superlatives about how great the change is.
+- **Russian-first output** — all agent prompts, explanations, and messages must be in Russian (never Chinese or English) when serving this skill.
 
 | Scenario | Behavior |
 |---|---|

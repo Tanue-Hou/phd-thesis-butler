@@ -60,7 +60,49 @@
 
 ---
 
-## 三、Skill 制作过程
+## 三、v3.3 更新亮点
+
+### Subtype 标准化
+| 指标 | 优化前 | 优化后 | 变化 |
+|------|--------|--------|------|
+| 非标准 subtype 数量 | 6,866 个 | **1,662 个** | −75.8% |
+| 非俄语 subtype（英/中混用） | 431 个 | **0 个** | 全部清除 |
+| 标准分类体系 | — | 25 category, 1,448 个标准名 | 新增 |
+| 语义映射表 | — | 14,384 行映射关系 | 新增 |
+
+### 语义理解：从"关键词匹配"到"意图理解"
+
+**旧策略（v3.2）：关键词精确匹配**
+```
+用户写 "Целью данной работы является..." 
+→ 查找关键词 "цель работы" 
+→ 匹配 INTRO / objective
+→ 搜索 subtype="objective"
+```
+
+**新策略（v3.3）：语义理解优先**
+```
+用户写 "Целью данной работы является..." 
+→ 理解意图：作者在阐述研究目标
+→ 推断章节：INTRO / формулировка цели
+→ 搜索：不要求精确 subtype 名，读取模板后理解匹配
+```
+
+### 实际对比示例
+
+| 用户输入 | v3.2 策略（关键词） | v3.3 策略（语义理解） |
+|---------|-------------------|-------------------|
+| "Целью данной работы является разработка метода..." | ❌ 需要 "цель работы" 精确匹配 | ✅ 理解"формулировка цели" → INTRO |
+| "Задача исследования заключается в..." | ❌ "задача исследования" 不完全匹配 | ✅ 同样理解为"формулировка цели" → INTRO |
+| "Модель базируется на допущении, что..." | ❌ "допущение" 需要 ≥2 hits | ✅ 理解为"допущение модели" → MODEL |
+| "Позволим себе заметить, что результаты..." | ❌ 无匹配关键词 | ✅ 理解为 "вежливое обсуждение" → DISCUSSION |
+| "На основе вышеизложенного перейдём к..." | ❌ 需要 "перейдём к" 精确 | ✅ 理解为 переход → TRANSITION |
+
+**关键改进：** 用户不需要说出精确的关键词。智能体通过理解段落的功能和意图来判断章节，然后到 assets/ 中找到最匹配的模板。
+
+---
+
+## 四、Skill 制作过程
 
 Skill 制作分为四个阶段，通过多级门控确保质量。
 
@@ -115,7 +157,7 @@ Skill 制作分为四个阶段，通过多级门控确保质量。
 
 ---
 
-## 四、使用方式（无需外部 API）
+## 五、使用方式（无需外部 API）
 
 ### Claude Code
 
@@ -169,7 +211,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 五、文件结构速查
+## 六、文件结构速查
 
 ```
 📂 仓库根目录
@@ -211,7 +253,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 六、分类体系
+## 七、分类体系
 
 ### DIS 通道（11 类）
 
@@ -243,7 +285,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 七、数据格式（JSONL v2.1）
+## 八、数据格式（JSONL v2.1）
 
 ```json
 {
@@ -282,7 +324,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 八、质量评分标准
+## 九、质量评分标准
 
 | 分数 | 标签 | 含义 | 选用策略 |
 |------|------|------|---------|
@@ -292,7 +334,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 九、免责声明
+## 十、免责声明
 
 **本仓库提供句式模板与润色规则参考，不构成学术完成的保证。**
 
@@ -310,7 +352,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 十、开源声明
+## 十一、开源声明
 
 本仓库以 **CC BY 4.0**（知识共享署名 4.0 国际许可）发布。
 
@@ -376,6 +418,24 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 | L2 | **DISCIPLINE** (34 дисциплины) | ~10 045 | 65,5% |
 
 **Жёсткое правило:** один шаблон принадлежит ровно одному слою (zero overlap).
+
+---
+
+### Что нового в v3.3
+
+**Стандартизация subtype:** 6 866 → **1 662** (−75,8%), 431 не-русских subtype удалено
+**Семантическое понимание:** вместо поиска по ключевым словам — понимание намерения пользователя
+
+Пример:
+```
+Пользователь: "Целью данной работы является разработка метода..."
+v3.2: ищет "цель работы" (ключевое слово) → может не найти
+v3.3: понимает "формулировка цели" → INTRO → находит шаблон
+```
+
+**Файлы:**
+- `assets/references/standard_taxonomy_v3.3.json` — 25 category, 1 448 стандартных subtype
+- `assets/references/subtype_mapping_v3.3.json` — 14 384 строки отображения старых→новых имён
 
 ---
 
@@ -559,6 +619,26 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 | L2 | **DISCIPLINE** (34 subjects) | ~10,045 | 65.5% |
 
 **Cardinal rule:** One template belongs to exactly one layer. Zero cross-layer overlap.
+
+---
+
+### v3.3 Highlights
+
+| Optimization | Before | After |
+|-------------|--------|-------|
+| Subtype standardization | 6,866 non-standard | **1,662 standardized** (−75.8%) |
+| Non-Russian subtypes | 431 EN/CN mix | **0** |
+| Standard taxonomy | — | 25 categories, 1,448 standard names |
+| Semantic mapping table | — | 14,384 mapping entries |
+
+**From keyword matching to intent understanding:**
+
+```
+Old (v3.2): "Целью работы является..." → search keyword "цель работы" → exact match
+New (v3.3): "Целью работы является..." → understand intent "формулировка цели" → INTRO
+```
+
+**New files:** `assets/references/standard_taxonomy_v3.3.json`, `assets/references/subtype_mapping_v3.3.json`
 
 ---
 
