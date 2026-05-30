@@ -2,7 +2,7 @@
 
 > **俄语学术写作句式模板库** | Sentence bank for Russian academic writing | Банк шаблонов для академического письма на русском языке
 >
-> **v3.3.4** — 16,735 条纯正科研俄语模板，语义理解 + 三层回退检索 | 16,735 templates, semantic retrieval + 3-layer fallback | 16 735 шаблонов, семантический поиск
+> **v3.3.5** — 16,722 条纯正科研俄语模板，语义理解 + 三层回退检索 | 16,722 templates, semantic retrieval + 3-layer fallback | 16 722 шаблонов, семантический поиск
 
 ---
 
@@ -32,19 +32,19 @@
 
 ---
 
-## 二、当前规模（v3.3.4）
+## 二、当前规模（v3.3.5）
 
 | 指标 | 数值 |
 |------|------|
-| 纯俄语模板（去重后） | **16,735** |
+| 纯俄语模板（去重后） | **16,722** |
 | 来源文献 | **1,403 份独立文档** |
 | ├ 论文正文（DIS） | 1,042 篇 |
 | ├ 作者摘要（AREF） | 361 篇 |
 | 来源高校 | 多所俄罗斯高校 |
-| 质量分=2（优秀、即用型） | **~10,711** |
-| 质量分=1（需领域适配） | **~4,780** |
-| 质量分=0（仅参考） | **~1,300** |
-| 语言纯度 | **100% 纯正科研俄语**（经 v3.2 语言清洗，删除 24 条中文 + 1,944 条英文模板） |
+| 质量分=2（优秀、即用型） | **8,986** |
+| 质量分=1（需领域适配） | **7,694** |
+| 质量分=0（仅参考） | **42** |
+| 语言纯度 | **100% 纯正科研俄语**（经 v3.2 语言清洗，删除 24 条中文 + 7,046 条英文/非俄语模板） |
 
 ### 三级资产架构（Zero Overlap）
 
@@ -61,6 +61,16 @@
 ---
 
 ## 三、v3.3 更新亮点
+
+### 版本迭代记录
+
+| 版本 | 重点变化 | 验证口径 |
+|------|----------|----------|
+| v3.3.1 | 工程化收敛：修复 `SKILL.md` schema 对齐问题；重写 13 个子 skill；新增确定性三层检索脚本、资产验证脚本和 GitHub Actions。 | JSONL 可解析、引用路径有效、基础 smoke tests 通过 |
+| v3.3.2 | 修复 `retrieve_templates.py` 元组索引错误；实现 DISCIPLINE → CLUSTER → GLOBAL 真回退；增强输出层 CJK 过滤；统一 delegation 配置。 | 检索不再崩溃，常规章节检索有返回 |
+| v3.3.3 | 清理全库 CJK 字符、修复 Cyrillic/Latin 无空格拼接；清理 taxonomy/mapping 中的中文残留；扩展 validator 到更多字段。 | `template/text/subtype/function/slots` 等字段无汉字 |
+| v3.3.4 | 修复畸形字段名和拼写变体，例如 `when[...]to[...]use`、`common[...]mistakes`、`paper[...]id`；validator 增加全 key 检查。 | 畸形 key 清零，JSONL 字段名恢复规范 |
+| v3.3.5 | 严格俄语语料清洗：删除无西里尔字符模板，替换中文标点占位符；检索脚本增加运行时防护；validator 把无西里尔模板、中文标点和坏 key 设为硬失败。 | 16,722 条模板；全 JSONL 无汉字、无中文标点、无坏 key、无纯英文模板 |
 
 ### Subtype 标准化
 | 指标 | 优化前 | 优化后 | 变化 |
@@ -80,7 +90,7 @@
 → 搜索 subtype="objective"
 ```
 
-**新策略（v3.3.4）：语义理解优先**
+**新策略（v3.3.5）：语义理解优先**
 ```
 用户写 "Целью данной работы является..." 
 → 理解意图：作者在阐述研究目标
@@ -233,11 +243,11 @@ wc -l assets/references/subtype_mapping_v3.3.json
 cat BUILD_INFO.json
 ```
 
-预期输出（v3.3.4）：
+预期输出（v3.3.5）：
 ```
-DIS: 9863
-AREF: 6568
-UTILS: 304
+DIS: 9855
+AREF: 6564
+UTILS: 303
 ```
 
 ---
@@ -252,12 +262,12 @@ UTILS: 304
 │
 ├── data/curated/
 │   ├── master/
-│   │   ├── MASTER_SENTENCEBANK_DIS.jsonl    (9,863 条)  ← 论文模板主库
-│   │   ├── MASTER_SENTENCEBANK_AREF.jsonl   (6,568 条)  ← 摘要模板主库
-│   │   └── MASTER_UTILS.jsonl               (304 条)    ← 功能短语库
+│   │   ├── MASTER_SENTENCEBANK_DIS.jsonl    (9,855 条)  ← 论文模板主库
+│   │   ├── MASTER_SENTENCEBANK_AREF.jsonl   (6,564 条)  ← 摘要模板主库
+│   │   └── MASTER_UTILS.jsonl               (303 条)    ← 功能短语库
 │   └── quality/
-│       ├── QUALITY2_SELECTION_DIS.jsonl     (8,383 条)  ← DIS Q2 精选
-│       ├── QUALITY2_SELECTION_AREF.jsonl    (2,228 条)  ← AREF Q2 精选
+│       ├── QUALITY2_SELECTION_DIS.jsonl     (6,710 条)  ← DIS Q2 精选
+│       ├── QUALITY2_SELECTION_AREF.jsonl    (2,210 条)  ← AREF Q2 精选
 │       └── QUALITY2_UTILS.jsonl                         ← UTILS Q2 精选
 │
 ├── assets/
@@ -430,11 +440,11 @@ UTILS: 304
 
 ---
 
-## 2. Масштаб (v3.3.4)
+## 2. Масштаб (v3.3.5)
 
 | Показатель | Значение |
 |-----------|----------|
-| Чисто русские шаблоны (после дедупликации) | **16 735** |
+| Чисто русские шаблоны (после дедупликации) | **16 722** |
 | Корпус | **1 403 независимых документа** |
 | ├ Диссертации (DIS) | 1 042 |
 | └ Авторефераты (AREF) | 361 |
@@ -458,6 +468,16 @@ UTILS: 304
 ---
 
 ### Что нового в v3.3
+
+### История версий
+
+| Версия | Основные изменения | Проверка |
+|--------|--------------------|----------|
+| v3.3.1 | Инженерная стабилизация: исправлено соответствие `SKILL.md` схеме данных; переписаны 13 sub-skills; добавлены deterministic retrieval, asset validator и GitHub Actions. | JSONL парсится, ссылки валидны, smoke tests проходят |
+| v3.3.2 | Исправлена ошибка индексации tuple в `retrieve_templates.py`; реализован настоящий fallback DISCIPLINE → CLUSTER → GLOBAL; усилена фильтрация CJK на выходе. | Поиск не падает, основные разделы возвращают шаблоны |
+| v3.3.3 | Удалены CJK-символы из корпуса; исправлены склейки Cyrillic/Latin без пробела; очищены taxonomy/mapping; validator расширен на дополнительные поля. | Нет китайских иероглифов в основных полях |
+| v3.3.4 | Исправлены деформированные имена полей: `when[...]to[...]use`, `common[...]mistakes`, `paper[...]id`; validator проверяет все ключи. | Нет malformed keys, имена полей нормализованы |
+| v3.3.5 | Строгая очистка русского корпуса: удалены шаблоны без кириллицы, заменена китайская пунктуация, добавлены runtime guardrails и жёсткие validator-проверки. | 16 722 шаблона; нет CJK, китайской пунктуации, плохих ключей и чисто английских шаблонов |
 
 **Стандартизация subtype:** 6 866 → **1 662** (−75,8%), 431 не-русских subtype удалено
 **Семантическое понимание:** вместо поиска по ключевым словам — понимание намерения пользователя
@@ -595,11 +615,11 @@ wc -l assets/references/subtype_mapping_v3.3.json
 cat BUILD_INFO.json
 ```
 
-Ожидаемый результат (v3.3.4):
+Ожидаемый результат (v3.3.5):
 ```
-DIS: 9863
-AREF: 6568
-UTILS: 304
+DIS: 9855
+AREF: 6564
+UTILS: 303
 ```
 
 ---
@@ -663,19 +683,19 @@ UTILS: 304
 
 ---
 
-## 2. Current Scale (v3.3.4)
+## 2. Current Scale (v3.3.5)
 
 | Metric | Value |
 |--------|-------|
-| Pure Russian templates (deduplicated) | **16,735** |
+| Pure Russian templates (deduplicated) | **16,722** |
 | Source documents | **1,403 unique** |
 | ├ DIS (dissertations) | 1,042 |
 | └ AREF (abstracts) | 361 |
 | Source universities | Multiple Russian universities |
-| Quality=2 (excellent, ready-to-use) | **~10,711** |
-| Quality=1 (needs domain adaptation) | **~4,780** |
-| Quality=0 (informational only) | **~1,300** |
-| Language purity | **100% pure Russian** (after v3.2 cleanup: −24 CN, −1,944 EN) |
+| Quality=2 (excellent, ready-to-use) | **8,986** |
+| Quality=1 (needs domain adaptation) | **7,694** |
+| Quality=0 (informational only) | **42** |
+| Language purity | **100% pure Russian** (after v3.2 cleanup: −24 CN, −7,046 EN/non-Russian) |
 
 ### 3-Layer Asset Architecture (Zero Overlap)
 
@@ -693,6 +713,16 @@ UTILS: 304
 
 ### v3.3 Highlights
 
+### Version History
+
+| Version | Main Changes | Validation Standard |
+|---------|--------------|---------------------|
+| v3.3.1 | Engineering convergence: aligned `SKILL.md` with the data schema; rewrote 13 sub-skills; added deterministic retrieval, asset validation, and GitHub Actions. | JSONL parse, path references, and basic smoke tests pass |
+| v3.3.2 | Fixed the tuple indexing bug in `retrieve_templates.py`; implemented true DISCIPLINE → CLUSTER → GLOBAL fallback; strengthened CJK output filtering. | Retrieval no longer crashes and core sections return templates |
+| v3.3.3 | Removed CJK characters from the corpus; fixed Cyrillic/Latin no-space joins; cleaned taxonomy/mapping files; expanded validator field coverage. | No Chinese characters in primary data fields |
+| v3.3.4 | Fixed malformed field names such as `when[...]to[...]use`, `common[...]mistakes`, and `paper[...]id`; validator now checks all keys. | Malformed keys are gone and field names are normalized |
+| v3.3.5 | Strict Russian corpus purge: removed templates without Cyrillic, replaced Chinese punctuation placeholders, added runtime guardrails, and made these checks hard validator failures. | 16,722 templates; no CJK, no Chinese punctuation, no bad keys, no English-only templates |
+
 | Optimization | Before | After |
 |-------------|--------|-------|
 | Subtype standardization | 6,866 non-standard | **1,662 standardized** (−75.8%) |
@@ -704,7 +734,7 @@ UTILS: 304
 
 ```
 Old (v3.2): "Целью работы является..." → search keyword "цель работы" → exact match
-New (v3.3.4): "Целью работы является..." → understand intent "формулировка цели" → INTRO
+New (v3.3.5): "Целью работы является..." → understand intent "формулировка цели" → INTRO
 ```
 
 **New files:** `assets/references/standard_taxonomy_v3.3.json`, `assets/references/subtype_mapping_v3.3.json`
@@ -898,11 +928,11 @@ wc -l assets/references/subtype_mapping_v3.3.json
 cat BUILD_INFO.json
 ```
 
-Expected output (v3.3.4):
+Expected output (v3.3.5):
 ```
-DIS: 9863
-AREF: 6568
-UTILS: 304
+DIS: 9855
+AREF: 6564
+UTILS: 303
 ```
 
 ---

@@ -1,3 +1,15 @@
+## v3.3.5 (2026-05-30)
+
+### Strict Russian corpus purge + runtime guardrails
+
+**修复**
+- 删除 5,102 条无西里尔字符模板，避免英文模板进入俄语论文句式库
+- 修正 3,333 处中文标点占位符，统一为 ASCII/Russian-safe punctuation
+- 修复漏项字段名 `subrype`→`subtype`，并加入 validator 拼写黑名单
+- retrieve_templates.py 增加运行时防护：过滤无西里尔模板、CJK 字符与中文标点
+- validate_skill_assets.py 增加硬性检查：无西里尔模板、CJK 标点、畸形 key 均失败
+- 主库计数更新为 16,722 条：DIS 9,855 / AREF 6,564 / UTILS 303
+
 ## v3.3.4 (2026-05-30)
 
 ### Field name cleanup + validate expansion

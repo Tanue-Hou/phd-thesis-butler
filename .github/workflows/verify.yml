@@ -50,9 +50,9 @@ jobs:
           python3 -c "
           import json
           counts = {
-              'data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl': 9863,
-              'data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl': 6568,
-              'data/curated/master/MASTER_UTILS.jsonl': 304,
+              'data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl': 9855,
+              'data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl': 6564,
+              'data/curated/master/MASTER_UTILS.jsonl': 303,
           }
           for f, expected in counts.items():
               with open(f) as fh:

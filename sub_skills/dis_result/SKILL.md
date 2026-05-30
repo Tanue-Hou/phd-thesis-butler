@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_result
 description: "结果 — RESULT sentence templates"
-version: "3.3.4"
+version: "3.3.5"
 ---
 
 # RESULT — 结果（Результаты）

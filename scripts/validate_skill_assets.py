@@ -23,6 +23,8 @@ BASE = Path(__file__).resolve().parent.parent
 errors = []
 
 CJK_RE = re.compile(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]')
+CJK_PUNCT_RE = re.compile(r'[，。；：！？、（）【】《》]')
+CYRILLIC_RE = re.compile(r'[А-Яа-яЁё]')
 
 # English words ALLOWED in Russian visible text (scientific terms, abbreviations)
 EN_WHITELIST = {
@@ -114,18 +116,23 @@ for f in sorted(BASE.rglob("*.jsonl")):
                 key_lower = key.lower()
                 if key_lower in ('when_touse', 'when_t_ouse', 'whentouse',
                                   'common_mstake', 'common_mestakes', 'common_mstakes',
+                                  'subrype',
                                   'quality_scor', 'qualitysore', 'quaity_score',
                                   'schema_verson', 'schemaversion'):
                     e(f"{f.relative_to(BASE)}:{i}: misspelled key '{key}'")
 
-            # --- CHECK: All values for CJK ---
+            # --- CHECK: All values for CJK characters and CJK punctuation ---
             for key, val in d.items():
                 if isinstance(val, str) and CJK_RE.search(val):
                     e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:50]}")
+                if isinstance(val, str) and CJK_PUNCT_RE.search(val):
+                    e(f"{f.relative_to(BASE)}:{i}: CJK punctuation in '{key}': {val[:50]}")
                 elif isinstance(val, list):
                     for j, item in enumerate(val):
                         if isinstance(item, str) and CJK_RE.search(item):
                             e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:50]}")
+                        if isinstance(item, str) and CJK_PUNCT_RE.search(item):
+                            e(f"{f.relative_to(BASE)}:{i}: CJK punctuation in '{key}[{j}]': {item[:50]}")
 
             # quality_score check
             qs = d.get("quality_score")
@@ -134,6 +141,8 @@ for f in sorted(BASE.rglob("*.jsonl")):
 
             # ___ check (only in assets/ — new format)
             t = d.get("template", d.get("text", ""))
+            if t and not CYRILLIC_RE.search(t):
+                e(f"{f.relative_to(BASE)}:{i}: non-Russian template without Cyrillic: {t[:50]}")
             if "___" in t and "assets" in str(f):
                 e(f"{f.relative_to(BASE)}:{i}: ___ placeholder in template")
 

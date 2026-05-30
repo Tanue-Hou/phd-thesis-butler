@@ -21,6 +21,8 @@ BASE = Path(__file__).resolve().parent.parent
 
 # CJK detection
 CJK_RE = re.compile(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]')
+CJK_PUNCT_RE = re.compile(r'[，。；：！？、（）【】《》]')
+CYRILLIC_RE = re.compile(r'[А-Яа-яЁё]')
 
 def has_cjk(text):
     """Check if text contains CJK characters."""
@@ -32,17 +34,32 @@ def has_cjk(text):
         return bool(CJK_RE.search(text))
     return False
 
+def has_cjk_punctuation(text):
+    """Check if text contains Chinese/Japanese punctuation placeholders."""
+    if not text:
+        return False
+    if isinstance(text, list):
+        return any(has_cjk_punctuation(item) for item in text)
+    if isinstance(text, str):
+        return bool(CJK_PUNCT_RE.search(text))
+    return False
+
 def entry_has_cjk(entry):
-    """Check if an entry has CJK in any text field."""
+    """Check if an entry has CJK or Chinese punctuation in visible text fields."""
     for field in ['template', 'text', 'when_to_use', 'function']:
-        if has_cjk(entry.get(field, '')):
+        if has_cjk(entry.get(field, '')) or has_cjk_punctuation(entry.get(field, '')):
             return True
     cm = entry.get('common_mistakes', [])
-    if isinstance(cm, list) and has_cjk(cm):
+    if isinstance(cm, list) and (has_cjk(cm) or has_cjk_punctuation(cm)):
         return True
-    if isinstance(cm, str) and has_cjk(cm):
+    if isinstance(cm, str) and (has_cjk(cm) or has_cjk_punctuation(cm)):
         return True
     return False
+
+def has_russian_template(entry):
+    """Russian dissertation templates should contain Cyrillic in the template text."""
+    t = entry.get("template", "") or entry.get("text", "")
+    return bool(CYRILLIC_RE.search(t))
 
 def load_quality_jsonl(path):
     """Load a JSONL file, return list of dicts, filtering CJK entries."""
@@ -56,8 +73,8 @@ def load_quality_jsonl(path):
                 continue
             try:
                 e = json.loads(line)
-                # Filter out CJK-contaminated entries entirely
-                if entry_has_cjk(e):
+                # Filter out contaminated and non-Russian entries entirely.
+                if entry_has_cjk(e) or not has_russian_template(e):
                     continue
                 result.append(e)
             except json.JSONDecodeError:

@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
-description: "Russian academic writing sentence bank — 16,735 pure Russian templates. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "3.3.4"
+description: "Russian academic writing sentence bank — 16,722 pure Russian templates. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
+version: "3.3.5"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -10,7 +10,7 @@ version: "3.3.4"
 
 You are a **Russian academic writing assistant**. When loaded, automatically detect what section of a dissertation the user is writing and proactively offer relevant sentence templates. Do not wait for the user to ask — scan, detect, and serve.
 
-**Data**: 16,735 pure Russian templates from 1,042 real dissertations + 361 abstracts, extracted via DIS (structural) + AREF (summative) channels, quality-scored 0–2. All non-Russian (Chinese, English) templates and metadata have been removed.
+**Data**: 16,722 pure Russian templates from 1,042 real dissertations + 361 abstracts, extracted via DIS (structural) + AREF (summative) channels, quality-scored 0–2. All non-Russian (Chinese, English) templates and metadata have been removed.
 
 ---
 
@@ -206,12 +206,12 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 | File | Contents | Priority |
 |---|---|---|
-| `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 8,383 quality=2 DIS templates | ⭐⭐ (fallback) |
-| `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,228 quality=2 AREF templates | ⭐⭐ (fallback) |
-| `data/curated/quality/QUALITY2_UTILS.jsonl` | ~100 quality=2 UTIL patterns | ⭐⭐ (fallback) |
-| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 9,863 all-quality DIS templates | ⭐ (deep fallback) |
-| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,568 all-quality AREF templates | ⭐ (deep fallback) |
-| `data/curated/master/MASTER_UTILS.jsonl` | 304 all-quality UTIL patterns | ⭐ (deep fallback) |
+| `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 6,710 quality=2 DIS templates | ⭐⭐ (fallback) |
+| `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,210 quality=2 AREF templates | ⭐⭐ (fallback) |
+| `data/curated/quality/QUALITY2_UTILS.jsonl` | 87 selected UTIL patterns | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 9,855 all-quality DIS templates | ⭐ (deep fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,564 all-quality AREF templates | ⭐ (deep fallback) |
+| `data/curated/master/MASTER_UTILS.jsonl` | 303 all-quality UTIL patterns | ⭐ (deep fallback) |
 
 ### Schema
 
@@ -310,7 +310,7 @@ phd-thesis-butler/
 │   └── utils_core/              ← UTILS (connective/hedging/numeric)
 └── data/
     └── curated/
-        ├── master/              ← Full corpus (16,735 entries)
+        ├── master/              ← Full corpus (16,722 entries)
         ├── quality/             ← Quality=2 selections (10,611 entries)
         └── gaps/                ← Coverage gap analysis
 ```

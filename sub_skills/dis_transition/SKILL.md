@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_transition
 description: "过渡 — TRANSITION sentence templates"
-version: "3.3.4"
+version: "3.3.5"
 ---
 
 # TRANSITION — 过渡（Переходы）
