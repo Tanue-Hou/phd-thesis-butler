@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "PhD Thesis Butler — Russian Academic Writing Sentence Bank (16,735 pure Russian templates from 1,042 dissertations + 361 abstracts)"
-version: "3.2.2"
+version: "3.3"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -69,12 +69,36 @@ Once the section is detected, execute these steps **automatically**:
 ### Step 1: Determine subtype list
 Based on detected section, list relevant subtypes (see table above).
 
-### Step 2: Three-layer retrieval (assets/)
+#### Semantic function inference (sub-step):
+After detecting the section, analyze the user's specific phrasing to infer the **semantic subtype**:
+- Scan for functional keywords in the user's Russian text (e.g., "цель", "задача", "актуальность", "новизна", "результат", "метод")
+- Map these keywords to the standardized Russian subtype names from `assets/references/subtype_mapping_v3.3.json`
+- If the user's phrasing doesn't match any exact subtype name, use semantic understanding to select the closest standardized subtype
+- This enables the skill to retrieve templates even when the user's wording differs from the standardized taxonomy
 
-Search templates using the three-layer architecture. Determine the user's discipline cluster first (TECH_LIFE / HUM_SOC / ART_SPORT), then search in order:
+### Step 2: Dual-channel retrieval (semantic + exact match)
+
+Search templates using a **dual-channel** strategy. First determine the user's discipline cluster (TECH_LIFE / HUM_SOC / ART_SPORT), then select channels:
+
+#### Channel A — Exact Match (fast path)
+Match `category` + `subtype` exactly against known standardized Russian subtype names. This is the primary channel — fastest and most precise for well-specified queries.
+
+#### Channel B — Semantic Match (broad path)
+When Channel A yields <3 results, or when the user's phrasing doesn't match standardized subtype names exactly, activate semantic matching:
+
+1. **Understand the user's intent**: Parse the user's Russian text to infer which **category** (INTRO, SURVEY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION, etc.) and **semantic function** (purpose-stating, result-reporting, problem-identifying, etc.) the user needs.
+2. **Map to standardized subtype**: Convert the inferred function to one of the 1,466 standardized Russian subtype names (see `assets/references/subtype_mapping_v3.3.json` for the full taxonomy).
+3. **Search by standardized subtype**: Use the mapped subtype name to query the three-layer data hierarchy.
+
+For example:
+- User writes "Целью данной работы является..." → infer INTRO / `формулировка_цели` → search `subtype="формулировка_цели"`
+- User writes "Задача исследования состоит в..." → infer INTRO / `задача_исследования` → search `subtype="задача_исследования"`
+- User writes "Модель базируется на допущении..." → infer MODEL / `допущение_модели` → search `subtype="допущение_модели"`
+
+#### Three-layer hierarchy (applied after channel selection):
 
 **Layer 1 — DISCIPLINE (L2):**
-Search the discipline-specific file in `assets/discipline/`. Match by `category` + `subtype`, prioritize `quality_score=2`.
+Search the discipline-specific file in `assets/discipline/`. Match by `category` + resolved `subtype`, prioritize `quality_score=2`.
 
 **Layer 2 — CLUSTER (L1):**
 If L2 yields <3 results, search the cluster-level files in:
@@ -153,6 +177,27 @@ If user agrees, apply the following **polishing constraints**:
 | quality_score=0 | ❌ Never auto-serve | Only show if user explicitly asks for more |
 
 ---
+
+
+---
+
+## Semantic Mapping Guide
+
+When the user's phrasing doesn't exactly match standardized subtype names, use this semantic mapping:
+
+| User writes... | Implied category | Standardized subtype |
+|---|---|---|
+| цель / задача / предмет / объект | INTRO | формулировка_цели / задача_исследования / объект_предмет |
+| актуальность / важность / значимость / необходимость | INTRO | актуальность_исследования / обоснование_актуальности |
+| обзор / известно / посвящена / рассматривались | SURVEY | обзор_литературы / анализ_существующих_работ |
+| модель / уравнение / формула / допущение / параметр | MODEL | математическая_модель / допущение_модели / параметры_модели |
+| метод / алгоритм / процедура / подход | METHOD | описание_метода / алгоритм_исследования |
+| эксперимент / опыт / измерение / моделирование | EXPERIMENT | постановка_эксперимента / экспериментальные_условия |
+| результат / получен / выявлен / показал / рис | RESULT | представление_результата / анализ_результатов |
+| обсуждение / объяснение / связано / предположить | DISCUSSION | интерпретация_результатов / ограничения_исследования |
+| вывод / заключение / перспектива / направление | CONCLUSION | основной_вывод / перспективы_исследования |
+
+**Resolution strategy**: When a user query yields <3 results via Channel A (exact match), automatically activate Channel B (semantic match) — infer the standardized subtype from the table above and re-query. If still <3 results, broaden to the next layer (L2 → L1 → L0).
 
 ## Data Files Reference
 

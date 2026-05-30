@@ -2,7 +2,7 @@
 
 > **俄语学术写作句式模板库** | Sentence bank for Russian academic writing | Банк шаблонов для академического письма на русском языке
 >
-> **v3.2.2** — 16,735 条纯正科研俄语模板，零中文零英文污染 | 16,735 pure Russian templates, zero EN/CN contamination | 16 735 чистых русских шаблонов
+> **v3.3** — 16,735 条纯正科研俄语模板，零中文零英文污染 | 16,735 pure Russian templates, zero EN/CN contamination | 16 735 чистых русских шаблонов
 
 ---
 
@@ -32,7 +32,7 @@
 
 ---
 
-## 二、当前规模（v3.2.2）
+## 二、当前规模（v3.3）
 
 | 指标 | 数值 |
 |------|------|
@@ -352,7 +352,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 2. Масштаб (v3.2.2)
+## 2. Масштаб (v3.3)
 
 | Показатель | Значение |
 |-----------|----------|
@@ -534,7 +534,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 2. Current Scale (v3.2.2)
+## 2. Current Scale (v3.3)
 
 | Metric | Value |
 |--------|-------|

@@ -1,3 +1,29 @@
+## [3.3] - 2026-05-30
+
+### Added
+- **Stage 1**: Mapping table purification — 433 non-pure-Russian standardized subtype names converted to pure Russian
+  - 131 pure English → Russian (e.g., `compliance` → `соответствие_требованиям`)
+  - 44 Chinese → Russian (e.g., `研究空白` → `пробел_в_исследованиях`)
+  - 258 mixed English-Russian → pure Russian (e.g., `background_теория_введение` → `теоретическая_основа`)
+  - 154 numeric suffix → descriptive suffix (e.g., `результат_1` → `результат_основной`)
+- **Stage 2**: Data writeback — all JSONL files updated with cleaned subtype values
+- **Stage 3**: Cross-validation report — integrity, purity, consistency, file integrity
+- **Stage 4**: SKILL.md dual-channel retrieval upgrade
+  - Step 1: Added semantic function inference sub-step
+  - Step 2: Upgraded to Channel A (exact match) + Channel B (semantic match)
+  - Added Semantic Mapping Guide for 10 academic sections
+- **Stage 5**: Version bumped to 3.3, CHANGELOG updated, validation report generated
+
+### Changed
+- `assets/references/subtype_mapping_v3.3.json`: All 433 non-pure-Russian values cleaned
+- `SKILL.md`: v3.2.2 → v3.3, dual-channel retrieval architecture
+- `assets/` all JSONL files: subtypes updated per cleaned mapping
+
+### Technical Notes
+- Subtype count reduced from 1,466 → 1,466 (same count, names normalized)
+- All data files backed up to `.v33_backup/`
+- Mapping purity: 100% Russian Cyrillic (verified by regex scan)
+
 # Changelog
 
 ## v3.2.2 (2026-05-30)
