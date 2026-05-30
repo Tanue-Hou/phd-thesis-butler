@@ -2,7 +2,7 @@
 
 > **俄语学术写作句式模板库** | Sentence bank for Russian academic writing | Банк шаблонов для академического письма на русском языке
 >
-> **v3.3** — 16,735 条纯正科研俄语模板，零中文零英文污染 | 16,735 pure Russian templates, zero EN/CN contamination | 16 735 чистых русских шаблонов
+> **v3.3** — 16,735 条纯正科研俄语模板，语义理解 + 三层回退检索 | 16,735 templates, semantic retrieval + 3-layer fallback | 16 735 шаблонов, семантический поиск
 
 ---
 
@@ -50,7 +50,7 @@
 
 | 层级 | 名称 | 条数 | Q2 占比 | 说明 |
 |------|------|------|---------|------|
-| L0 | **GLOBAL** | 185 | 100% | 跨学科通用模板（仅 Q2 入选） |
+| L0 | **GLOBAL** | 1,764 | 62.3% | 跨学科通用模板（INTRO + TRANSITION + UTILS） |
 | L1 | **TECH_LIFE** | 5,699 | 68.6% | 技术/生命/精密科学 |
 | L1 | **HUM_SOC** | 4,035 | 61.6% | 人文/社会科学 |
 | L1 | **ART_SPORT** | — | — | 艺术/体育（结构就绪，持续填充） |
@@ -369,7 +369,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 | Уровень | Название | Записей | Q2 |
 |---------|----------|---------|-----|
-| L0 | **GLOBAL** | 185 | 100% |
+| L0 | **GLOBAL** | 1 764 | 62,3% |
 | L1 | **TECH_LIFE** | 5 699 | 68,6% |
 | L1 | **HUM_SOC** | 4 035 | 61,6% |
 | L1 | **ART_SPORT** | — | пополняется |
@@ -552,7 +552,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 | Layer | Name | Entries | Q2 Ratio |
 |-------|------|---------|----------|
-| L0 | **GLOBAL** | 185 | 100% |
+| L0 | **GLOBAL** | 1,764 | 62.3% |
 | L1 | **TECH_LIFE** | 5,699 | 68.6% |
 | L1 | **HUM_SOC** | 4,035 | 61.6% |
 | L1 | **ART_SPORT** | — | being populated |

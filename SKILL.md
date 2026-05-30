@@ -14,49 +14,46 @@ You are a **Russian academic writing assistant**. When loaded, automatically det
 
 ---
 
-## Section Detection (3 Layers)
+## Section Detection (3 Layers) — Semantic First
 
-When the user writes or pastes text in Russian, determine which dissertation section they are in. Apply these layers in order:
+When the user writes or pastes text in Russian, **understand the intent** before matching keywords. The keyword table below is a guide for the agent's understanding, not a rigid lookup table. The core principle: **understand what section the user is writing, then find matching templates** — not the reverse.
 
-### Layer 1 — Keyword Match
+### Layer 1 — Semantic Understanding (Primary)
 
-Scan for Russian academic keyword patterns:
+Read the user's text and **understand** which dissertation section they are working on. Use the table below as a **reference** to interpret the user's intent, not as an exact keyword checklist:
 
-| If user writes... | Section | Subtypes to search | Priority |
-|---|---|---|---|
-| актуальность / в последние годы / всё большее внимание / в связи с | INTRO | relevance_opening, motivation, problem_statement | ⭐⭐⭐ |
-| обзор литературы / известные работы / посвящена / рассматривались | SURVEY | gap_identification, prior_work, comparison | ⭐⭐⭐ |
-| цель работы / задачи / объект исследования / предмет | INTRO | objective, tasks, object_subject | ⭐⭐⭐ |
-| модель / уравнение / допущение / предполагается / рассмотрим систему | MODEL | model_assumptions, mathematical_formulation, theoretical_framework | ⭐⭐⭐ |
-| метод / алгоритм / подход / процедура / заключается в | METHOD | algorithm_design, procedure, pipeline, criterion | ⭐⭐⭐ |
-| эксперимент / моделирование / параметры / выбраны | EXPERIMENT | setup, parameter_choice, dataset, benchmark, scenario | ⭐⭐⭐ |
-| результат / как видно из рис / в таблице / наблюдается | RESULT | result_presentation, comparison, table_figure, observation | ⭐⭐⭐ |
-| обсуждение / объясняется / связано с / можно предположить | DISCUSSION | interpretation, explanation, limitation, implication | ⭐⭐⭐ |
-| вывод / заключение / таким образом / перспектива | CONCLUSION | summary, contribution_restatement, future_work | ⭐⭐⭐ |
-| перейдём к / рассмотрим теперь / далее | TRANSITION | contrast, addition, sequencing, cause_effect | ⭐⭐ |
-| определим / пусть / обозначим / теорема | FORMAL_DEFS | definition, theorem, lemma, notation | ⭐⭐ |
-| система / архитектура / реализован / разработан | ENGINEERING | system_design, implementation, prototype | ⭐⭐ |
-| новизна / значимость / апробация / достоверность | AREF | All 14 AREF modules | ⭐⭐⭐ |
-| кроме того / однако / следовательно / например | UTILS | CONNECTIVE (contrast, addition, cause_effect, concession, illustration) | ⭐⭐ |
-| можно предположить / в рамках допущений / вероятно | UTILS | CONSERVATIVE (hedging, limitation_qualifier, suggestion_soft) | ⭐⭐ |
-| на 5% / увеличилось / снизилось / составляет | UTILS | NUMERIC (improvement_report, error_report, comparison_report) | ⭐⭐ |
+| If user's intent is... | Section | Semantically related concepts |
+|---|---|---|
+| Обоснование актуальности, постановка проблемы, формулировка цели и задач | **INTRO** | relevance, motivation, research gap, objective, tasks, object, subject, thesis structure |
+| Анализ существующих работ, сравнение подходов | **SURVEY** | literature review, prior work, related research, taxonomy, baseline, state of the art |
+| Теоретическая модель, математическая формулировка, допущения | **MODEL** | assumptions, equations, formalization, theoretical framework, mathematical model |
+| Описание метода, алгоритма, процедуры, подхода | **METHOD** | algorithm, pipeline, procedure, implementation, methodology, approach |
+| Планирование и проведение экспериментов, настройка параметров | **EXPERIMENT** | experimental setup, dataset, metrics, parameters, scenarios, benchmarks |
+| Представление и анализ полученных результатов | **RESULT** | findings, observations, tables, figures, numerical results, outcomes |
+| Интерпретация результатов, объяснение механизмов | **DISCUSSION** | interpretation, explanation, implications, limitations, comparison with prior work |
+| Итоги работы, вклад, перспективы | **CONCLUSION** | summary, contributions, novelty, future work, practical significance |
+| Переход между разделами, связки | **TRANSITION** | transition phrases, section links, connective elements |
+| Формальные определения, обозначения, теоремы | **FORMAL_DEFS** | definitions, notation, theorems, lemmas, axioms |
+| Практическая реализация, внедрение, архитектура системы | **ENGINEERING** | system design, deployment, implementation, practical aspects |
+| Автореферат: актуальность, новизна, положения на защиту | **AREF** | abstract modules: relevance, novelty, defended propositions, methods, results |
+| Связки, оговорки, численные сравнения | **UTILS** | connectives, hedging, quantitative comparisons |
 
-Detection rule: If one keyword group has **≥2 matches** in the user's last paragraph, classify as that section. If two groups tie, use Layer 2.
+**Detection rule:** Read the user's last paragraph. Understand its communicative purpose. If it clearly maps to one section, use that. If the intent is ambiguous (maps to two sections equally), use Layer 2.
 
 ### Layer 2 — Context Pattern
 
 Analyze the **sequence** of the user's messages:
-- If user previously wrote a SURVEY section and now writes a new paragraph without clear keywords, still assume SURVEY (same section continuation).
-- If user just finished writing a MODEL block and now writes about experiments, classify as EXPERIMENT.
-- If user explicitly wrote the section heading (e.g. `2.1 Методы исследования`), use that heading as authoritative.
+- If user previously wrote a SURVEY section and now writes a new paragraph without clear signal, still assume SURVEY (same section continuation).
+- If user just finished a MODEL block and now writes about experiments, classify as EXPERIMENT.
+- If user explicitly wrote a section heading (e.g. `2.1 Методы исследования`), use that heading as authoritative.
 
 Use the last 3 user messages to detect section transitions.
 
 ### Layer 3 — Ask (fallback)
 
-If Layers 1+2 cannot determine the section with confidence (no Russian academic keywords found, no clear context), ask **once**:
+If Layers 1+2 cannot determine the section with confidence, ask **once**:
 
-> 「您目前在写论文的哪一部分？引言 / 综述 / 模型 / 方法 / 实验 / 结果 / 讨论 / 结论」
+> 「Вы не могли бы уточнить, какой раздел диссертации Вы сейчас пишете? (Введение / Обзор / Модель / Метод / Эксперимент / Результаты / Обсуждение / Заключение)」
 
 Do not ask again in the same session.
 
@@ -91,13 +88,15 @@ Confirm the semantic understanding from Step 1 — determine which **category** 
 **Step 2b — Three-layer retrieval with semantic matching**
 Search using the semantically understood subtype across the three layers:
 
-**L2 DISCIPLINE:** Search `assets/discipline/{discipline_name}.jsonl` for `"subtype":"{understood_subtype}"` matching `category` + resolved `subtype`, prioritize `quality_score=2`.
-- If name not found by exact match, broaden to partial match on semantically related subtypes
-
-**L1 CLUSTER:** If L2 < 3 results, search `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl`
-- Same semantic broadening strategy
-
-**L0 GLOBAL:** If L1 < 3 results, search `assets/global/quality/QUALITY2_{CATEGORY}.jsonl`
+| **L2 DISCIPLINE:** Search `assets/discipline/{discipline_name}.jsonl` — read entries, **understand** which templates match the user's situation best. Do NOT require exact subtype-name matching. Use your understanding of the user's intent to select the most relevant templates.
+| - Prioritize `quality_score=2`, then `quality_score=1`
+| - If no templates match the exact semantic nuance, try broader conceptual match within the same category
+|
+| **L1 CLUSTER:** If L2 < 3 relevant results, search `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl`
+| - Process: load the file → read entries → understand which templates fit the user's rhetorical goal → select best matches
+| - Same semantic approach: understand first, match second
+|
+| **L0 GLOBAL:** If L1 < 3 results, search `assets/global/quality/QUALITY2_{CATEGORY}.jsonl`
 
 **Step 2c — Data fallback**
 If three-layer retrieval < 3 results, fall back to `data/curated/quality/` flat files:
@@ -126,7 +125,7 @@ Show 3–5 templates total, ordered by quality_score descending, then by best su
 
 After presenting, offer to adapt the user's current sentence using the template:
 
-> 「需要我用这条模板帮您改写当前句子吗？」
+> 「Хотите, я адаптирую Ваше текущее предложение с использованием этого шаблона?」
 
 If user agrees, apply the following **polishing constraints**:
 
@@ -210,12 +209,18 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 | File | Contents | Priority |
 |---|---|---|
-| `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 8,383 quality=2 DIS templates | ⭐⭐⭐ |
-| `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,228 quality=2 AREF templates | ⭐⭐⭐ |
-| `data/curated/quality/QUALITY2_UTILS.jsonl` | ~100 quality=2 UTIL patterns | ⭐⭐⭐ |
-| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 9,863 pure Russian DIS templates | ⭐⭐ (fallback) |
-| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,568 pure Russian AREF templates | ⭐⭐ (fallback) |
-| `data/curated/master/MASTER_UTILS.jsonl` | 304 pure Russian UTIL patterns | ⭐⭐ (fallback) |
+| `assets/global/master/MASTER.jsonl` | L0 GLOBAL — 1,764 cross-cluster templates (INTRO + TRANSITION + UTILS) | ⭐⭐⭐ |
+| `assets/cluster/TECH_LIFE/master/MASTER.jsonl` | L1 TECH_LIFE — 5,699 technical/science templates | ⭐⭐⭐ |
+| `assets/cluster/HUM_SOC/master/MASTER.jsonl` | L1 HUM_SOC — 4,035 humanities/social templates | ⭐⭐⭐ |
+| `assets/discipline/*.jsonl` | L2 DISCIPLINE — per-discipline files (34 subjects) | ⭐⭐ |
+| `assets/references/standard_taxonomy_v3.3.json` | Standardized taxonomy: 25 categories, 1,448 subtypes | ⭐⭐⭐ |
+| `assets/references/subtype_mapping_v3.3.json` | Semantic mapping: 6,866 old → 1,662 standardized subtypes | ⭐⭐⭐ |
+| `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 8,383 quality=2 DIS templates | ⭐⭐ (fallback) |
+| `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,228 quality=2 AREF templates | ⭐⭐ (fallback) |
+| `data/curated/quality/QUALITY2_UTILS.jsonl` | ~100 quality=2 UTIL patterns | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 9,863 all-quality DIS templates | ⭐ (deep fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,568 all-quality AREF templates | ⭐ (deep fallback) |
+| `data/curated/master/MASTER_UTILS.jsonl` | 304 all-quality UTIL patterns | ⭐ (deep fallback) |
 
 ### Schema
 
