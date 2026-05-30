@@ -66,64 +66,50 @@ Do not ask again in the same session.
 
 Once the section is detected, execute these steps **automatically**:
 
-### Step 1: Determine subtype list
-Based on detected section, list relevant subtypes (see table above).
+### Step 1: Determine subtype list with semantic mapping
+Based on detected section, list relevant subtypes (see table above). Then perform semantic mapping:
 
-#### Semantic function inference (sub-step):
-After detecting the section, analyze the user's specific phrasing to infer the **semantic subtype**:
-- Scan for functional keywords in the user's Russian text (e.g., "цель", "задача", "актуальность", "новизна", "результат", "метод")
-- Map these keywords to the standardized Russian subtype names from `assets/references/subtype_mapping_v3.3.json`
-- If the user's phrasing doesn't match any exact subtype name, use semantic understanding to select the closest standardized subtype
-- This enables the skill to retrieve templates even when the user's wording differs from the standardized taxonomy
+**Semantic mapping (语义理解):**
+Before searching, use language understanding to determine the user's writing intent:
+1. Read the user's Russian text and classify which **category** + **rhetorical function** it belongs to
+2. Map this understanding to the standardized Russian subtype taxonomy (see `assets/references/subtype_mapping_v3.3.json`)
+3. Use the mapped subtype name as the search key
 
-### Step 2: Dual-channel retrieval (semantic + exact match)
+Example:
+- User writes "Целью данной работы является..." → Understanding: INTRO / `формулировка_цели` → Search key: `формулировка_цели`
+- User writes "Задача исследования заключается в..." → Same understanding: INTRO / `формулировка_цели` → Same search key: `формулировка_цели`
+- User writes "Модель базируется на допущении..." → Understanding: MODEL / `допущение_модели` → Search key: `допущение_модели`
 
-Search templates using a **dual-channel** strategy. First determine the user's discipline cluster (TECH_LIFE / HUM_SOC / ART_SPORT), then select channels:
+### Step 2: Semantic understanding + Three-layer retrieval
 
-#### Channel A — Exact Match (fast path)
-Match `category` + `subtype` exactly against known standardized Russian subtype names. This is the primary channel — fastest and most precise for well-specified queries.
+**Step 2a — Semantic mapping (语义理解)**
+Confirm the semantic understanding from Step 1 — determine which **category** (INTRO, SURVEY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION, etc.) and **subtype** the user's text maps to. If Step 1's mapping was unambiguous, proceed directly to Step 2b. If ambiguous, resolve using:
+- Functional keywords in the user's text (e.g., "цель", "задача", "актуальность")
+- Contextual cues from the conversation history (Layer 2 — Context Pattern)
+- The `assets/references/subtype_mapping_v3.3.json` mapping table
 
-#### Channel B — Semantic Match (broad path)
-When Channel A yields <3 results, or when the user's phrasing doesn't match standardized subtype names exactly, activate semantic matching:
+**Step 2b — Three-layer retrieval with semantic matching**
+Search using the semantically understood subtype across the three layers:
 
-1. **Understand the user's intent**: Parse the user's Russian text to infer which **category** (INTRO, SURVEY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION, etc.) and **semantic function** (purpose-stating, result-reporting, problem-identifying, etc.) the user needs.
-2. **Map to standardized subtype**: Convert the inferred function to one of the 1,466 standardized Russian subtype names (see `assets/references/subtype_mapping_v3.3.json` for the full taxonomy).
-3. **Search by standardized subtype**: Use the mapped subtype name to query the three-layer data hierarchy.
+**L2 DISCIPLINE:** Search `assets/discipline/{discipline_name}.jsonl` for `"subtype":"{understood_subtype}"` matching `category` + resolved `subtype`, prioritize `quality_score=2`.
+- If name not found by exact match, broaden to partial match on semantically related subtypes
 
-For example:
-- User writes "Целью данной работы является..." → infer INTRO / `формулировка_цели` → search `subtype="формулировка_цели"`
-- User writes "Задача исследования состоит в..." → infer INTRO / `задача_исследования` → search `subtype="задача_исследования"`
-- User writes "Модель базируется на допущении..." → infer MODEL / `допущение_модели` → search `subtype="допущение_модели"`
+**L1 CLUSTER:** If L2 < 3 results, search `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl`
+- Same semantic broadening strategy
 
-#### Three-layer hierarchy (applied after channel selection):
+**L0 GLOBAL:** If L1 < 3 results, search `assets/global/quality/QUALITY2_{CATEGORY}.jsonl`
 
-**Layer 1 — DISCIPLINE (L2):**
-Search the discipline-specific file in `assets/discipline/`. Match by `category` + resolved `subtype`, prioritize `quality_score=2`.
-
-**Layer 2 — CLUSTER (L1):**
-If L2 yields <3 results, search the cluster-level files in:
-- `assets/cluster/TECH_LIFE/quality/` (for engineering, biology, chemistry, physics, medicine)
-- `assets/cluster/HUM_SOC/quality/` (for economics, law, philology, history, philosophy)
-- `assets/cluster/ART_SPORT/quality/` (for arts, sports — may have limited data)
-Search `QUALITY2_{CATEGORY}.jsonl` files, e.g. `QUALITY2_INTRO.jsonl`.
-
-**Layer 3 — GLOBAL (L0):**
-If L1 still yields <3 results, fall back to:
-- `assets/global/quality/QUALITY2_{CATEGORY}.jsonl`
-
-### Step 3: Flat-file fallback (data/)
-
-If the three-layer retrieval yields <3 usable results, fall back to the flat curated files:
+**Step 2c — Data fallback**
+If three-layer retrieval < 3 results, fall back to `data/curated/quality/` flat files:
 ```
 data/curated/quality/QUALITY2_SELECTION_DIS.jsonl  (or _AREF / _UTILS)
 ```
-
 For deeper fallback, use the full sentencebank:
 ```
 data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl  (or _AREF / _UTILS)
 ```
 
-### Step 4: Present templates
+### Step 3: Present templates
 Format each template as follows:
 
 ```
@@ -136,7 +122,7 @@ Format each template as follows:
 
 Show 3–5 templates total, ordered by quality_score descending, then by best subtype match.
 
-### Step 5: Polish and rewrite
+### Step 4: Polish and rewrite
 
 After presenting, offer to adapt the user's current sentence using the template:
 
@@ -212,6 +198,13 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 | `assets/cluster/{CLUSTER}/master/MASTER.jsonl` | Full cluster corpus (TECH_LIFE=5,699, HUM_SOC=4,035) | ⭐⭐ L1 fallback |
 | `assets/global/quality/QUALITY2_{CATEGORY}.jsonl` | 185 quality=2 cross-discipline templates | ⭐⭐⭐ L0 |
 | `assets/global/master/MASTER.jsonl` | Full global corpus (1,764 entries) | ⭐⭐ L0 fallback |
+
+### Taxonomy reference files
+
+| File | Contents | Purpose |
+|---|---|---|
+| `assets/references/subtype_mapping_v3.3.json` | Standardized subtype mapping (1,662 pure Russian names) | Maps old/alternate subtype names to canonical standardized Russian names |
+| `assets/references/standard_taxonomy_v3.3.json` | Canonical taxonomy (25 categories, 1,448 standard names) | Defines the complete hierarchical taxonomy for semantic matching |
 
 ### Flat curated files (secondary — fallback)
 

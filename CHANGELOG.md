@@ -1,28 +1,22 @@
-## [3.3] - 2026-05-30
+## v3.3 (2026-05-30)
 
-### Added
-- **Stage 1**: Mapping table purification — 433 non-pure-Russian standardized subtype names converted to pure Russian
-  - 131 pure English → Russian (e.g., `compliance` → `соответствие_требованиям`)
-  - 44 Chinese → Russian (e.g., `研究空白` → `пробел_в_исследованиях`)
-  - 258 mixed English-Russian → pure Russian (e.g., `background_теория_введение` → `теоретическая_основа`)
-  - 154 numeric suffix → descriptive suffix (e.g., `результат_1` → `результат_основной`)
-- **Stage 2**: Data writeback — all JSONL files updated with cleaned subtype values
-- **Stage 3**: Cross-validation report — integrity, purity, consistency, file integrity
-- **Stage 4**: SKILL.md dual-channel retrieval upgrade
-  - Step 1: Added semantic function inference sub-step
-  - Step 2: Upgraded to Channel A (exact match) + Channel B (semantic match)
-  - Added Semantic Mapping Guide for 10 academic sections
-- **Stage 5**: Version bumped to 3.3, CHANGELOG updated, validation report generated
+### Subtype 标准化与语义检索升级
 
-### Changed
-- `assets/references/subtype_mapping_v3.3.json`: All 433 non-pure-Russian values cleaned
-- `SKILL.md`: v3.2.2 → v3.3, dual-channel retrieval architecture
-- `assets/` all JSONL files: subtypes updated per cleaned mapping
+**Subtype 精炼：**
+- 6,866 个旧 subtype → 1,662 个标准化纯俄语 subtype（缩减 75.8%）
+- 清除所有英/中文 subtype（431 个非俄语名→纯俄语）
+- 生成标准 taxonomy（25 个 category，1,448 个标准名）
+- 生成完整映射表 subtype_mapping_v3.3.json
 
-### Technical Notes
-- Subtype count reduced from 1,466 → 1,466 (same count, names normalized)
-- All data files backed up to `.v33_backup/`
-- Mapping purity: 100% Russian Cyrillic (verified by regex scan)
+**SKILL.md 升级：**
+- 检索策略升级为双通道（精确匹配 + 语义理解）
+- 智能体可理解用户意图后进行语义近似匹配
+- 新增 taxonomy 参考文件说明
+
+**数据清理：**
+- 315 条数据 subtype 字段更新
+- 零中文残留 ✅
+- 零 JSON 解析错误 ✅
 
 # Changelog
 
