@@ -1,6 +1,6 @@
 {
   "project": "PhD Thesis Butler",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "release_date": "2026-05-30",
   "schema_version": "2.1",
   "description": "Russian academic writing sentence bank — pure Russian templates, semantic retrieval, 3-layer fallback",

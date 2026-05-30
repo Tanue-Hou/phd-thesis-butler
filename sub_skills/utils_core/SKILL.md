@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/utils_core
 description: "UTILS — Connective, Conservative, Numeric functional language"
-version: "3.3.3"
+version: "3.3.4"
 ---
 
 # UTILS — Вспомогательные конструкции（功能语言）

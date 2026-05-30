@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_method
 description: "方法 — METHOD sentence templates"
-version: "3.3.3"
+version: "3.3.4"
 ---
 
 # METHOD — 方法（Метод）

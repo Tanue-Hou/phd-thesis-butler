@@ -90,13 +90,10 @@ ok(f"{checked} JSONL files, 0 parse errors" if not errors else f"{checked} files
 # ============================================================
 print("\n2️⃣  Field integrity check")
 for f in sorted(BASE.rglob("*.jsonl")):
-    if ".git" in str(f) or ".v33_backup" in str(f):
+    if ".git" in str(f):
         continue
     if f.stat().st_size == 0:
         continue
-    # Check selected fields (focus: visible Russian text)
-    CRITICAL_FIELDS = ['template', 'text', 'when_to_use', 'function', 'common_mistakes', 'subtype']
-    CHECK_ALL_FIELDS = ['template', 'text', 'subtype', 'function', 'when_to_use', 'kind', 'strength', 'description']
 
     with open(f) as fh:
         for i, line in enumerate(fh, 1):
@@ -106,46 +103,41 @@ for f in sorted(BASE.rglob("*.jsonl")):
             try:
                 d = json.loads(line)
             except:
+                e(f"{f.relative_to(BASE)}:{i}: JSON parse error")
                 continue
-        
-            # Field completeness: check critical fields
-            for cf in CRITICAL_FIELDS:
-                if cf in d or cf.replace('_', '') in d:
-                    pass  # at least one form exists
-        
+
+            # --- CHECK: ALL keys for bracket contamination ---
+            for key in list(d.keys()):
+                if '[' in key or ']' in key:
+                    e(f"{f.relative_to(BASE)}:{i}: bracket in key '{key}'")
+                # Known misspellings (exact key match, not normalized)
+                key_lower = key.lower()
+                if key_lower in ('when_touse', 'when_t_ouse', 'whentouse',
+                                  'common_mstake', 'common_mestakes', 'common_mstakes',
+                                  'quality_scor', 'qualitysore', 'quaity_score',
+                                  'schema_verson', 'schemaversion'):
+                    e(f"{f.relative_to(BASE)}:{i}: misspelled key '{key}'")
+
+            # --- CHECK: All values for CJK ---
+            for key, val in d.items():
+                if isinstance(val, str) and CJK_RE.search(val):
+                    e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:50]}")
+                elif isinstance(val, list):
+                    for j, item in enumerate(val):
+                        if isinstance(item, str) and CJK_RE.search(item):
+                            e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:50]}")
+
             # quality_score check
             qs = d.get("quality_score")
             if qs is not None and qs not in (0, 1, 2):
                 e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
-        
+
             # ___ check (only in assets/ — new format)
             t = d.get("template", d.get("text", ""))
             if "___" in t and "assets" in str(f):
                 e(f"{f.relative_to(BASE)}:{i}: ___ placeholder in template")
-        
-            # CJK check on ALL text fields
-            for field in CHECK_ALL_FIELDS:
-                val = d.get(field)
-                if val and isinstance(val, str) and CJK_RE.search(val):
-                    e(f"{f.relative_to(BASE)}:{i}: CJK in {field}: {val[:40]}")
-        
-            # Slots: check each item
-            slots = d.get('slots', [])
-            if isinstance(slots, list):
-                for j, s in enumerate(slots):
-                    if isinstance(s, str) and CJK_RE.search(s):
-                        e(f"{f.relative_to(BASE)}:{i}: CJK in slots[{j}]: {s[:40]}")
-        
-            # Common_mistakes: check each item
-            cm = d.get('common_mistakes', [])
-            if isinstance(cm, list):
-                for j, item in enumerate(cm):
-                    if isinstance(item, str) and CJK_RE.search(item):
-                        e(f"{f.relative_to(BASE)}:{i}: CJK in cm[{j}]: {item[:40]}")
-            elif isinstance(cm, str) and CJK_RE.search(cm):
-                e(f"{f.relative_to(BASE)}:{i}: CJK in cm: {cm[:40]}")
-        
-            # Spacing check (Cyrillic-Latin no-space) on template and when_to_use
+
+            # Spacing check on template and when_to_use
             for field in ['template', 'when_to_use', 'function']:
                 val = d.get(field, '')
                 if isinstance(val, str):

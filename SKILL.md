@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "Russian academic writing sentence bank — 16,735 pure Russian templates. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "3.3.3"
+version: "3.3.4"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant

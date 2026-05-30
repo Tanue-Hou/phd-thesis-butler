@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_survey
 description: "文献综述 — SURVEY sentence templates"
-version: "3.3.3"
+version: "3.3.4"
 ---
 
 # SURVEY — 文献综述（Обзор литературы）

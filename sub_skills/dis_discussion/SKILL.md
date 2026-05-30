@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_discussion
 description: "讨论 — DISCUSSION sentence templates"
-version: "3.3.3"
+version: "3.3.4"
 ---
 
 # DISCUSSION — 讨论（Обсуждение）

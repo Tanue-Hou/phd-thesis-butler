@@ -1,3 +1,13 @@
+## v3.3.4 (2026-05-30)
+
+### Field name cleanup + validate expansion
+
+**修复**
+- 2,448 处畸形字段名修复：`when[...]to[...]use`→`when_to_use`, `paper[...]id`→`paper_id` 等
+- 379 处 UTILS 中文清理：kind/when_to_use/common_mistakes 中的中文→俄语
+- validate_skill_assets.py: 全 key/value 检查 + bracket in key 禁止 + 拼写变体检测
+- py_compile + 6 smoke tests 全绿
+
 ## v3.3.3 (2026-05-30)
 
 ### Language purity — full CJK + spacing cleanup

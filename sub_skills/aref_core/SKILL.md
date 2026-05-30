@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/aref_core
 description: "Автореферат — AREF abstract modules"
-version: "3.3.3"
+version: "3.3.4"
 ---
 
 # AREF — Автореферат（作者摘要）
