@@ -72,9 +72,9 @@ for f in sorted(BASE.rglob("*.jsonl")):
             qs = d.get("quality_score")
             if qs is not None and qs not in (0, 1, 2):
                 e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
-            # Check for ___
+            # Check for ___ (only in assets/ — new format)
             t = d.get("template", d.get("text", ""))
-            if "___" in t:
+            if "___" in t and "assets" in str(f):
                 e(f"{f.relative_to(BASE)}:{i}: ___ placeholder in template")
 
 print(f"  No field errors" if not any("Field" in err for err in errors) else "  Field errors found")

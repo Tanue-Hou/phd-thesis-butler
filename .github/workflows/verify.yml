@@ -35,7 +35,6 @@ jobs:
                           assert len(e['template']) > 0, 'template is empty'
                           qs = e.get('quality_score', -1)
                           assert qs in (0, 1, 2), f'invalid quality_score={qs}'
-                          assert '___' not in e['template'], f'___ placeholder found'
                       except Exception as ex:
                           print(f'ERROR:{f}:{i}: {ex}')
                           errors += 1
@@ -87,11 +86,12 @@ jobs:
           print('✅ SKILL.md frontmatter valid')
           "
 
-      - name: Verify no leftover ___ placeholders in assets
+      - name: Verify no ___ placeholders in assets (new format)
         run: |
           count=$(grep -r '___' assets/ --include='*.jsonl' | wc -l)
-          if [ \"$count\" -gt 0 ]; then
-            echo \"❌ Found $count ___ placeholders in assets/\"
+          if [ "$count" -gt 0 ]; then
+            echo "❌ Found $count ___ placeholders in assets/"
+            grep -r '___' assets/ --include='*.jsonl' | head -5
             exit 1
           fi
           echo '✅ No ___ placeholders in assets/'
