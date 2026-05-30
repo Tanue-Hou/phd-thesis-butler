@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_conclusion
 description: "结论 — CONCLUSION sentence templates"
-version: "3.3.1"
+version: "3.3.2"
 ---
 
 # CONCLUSION — 结论（Заключение）

@@ -1,3 +1,16 @@
+## v3.3.2 (2026-05-30)
+
+### Engineering fix — retrieve_templates, CJK cleanup, delegation
+
+**修复**
+- retrieve_templates.py: 元组结构修复 (score, layer_name, entry) 3元素，消除 r[3] 崩溃
+- 检索逻辑改为真三级回退：DISCIPLINE ≥K → 停；不足→CLUSTER；不足→GLOBAL
+- CJK 过滤：输出时过滤 template/when_to_use/common_mistakes 含中文的条目
+- 全库 3,614 处中文污染清理（template 中 CJK →俄语槽位，metadata 中 CJK →[...]）
+- SKILL.md description 强化：显式支持中英文触发俄语模板
+- delegation.provider 统一 deepseek，子智能体继承主智能体 API
+- validate_skill_assets.py 全绿通过 ✅
+
 ## v3.3.1 (2026-05-30)
 
 ### Engineering Convergence — 工程化收敛

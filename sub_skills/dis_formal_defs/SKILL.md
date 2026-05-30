@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_formal_defs
 description: "形式化定义 — FORMAL_DEFS sentence templates"
-version: "3.3.1"
+version: "3.3.2"
 ---
 
 # FORMAL_DEFS — 形式化定义（Формальные определения）
