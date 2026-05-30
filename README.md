@@ -211,7 +211,38 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 六、文件结构速查
+## 六、快速验证
+
+克隆仓库后，执行以下命令确认数据完整性：
+
+```bash
+# 1. 验证模板总数
+echo "DIS: $(wc -l < data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl)"
+echo "AREF: $(wc -l < data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl)"
+echo "UTILS: $(wc -l < data/curated/master/MASTER_UTILS.jsonl)"
+
+# 2. 验证三层资产结构
+ls assets/global/master/MASTER.jsonl           # L0 GLOBAL
+ls assets/cluster/TECH_LIFE/master/MASTER.jsonl # L1 TECH_LIFE
+ls assets/cluster/HUM_SOC/master/MASTER.jsonl   # L1 HUM_SOC
+
+# 3. 验证 subtype 标准化映射表
+wc -l assets/references/subtype_mapping_v3.3.json
+
+# 4. 查看构建信息
+cat BUILD_INFO.json
+```
+
+预期输出（v3.3）：
+```
+DIS: 9863
+AREF: 6568
+UTILS: 304
+```
+
+---
+
+## 七、文件结构速查
 
 ```
 📂 仓库根目录
@@ -253,7 +284,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 七、分类体系
+## 八、分类体系
 
 ### DIS 通道（11 类）
 
@@ -285,7 +316,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 八、数据格式（JSONL v2.1）
+## 九、数据格式（JSONL v2.1）
 
 ```json
 {
@@ -324,7 +355,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 九、质量评分标准
+## 十、质量评分标准
 
 | 分数 | 标签 | 含义 | 选用策略 |
 |------|------|------|---------|
@@ -334,7 +365,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 十、免责声明
+## 十一、免责声明
 
 **本仓库提供句式模板与润色规则参考，不构成学术完成的保证。**
 
@@ -352,7 +383,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 十一、开源声明
+## 十二、开源声明
 
 本仓库以 **CC BY 4.0**（知识共享署名 4.0 国际许可）发布。
 
@@ -535,6 +566,39 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
+---
+
+## 6. Быстрая проверка
+
+После клонирования репозитория выполните:
+
+```bash
+# 1. Количество шаблонов
+echo "DIS: $(wc -l < data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl)"
+echo "AREF: $(wc -l < data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl)"
+echo "UTILS: $(wc -l < data/curated/master/MASTER_UTILS.jsonl)"
+
+# 2. Структура активов
+ls assets/global/master/MASTER.jsonl
+ls assets/cluster/TECH_LIFE/master/MASTER.jsonl
+ls assets/cluster/HUM_SOC/master/MASTER.jsonl
+
+# 3. Карта subtype
+wc -l assets/references/subtype_mapping_v3.3.json
+
+# 4. Информация о сборке
+cat BUILD_INFO.json
+```
+
+Ожидаемый результат (v3.3):
+```
+DIS: 9863
+AREF: 6568
+UTILS: 304
+```
+
+---
+
 ## 6. Дисклеймер
 
 Репозиторий предоставляет **только шаблонные фразы и рекомендации по стилю**.
@@ -552,7 +616,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 ---
 
-## 7. Лицензия
+## 8. Лицензия
 
 **CC BY 4.0** — Creative Commons Attribution 4.0 International
 
@@ -795,13 +859,46 @@ CONNECTIVE / CONSERVATIVE / NUMERIC
 
 ---
 
-## 7. Quality Scoring
+## 8. Quality Scoring
 
 | Score | Label | Meaning | Selection Strategy |
 |-------|-------|---------|-------------------|
 | **2** | Excellent | Field-independent, replace `[...]` and use | **Always prefer first** |
 | **1** | Good | Needs domain adaptation | Use when no Q2 match |
 | **0** | Informative | Domain-tied example, heavy manual review | Inspiration only |
+
+---
+
+---
+
+## 7. Quick Verify
+
+After cloning the repository, run:
+
+```bash
+# 1. Template counts
+echo "DIS: $(wc -l < data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl)"
+echo "AREF: $(wc -l < data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl)"
+echo "UTILS: $(wc -l < data/curated/master/MASTER_UTILS.jsonl)"
+
+# 2. Asset structure
+ls assets/global/master/MASTER.jsonl
+ls assets/cluster/TECH_LIFE/master/MASTER.jsonl
+ls assets/cluster/HUM_SOC/master/MASTER.jsonl
+
+# 3. Subtype mapping
+wc -l assets/references/subtype_mapping_v3.3.json
+
+# 4. Build info
+cat BUILD_INFO.json
+```
+
+Expected output (v3.3):
+```
+DIS: 9863
+AREF: 6568
+UTILS: 304
+```
 
 ---
 
@@ -822,7 +919,7 @@ Users bear sole responsibility for:
 
 ---
 
-## 9. License & Citation
+## 10. License & Citation
 
 **CC BY 4.0** — Creative Commons Attribution 4.0 International
 

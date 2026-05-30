@@ -1,0 +1,74 @@
+{
+  "project": "PhD Thesis Butler",
+  "version": "3.3",
+  "release_date": "2026-05-30",
+  "schema_version": "2.1",
+  "description": "Russian academic writing sentence bank — pure Russian templates, semantic retrieval, 3-layer fallback",
+
+  "templates": {
+    "total": 16735,
+    "DIS": 9863,
+    "AREF": 6568,
+    "UTILS": 304
+  },
+
+  "sources": {
+    "dissertations": 1042,
+    "abstracts": 361,
+    "total_documents": 1403,
+    "universities": "Multiple Russian universities (details removed for privacy)"
+  },
+
+  "layers": {
+    "GLOBAL": 1284,
+    "TECH_LIFE": 5699,
+    "HUM_SOC": 4035,
+    "ART_SPORT": 0,
+    "DISCIPLINE_subjects": 34,
+    "DISCIPLINE_total_approx": 10045,
+    "zero_overlap": true
+  },
+
+  "quality": {
+    "Q2": 10711,
+    "Q1": 4780,
+    "Q0": 1300,
+    "note": "Approximate values based on quality_score field distribution"
+  },
+
+  "categories": {
+    "DIS": 11,
+    "AREF": 14,
+    "UTILS": 3,
+    "total": 28
+  },
+
+  "subtype_standardization": {
+    "before_v3.2": 6866,
+    "after_v3.3": 1662,
+    "reduction_pct": 75.8,
+    "non_russian_removed": 431,
+    "standard_taxonomy": "assets/references/standard_taxonomy_v3.3.json",
+    "mapping_table": "assets/references/subtype_mapping_v3.3.json"
+  },
+
+  "language_purity": {
+    "chinese_templates_removed": 24,
+    "english_templates_removed": 1944,
+    "metadata_fixed": 1273,
+    "garbage_removed": 44,
+    "total_removed": 2272,
+    "status": "pure_russian"
+  },
+
+  "retrieval": {
+    "strategy": "semantic_first",
+    "fallback_chain": "DISCIPLINE → CLUSTER → GLOBAL → data_fallback",
+    "k_min": 3,
+    "priority": "Q2 → Q1 → Q0"
+  },
+
+  "entrypoint": "SKILL.md",
+  "documentation": "README.md",
+  "changelog": "CHANGELOG.md"
+}

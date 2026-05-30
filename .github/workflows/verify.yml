@@ -1,0 +1,97 @@
+name: Verify
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSONL files
+        run: |
+          python3 -c "
+          import json, sys
+          errors = 0
+          files = [
+            'data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl',
+            'data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl',
+            'data/curated/master/MASTER_UTILS.jsonl',
+          ]
+          for f in files:
+              with open(f) as fh:
+                  for i, line in enumerate(fh, 1):
+                      line = line.strip()
+                      if not line:
+                          continue
+                      try:
+                          e = json.loads(line)
+                          assert 'template' in e, 'missing template field'
+                          assert isinstance(e['template'], str), 'template not string'
+                          assert len(e['template']) > 0, 'template is empty'
+                          qs = e.get('quality_score', -1)
+                          assert qs in (0, 1, 2), f'invalid quality_score={qs}'
+                          assert '___' not in e['template'], f'___ placeholder found'
+                      except Exception as ex:
+                          print(f'ERROR:{f}:{i}: {ex}')
+                          errors += 1
+          if errors:
+              print(f'\nFAILED: {errors} errors')
+              sys.exit(1)
+          else:
+              print('✅ All JSONL valid')
+          "
+
+      - name: Verify template counts
+        run: |
+          python3 -c "
+          import json
+          counts = {
+              'data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl': 9863,
+              'data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl': 6568,
+              'data/curated/master/MASTER_UTILS.jsonl': 304,
+          }
+          for f, expected in counts.items():
+              with open(f) as fh:
+                  actual = sum(1 for _ in fh)
+              delta = abs(actual - expected)
+              max_delta = int(expected * 0.05)  # 5% tolerance
+              if delta > max_delta:
+                  print(f'❌ {f}: expected ~{expected}, got {actual} (delta={delta} > {max_delta})')
+                  exit(1)
+              else:
+                  print(f'✅ {f}: {actual} (expected ~{expected}, delta={delta})')
+          print('All counts within tolerance')
+          "
+
+      - name: Verify BUILD_INFO exists
+        run: |
+          if [ ! -f BUILD_INFO.json ]; then
+            echo "❌ BUILD_INFO.json missing"
+            exit 1
+          fi
+          echo "✅ BUILD_INFO.json present"
+          python3 -c "import json; d=json.load(open('BUILD_INFO.json')); print(f'  Version: {d[\"version\"]}')"
+
+      - name: Verify SKILL.md frontmatter
+        run: |
+          python3 -c "
+          with open('SKILL.md') as f:
+              lines = f.readlines()
+          assert lines[0].strip() == '---', 'No YAML frontmatter start'
+          assert 'version:' in ''.join(lines[:10]), 'No version in frontmatter'
+          print('✅ SKILL.md frontmatter valid')
+          "
+
+      - name: Verify no leftover ___ placeholders in assets
+        run: |
+          count=$(grep -r '___' assets/ --include='*.jsonl' | wc -l)
+          if [ \"$count\" -gt 0 ]; then
+            echo \"❌ Found $count ___ placeholders in assets/\"
+            exit 1
+          fi
+          echo '✅ No ___ placeholders in assets/'

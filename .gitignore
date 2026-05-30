@@ -8,3 +8,8 @@ __pycache__/
 *_private*
 *_internal.md
 .hermes/
+
+# Full data releases (used for GitHub Release packaging)
+# data/curated/master/ is currently tracked in git for convenience.
+# In future, uncomment below to move full master files to GitHub Releases:
+# data/curated/master/*.jsonl
