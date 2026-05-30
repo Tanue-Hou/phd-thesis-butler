@@ -1,5 +1,26 @@
 # Changelog
 
+## v3.2.2 (2026-05-30)
+
+### Assets Data Fix — 数据清理 + SKILL.md 检索与润色规则增强
+
+**SKILL.md 修复与增强：**
+- version: v3.2 → v3.2.2 ✅
+- 检索策略：从扁平 `data/` 搜索升级为**三层回退链**（DISCIPLINE → CLUSTER → GLOBAL → data fallback）
+- 润色规则：从简单 "offer to rewrite" 增强为完整约束（Do/Do NOT + 输出格式）
+- Data Files Reference 表：补充 assets/ 三层路径 + data/ fallback 路径
+
+**数据清理：**
+- 删除混淆目录 `assets/cluster/GLOBAL/`（185条错误路径，合并到 assets/global/）
+- GLOBAL 层整理：MASTER.jsonl 1,764 条 → 1,284 条（仅保留 Q2 跨学科模板，665 条下移至 cluster 层，备份于 MASTER_ARCHIVE.jsonl）
+- 所有 34 个 discipline 文件 `_layer` 字段修复（ART_SPORT/HUM_SOC 等过期值清理）
+- 所有 cluster quality 文件 `_layer`/`_discipline` 字段同步修复
+
+**待处理：**
+- `assets/discipline/биологических_наук.jsonl` 前 7 条英文模板待翻译
+- subtype 命名标准化（俄/英/中文混用）
+- README 数据口径待 GLOBAL 层稳定后同步
+
 ## v3.2.1 (2026-05-30)
 
 ### Document Consistency Fix — 统一数据口径 + 俄语文档

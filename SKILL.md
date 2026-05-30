@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "PhD Thesis Butler — Russian Academic Writing Sentence Bank (16,735 pure Russian templates from 1,042 dissertations + 361 abstracts)"
-version: "3.2"
+version: "3.2.2"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -69,16 +69,32 @@ Once the section is detected, execute these steps **automatically**:
 ### Step 1: Determine subtype list
 Based on detected section, list relevant subtypes (see table above).
 
-### Step 2: Search QUALITY2 file
-```
-grep "subtype":"<subtype>" data/curated/quality/QUALITY2_SELECTION_DIS.jsonl | head -5
-```
-If section is AREF, search `QUALITY2_SELECTION_AREF.jsonl`. If UTILS, search `QUALITY2_UTILS.jsonl`.
+### Step 2: Three-layer retrieval (assets/)
 
-**Use `search_files` or `read_file` + string search to find matching templates.** The JSONL files are line-delimited JSON — search for `"subtype":"XX"` patterns.
+Search templates using the three-layer architecture. Determine the user's discipline cluster first (TECH_LIFE / HUM_SOC / ART_SPORT), then search in order:
 
-### Step 3: Fallback if needed
-If QUALITY2 yields <3 results for the target subtype, fall back to:
+**Layer 1 — DISCIPLINE (L2):**
+Search the discipline-specific file in `assets/discipline/`. Match by `category` + `subtype`, prioritize `quality_score=2`.
+
+**Layer 2 — CLUSTER (L1):**
+If L2 yields <3 results, search the cluster-level files in:
+- `assets/cluster/TECH_LIFE/quality/` (for engineering, biology, chemistry, physics, medicine)
+- `assets/cluster/HUM_SOC/quality/` (for economics, law, philology, history, philosophy)
+- `assets/cluster/ART_SPORT/quality/` (for arts, sports — may have limited data)
+Search `QUALITY2_{CATEGORY}.jsonl` files, e.g. `QUALITY2_INTRO.jsonl`.
+
+**Layer 3 — GLOBAL (L0):**
+If L1 still yields <3 results, fall back to:
+- `assets/global/quality/QUALITY2_{CATEGORY}.jsonl`
+
+### Step 3: Flat-file fallback (data/)
+
+If the three-layer retrieval yields <3 usable results, fall back to the flat curated files:
+```
+data/curated/quality/QUALITY2_SELECTION_DIS.jsonl  (or _AREF / _UTILS)
+```
+
+For deeper fallback, use the full sentencebank:
 ```
 data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl  (or _AREF / _UTILS)
 ```
@@ -96,12 +112,35 @@ Format each template as follows:
 
 Show 3–5 templates total, ordered by quality_score descending, then by best subtype match.
 
-### Step 5: Offer to rewrite
+### Step 5: Polish and rewrite
+
 After presenting, offer to adapt the user's current sentence using the template:
 
 > 「需要我用这条模板帮您改写当前句子吗？」
 
-If user agrees, replace the `[...]` slots with their specific content and rewrite.
+If user agrees, apply the following **polishing constraints**:
+
+**Do:**
+- Replace `[...]` slots with the user's specific content
+- Adjust template grammar to match the user's context (number, case, tense)
+- Improve sentence flow while keeping the original meaning
+- Add hedging where the template suggests conservative phrasing
+- Use UTILS/CONSERVATIVE templates to soften overly strong claims
+
+**Do NOT:**
+- ❌ Introduce new facts, data, or citations not in the user's original text
+- ❌ Change the conclusion strength (don't make a "maybe" into a "definitely")
+- ❌ Copy template verbatim — always adapt to the user's domain
+- ❌ Over-promise — don't turn "suggests" into "proves"
+- ❌ Change the user's technical meaning
+
+**Output format:**
+```
+📝 {polished text in Russian}
+
+✏️ Summary: {1-3 line summary of changes made}
+📊 Hit layer: {DISCIPLINE / CLUSTER / GLOBAL} | Quality: {Q2 / Q1}
+```
 
 ---
 
@@ -117,7 +156,19 @@ If user agrees, replace the `[...]` slots with their specific content and rewrit
 
 ## Data Files Reference
 
-All paths are relative to the skill installation directory (`~/.hermes/skills/phd-thesis-butler/` for Hermes, `~/.claude/skills/phd-thesis-butler/` for Claude Code):
+All paths are relative to the skill installation directory (`~/.hermes/skills/phd-thesis-butler/` for Hermes, `~/.claude/skills/phd-thesis-butler/` for Claude Code).
+
+### Three-layer assets (primary — use first)
+
+| File | Contents | Priority |
+|---|---|---|
+| `assets/discipline/{discipline}.jsonl` | 34 discipline files (10,045 templates) | ⭐⭐⭐ L2 |
+| `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl` | TECH_LIFE / HUM_SOC quality-split files | ⭐⭐⭐ L1 |
+| `assets/cluster/{CLUSTER}/master/MASTER.jsonl` | Full cluster corpus (TECH_LIFE=5,699, HUM_SOC=4,035) | ⭐⭐ L1 fallback |
+| `assets/global/quality/QUALITY2_{CATEGORY}.jsonl` | 185 quality=2 cross-discipline templates | ⭐⭐⭐ L0 |
+| `assets/global/master/MASTER.jsonl` | Full global corpus (1,764 entries) | ⭐⭐ L0 fallback |
+
+### Flat curated files (secondary — fallback)
 
 | File | Contents | Priority |
 |---|---|---|
