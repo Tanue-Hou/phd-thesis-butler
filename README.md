@@ -50,7 +50,7 @@
 
 | 层级 | 名称 | 条数 | Q2 占比 | 说明 |
 |------|------|------|---------|------|
-| L0 | **GLOBAL** | 1,764 | 62.3% | 跨学科通用模板（INTRO + TRANSITION + UTILS） |
+| L0 | **GLOBAL** | 1,284 | 85.6% | 跨学科通用 Q2 模板（INTRO + TRANSITION + UTILS） |
 | L1 | **TECH_LIFE** | 5,699 | 68.6% | 技术/生命/精密科学 |
 | L1 | **HUM_SOC** | 4,035 | 61.6% | 人文/社会科学 |
 | L1 | **ART_SPORT** | — | — | 艺术/体育（结构就绪，持续填充） |
@@ -411,7 +411,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 | Уровень | Название | Записей | Q2 |
 |---------|----------|---------|-----|
-| L0 | **GLOBAL** | 1 764 | 62,3% |
+| L0 | **GLOBAL** | 1 284 | 85,6% |
 | L1 | **TECH_LIFE** | 5 699 | 68,6% |
 | L1 | **HUM_SOC** | 4 035 | 61,6% |
 | L1 | **ART_SPORT** | — | пополняется |
@@ -612,7 +612,7 @@ hermes skill install github:Tanue-Hou/phd-thesis-butler
 
 | Layer | Name | Entries | Q2 Ratio |
 |-------|------|---------|----------|
-| L0 | **GLOBAL** | 1,764 | 62.3% |
+| L0 | **GLOBAL** | 1,284 | 85.6% |
 | L1 | **TECH_LIFE** | 5,699 | 68.6% |
 | L1 | **HUM_SOC** | 4,035 | 61.6% |
 | L1 | **ART_SPORT** | — | being populated |
