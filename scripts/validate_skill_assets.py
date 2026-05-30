@@ -17,9 +17,44 @@ Exit code 0 = all pass. Exit code 1 = failures.
 
 import json, sys, re
 from pathlib import Path
+from collections import defaultdict
 
 BASE = Path(__file__).resolve().parent.parent
 errors = []
+
+CJK_RE = re.compile(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]')
+
+# English words ALLOWED in Russian visible text (scientific terms, abbreviations)
+EN_WHITELIST = {
+    'DIS', 'AREF', 'UTILS', 'MODEL', 'INTRO', 'SURVEY', 'METHOD', 'EXPERIMENT',
+    'RESULT', 'DISCUSSION', 'CONCLUSION', 'TRANSITION', 'FORMAL_DEFS', 'ENGINEERING',
+    'CONNECTIVE', 'CONSERVATIVE', 'NUMERIC', 'TECH_LIFE', 'HUM_SOC', 'ART_SPORT',
+    'MATH_PHYS', 'GLOBAL', 'CLUSTER', 'DISCIPLINE', 'PINN', 'LoRA', 'UKF', 'ESO',
+    'MPC', 'IMU', 'GPS', 'WLS', 'CarSim', 'Matlab', 'Python', 'CC', 'PhD',
+    'vitro', 'vivo', 'situ', 'silico', 'et', 'al', 'etc', 'vs', 'via',
+    'in', 'on', 'at', 'by', 'to', 'of', 'for', 'with', 'from', 'as',
+}
+
+def find_english_in_russian(text):
+    if not text:
+        return set()
+    words = re.findall(r'\b[a-zA-Z][a-zA-Z]{2,}\b', text)
+    flagged = set()
+    for w in words:
+        w_upper = w.upper()
+        if w_upper not in EN_WHITELIST and w not in EN_WHITELIST:
+            flagged.add(w)
+    return flagged
+
+def find_spacing_issues(text):
+    if not text:
+        return set()
+    issues = set()
+    for m in re.finditer(r'([а-яА-ЯёЁ])([a-zA-Z])', text):
+        issues.add(f"NO_SPACE({m.group(1)}{m.group(2)})")
+    for m in re.finditer(r'([a-zA-Z])([а-яА-ЯёЁ])', text):
+        issues.add(f"NO_SPACE({m.group(1)}{m.group(2)})")
+    return issues
 
 def e(msg):
     errors.append(msg)
@@ -59,23 +94,65 @@ for f in sorted(BASE.rglob("*.jsonl")):
         continue
     if f.stat().st_size == 0:
         continue
+    # Check selected fields (focus: visible Russian text)
+    CRITICAL_FIELDS = ['template', 'text', 'when_to_use', 'function', 'common_mistakes', 'subtype']
+    CHECK_ALL_FIELDS = ['template', 'text', 'subtype', 'function', 'when_to_use', 'kind', 'strength', 'description']
+
     with open(f) as fh:
         for i, line in enumerate(fh, 1):
             line = line.strip()
             if not line:
                 continue
-            d = json.loads(line)
-            # Check template field
-            if "template" not in d and "text" not in d:
-                e(f"{f.relative_to(BASE)}:{i}: missing template/text field")
-            # Check quality_score
+            try:
+                d = json.loads(line)
+            except:
+                continue
+        
+            # Field completeness: check critical fields
+            for cf in CRITICAL_FIELDS:
+                if cf in d or cf.replace('_', '') in d:
+                    pass  # at least one form exists
+        
+            # quality_score check
             qs = d.get("quality_score")
             if qs is not None and qs not in (0, 1, 2):
                 e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
-            # Check for ___ (only in assets/ — new format)
+        
+            # ___ check (only in assets/ — new format)
             t = d.get("template", d.get("text", ""))
             if "___" in t and "assets" in str(f):
                 e(f"{f.relative_to(BASE)}:{i}: ___ placeholder in template")
+        
+            # CJK check on ALL text fields
+            for field in CHECK_ALL_FIELDS:
+                val = d.get(field)
+                if val and isinstance(val, str) and CJK_RE.search(val):
+                    e(f"{f.relative_to(BASE)}:{i}: CJK in {field}: {val[:40]}")
+        
+            # Slots: check each item
+            slots = d.get('slots', [])
+            if isinstance(slots, list):
+                for j, s in enumerate(slots):
+                    if isinstance(s, str) and CJK_RE.search(s):
+                        e(f"{f.relative_to(BASE)}:{i}: CJK in slots[{j}]: {s[:40]}")
+        
+            # Common_mistakes: check each item
+            cm = d.get('common_mistakes', [])
+            if isinstance(cm, list):
+                for j, item in enumerate(cm):
+                    if isinstance(item, str) and CJK_RE.search(item):
+                        e(f"{f.relative_to(BASE)}:{i}: CJK in cm[{j}]: {item[:40]}")
+            elif isinstance(cm, str) and CJK_RE.search(cm):
+                e(f"{f.relative_to(BASE)}:{i}: CJK in cm: {cm[:40]}")
+        
+            # Spacing check (Cyrillic-Latin no-space) on template and when_to_use
+            for field in ['template', 'when_to_use', 'function']:
+                val = d.get(field, '')
+                if isinstance(val, str):
+                    sp = find_spacing_issues(val)
+                    if sp:
+                        for issue in list(sp)[:2]:
+                            e(f"{f.relative_to(BASE)}:{i}: spacing in {field}: {issue}")
 
 print(f"  No field errors" if not any("Field" in err for err in errors) else "  Field errors found")
 

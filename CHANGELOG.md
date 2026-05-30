@@ -1,3 +1,14 @@
+## v3.3.3 (2026-05-30)
+
+### Language purity — full CJK + spacing cleanup
+
+**修复**
+- 全库 CJK 污染清除：3,614 处中文→俄语槽位替换，不删除条目
+- NO_SPACE 修复：195 处 Cyrillic/Latin 无空格混写（"ДляPRESENTACии"→"Для PRESENTACии"）
+- subtype_mapping_v3.3.json + standard_taxonomy_v3.3.json 中文清除（44+100 处）
+- validate_skill_assets.py 扩展：检查所有字段（subtype/function/slots/when_to_use/cm/kind/strength）及 references 文件
+- retireve_templates.py 输出 CJK 过滤加强 + 元组 3 元素修复
+
 ## v3.3.2 (2026-05-30)
 
 ### Engineering fix — retrieve_templates, CJK cleanup, delegation

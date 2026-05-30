@@ -2,7 +2,7 @@
 
 > **俄语学术写作句式模板库** | Sentence bank for Russian academic writing | Банк шаблонов для академического письма на русском языке
 >
-> **v3.3.2** — 16,735 条纯正科研俄语模板，语义理解 + 三层回退检索 | 16,735 templates, semantic retrieval + 3-layer fallback | 16 735 шаблонов, семантический поиск
+> **v3.3.3** — 16,735 条纯正科研俄语模板，语义理解 + 三层回退检索 | 16,735 templates, semantic retrieval + 3-layer fallback | 16 735 шаблонов, семантический поиск
 
 ---
 
@@ -32,7 +32,7 @@
 
 ---
 
-## 二、当前规模（v3.3.2）
+## 二、当前规模（v3.3.3）
 
 | 指标 | 数值 |
 |------|------|
@@ -80,7 +80,7 @@
 → 搜索 subtype="objective"
 ```
 
-**新策略（v3.3.2）：语义理解优先**
+**新策略（v3.3.3）：语义理解优先**
 ```
 用户写 "Целью данной работы является..." 
 → 理解意图：作者在阐述研究目标
@@ -233,7 +233,7 @@ wc -l assets/references/subtype_mapping_v3.3.json
 cat BUILD_INFO.json
 ```
 
-预期输出（v3.3.2）：
+预期输出（v3.3.3）：
 ```
 DIS: 9863
 AREF: 6568
@@ -430,7 +430,7 @@ UTILS: 304
 
 ---
 
-## 2. Масштаб (v3.3.2)
+## 2. Масштаб (v3.3.3)
 
 | Показатель | Значение |
 |-----------|----------|
@@ -595,7 +595,7 @@ wc -l assets/references/subtype_mapping_v3.3.json
 cat BUILD_INFO.json
 ```
 
-Ожидаемый результат (v3.3.2):
+Ожидаемый результат (v3.3.3):
 ```
 DIS: 9863
 AREF: 6568
@@ -663,7 +663,7 @@ UTILS: 304
 
 ---
 
-## 2. Current Scale (v3.3.2)
+## 2. Current Scale (v3.3.3)
 
 | Metric | Value |
 |--------|-------|
@@ -704,7 +704,7 @@ UTILS: 304
 
 ```
 Old (v3.2): "Целью работы является..." → search keyword "цель работы" → exact match
-New (v3.3.2): "Целью работы является..." → understand intent "формулировка цели" → INTRO
+New (v3.3.3): "Целью работы является..." → understand intent "формулировка цели" → INTRO
 ```
 
 **New files:** `assets/references/standard_taxonomy_v3.3.json`, `assets/references/subtype_mapping_v3.3.json`
@@ -898,7 +898,7 @@ wc -l assets/references/subtype_mapping_v3.3.json
 cat BUILD_INFO.json
 ```
 
-Expected output (v3.3.2):
+Expected output (v3.3.3):
 ```
 DIS: 9863
 AREF: 6568
