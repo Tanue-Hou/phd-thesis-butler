@@ -1,3 +1,18 @@
+## v3.3.1 (2026-05-30)
+
+### Engineering Convergence — 工程化收敛
+
+**核心修复**
+- SKILL.md: {text}→{template} schema对齐，中文/英文控制语言规则
+- 13个子skill全量重写，清除死引用
+- GLOBAL层计数修正 1,764→1,284
+- GitHub Actions CI验证工作流新增
+
+**新增**
+- scripts/retrieve_templates.py — 确定性三层回退检索脚本
+- scripts/validate_skill_assets.py — 全量资产验证（6项检查）
+- evals/evals.json — 10个最小测试用例
+
 ## v3.3 (2026-05-30)
 
 ### Subtype 标准化与语义检索升级

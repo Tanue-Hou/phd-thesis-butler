@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_experiment
 description: "实验 — EXPERIMENT sentence templates"
-version: "3.3"
+version: "3.3.1"
 ---
 
 # EXPERIMENT — 实验（Эксперимент）

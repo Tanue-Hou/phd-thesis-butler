@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler/dis_model
 description: "理论建模 — MODEL sentence templates"
-version: "3.3"
+version: "3.3.1"
 ---
 
 # MODEL — 理论建模（Модель）
