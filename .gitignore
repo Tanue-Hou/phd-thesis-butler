@@ -30,3 +30,13 @@ data/curated/
 .idea/
 *.swp
 *.swo
+
+# Build pipeline (private — not uploaded to public repo)
+corpus_layer/
+scripts/build_*
+scripts/extract_*
+scripts/validate_corpus_layer.py
+tests/
+reports/
+.phd_build/
+
