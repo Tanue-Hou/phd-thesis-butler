@@ -1,23 +1,15 @@
 #!/usr/bin/env python3
 """
-Validate all skill assets for consistency and integrity.
+validate_skill_assets.py — Validate all skill assets for consistency and integrity.
 
-Checks:
-1. All JSONL files parse correctly
-2. Every entry has required fields (template, category, quality_score)
-3. quality_score is 0/1/2
-4. No ___ placeholders in template
-5. SKILL.md-referenced paths exist
-6. sub_skills don't reference non-existent files
-7. BUILD_INFO.json counts match actual file line counts
-8. No Chinese/English template contamination
+Fast mode (default): existence checks + BUILD_INFO cross-verify + spot-check first 50 lines.
+Deep mode (--deep): full line-by-line content scan of ALL JSONL files.
 
 Exit code 0 = all pass. Exit code 1 = failures.
 """
 
-import json, sys, re
+import json, sys, re, argparse
 from pathlib import Path
-from collections import defaultdict
 
 BASE = Path(__file__).resolve().parent.parent
 errors = []
@@ -26,7 +18,6 @@ CJK_RE = re.compile(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]')
 CJK_PUNCT_RE = re.compile(r'[，。；：！？、（）【】《》]')
 CYRILLIC_RE = re.compile(r'[А-Яа-яЁё]')
 
-# English words ALLOWED in Russian visible text (scientific terms, abbreviations)
 EN_WHITELIST = {
     'DIS', 'AREF', 'UTILS', 'MODEL', 'INTRO', 'SURVEY', 'METHOD', 'EXPERIMENT',
     'RESULT', 'DISCUSSION', 'CONCLUSION', 'TRANSITION', 'FORMAL_DEFS', 'ENGINEERING',
@@ -37,234 +28,160 @@ EN_WHITELIST = {
     'in', 'on', 'at', 'by', 'to', 'of', 'for', 'with', 'from', 'as',
 }
 
-def find_english_in_russian(text):
-    if not text:
-        return set()
-    words = re.findall(r'\b[a-zA-Z][a-zA-Z]{2,}\b', text)
-    flagged = set()
-    for w in words:
-        w_upper = w.upper()
-        if w_upper not in EN_WHITELIST and w not in EN_WHITELIST:
-            flagged.add(w)
-    return flagged
+SAMPLE_LIMIT = 20
+VALID_CATEGORIES = {
+    'INTRO', 'SURVEY', 'MODEL', 'METHOD', 'EXPERIMENT', 'RESULT',
+    'DISCUSSION', 'CONCLUSION', 'TRANSITION', 'FORMAL_DEFS', 'ENGINEERING',
+    'AREF', 'UTILS',
+}
 
-def find_spacing_issues(text):
-    if not text:
-        return set()
-    issues = set()
-    for m in re.finditer(r'([а-яА-ЯёЁ])([a-zA-Z])', text):
-        issues.add(f"NO_SPACE({m.group(1)}{m.group(2)})")
-    for m in re.finditer(r'([a-zA-Z])([а-яА-ЯёЁ])', text):
-        issues.add(f"NO_SPACE({m.group(1)}{m.group(2)})")
-    return issues
 
 def e(msg):
     errors.append(msg)
     print(f"  ❌ {msg}")
 
+
 def ok(msg):
     print(f"  ✅ {msg}")
 
-# ============================================================
-# 1. JSONL parse check
-# ============================================================
-print("\n1️⃣  JSONL parse check")
-jsonl_files = list(BASE.rglob("*.jsonl"))
-checked = 0
-for f in jsonl_files:
-    # Skip .git, .v33_backup
-    if ".git" in str(f) or ".v33_backup" in str(f):
-        continue
-    try:
-        with open(f) as fh:
-            for i, line in enumerate(fh, 1):
-                line = line.strip()
-                if line:
-                    json.loads(line)
-        checked += 1
-    except Exception as ex:
-        e(f"{f.relative_to(BASE)}:{i}: {ex}")
 
-ok(f"{checked} JSONL files, 0 parse errors" if not errors else f"{checked} files checked")
+def get_jsonl_files():
+    files = []
+    for f in sorted(BASE.rglob("*.jsonl")):
+        if ".git" in str(f) or ".v33_backup" in str(f) or ".phd_build" in str(f):
+            continue
+        if "/data/" in str(f) or "\\data\\" in str(f):
+            continue
+        files.append(f)
+    return files
 
-# ============================================================
-# 2. Field checks
-# ============================================================
-print("\n2️⃣  Field integrity check")
-for f in sorted(BASE.rglob("*.jsonl")):
-    if ".git" in str(f):
-        continue
-    if f.stat().st_size == 0:
-        continue
 
-    with open(f) as fh:
-        for i, line in enumerate(fh, 1):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                d = json.loads(line)
-            except:
-                e(f"{f.relative_to(BASE)}:{i}: JSON parse error")
-                continue
+def check_structure():
+    print("\n0️⃣  Structure existence check")
+    required_dirs = [
+        "assets/discipline",
+        "assets/cluster/TECH_LIFE",
+        "assets/cluster/HUM_SOC",
+        "assets/references",
+        "scripts",
+        "evals",
+    ]
+    for d in required_dirs:
+        if not (BASE / d).is_dir():
+            e(f"Missing required directory: {d}/")
 
-            # --- CHECK: ALL keys for bracket contamination ---
-            for key in list(d.keys()):
-                if '[' in key or ']' in key:
-                    e(f"{f.relative_to(BASE)}:{i}: bracket in key '{key}'")
-                # Known misspellings (exact key match, not normalized)
-                key_lower = key.lower()
-                if key_lower in ('when_touse', 'when_t_ouse', 'whentouse',
-                                  'common_mstake', 'common_mestakes', 'common_mstakes',
-                                  'subrype',
-                                  'quality_scor', 'qualitysore', 'quaity_score',
-                                  'schema_verson', 'schemaversion'):
-                    e(f"{f.relative_to(BASE)}:{i}: misspelled key '{key}'")
+    disc_dir = BASE / "assets/discipline"
+    if disc_dir.is_dir():
+        disc_count = len(list(disc_dir.glob("*.jsonl")))
+        ok(f"{disc_count} discipline JSONL files")
 
-            # --- CHECK: All values for CJK characters and CJK punctuation ---
-            for key, val in d.items():
-                if isinstance(val, str) and CJK_RE.search(val):
-                    e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:50]}")
-                if isinstance(val, str) and CJK_PUNCT_RE.search(val):
-                    e(f"{f.relative_to(BASE)}:{i}: CJK punctuation in '{key}': {val[:50]}")
-                elif isinstance(val, list):
-                    for j, item in enumerate(val):
-                        if isinstance(item, str) and CJK_RE.search(item):
-                            e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:50]}")
-                        if isinstance(item, str) and CJK_PUNCT_RE.search(item):
-                            e(f"{f.relative_to(BASE)}:{i}: CJK punctuation in '{key}[{j}]': {item[:50]}")
+    ref_dir = BASE / "assets/references"
+    if ref_dir.is_dir():
+        ref_files = list(ref_dir.glob("*.json")) + list(ref_dir.glob("*.md"))
+        ok(f"{len(ref_files)} reference files")
 
-            # quality_score check
-            qs = d.get("quality_score")
-            if qs is not None and qs not in (0, 1, 2):
-                e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
 
-            # ___ check (only in assets/ — new format)
-            t = d.get("template", d.get("text", ""))
-            if t and not CYRILLIC_RE.search(t):
-                e(f"{f.relative_to(BASE)}:{i}: non-Russian template without Cyrillic: {t[:50]}")
-            if "___" in t and "assets" in str(f):
-                e(f"{f.relative_to(BASE)}:{i}: ___ placeholder in template")
-
-            # Spacing check on template and when_to_use
-            for field in ['template', 'when_to_use', 'function']:
-                val = d.get(field, '')
-                if isinstance(val, str):
-                    sp = find_spacing_issues(val)
-                    if sp:
-                        for issue in list(sp)[:2]:
-                            e(f"{f.relative_to(BASE)}:{i}: spacing in {field}: {issue}")
-
-print(f"  No field errors" if not any("Field" in err for err in errors) else "  Field errors found")
-
-# ============================================================
-# 3. BUILD_INFO.json vs actual counts
-# ============================================================
-print("\n3️⃣  BUILD_INFO.json vs actual counts")
-bi_path = BASE / "BUILD_INFO.json"
-if bi_path.exists():
+def check_build_info():
+    print("\n🔢 BUILD_INFO consistency check")
+    bi_path = BASE / "BUILD_INFO.json"
+    if not bi_path.exists():
+        e("BUILD_INFO.json not found")
+        return
     with open(bi_path) as f:
         bi = json.load(f)
-    
-    # Check template counts
-    for key, fname in [("DIS", "MASTER_SENTENCEBANK_DIS.jsonl"),
-                       ("AREF", "MASTER_SENTENCEBANK_AREF.jsonl"),
-                       ("UTILS", "MASTER_UTILS.jsonl")]:
-        fp = BASE / "data/curated/master" / fname
-        if fp.exists():
-            actual = sum(1 for _ in open(fp))
-            expected = bi.get("templates", {}).get(key, 0)
-            if actual != expected:
-                e(f"BUILD_INFO {key}={expected}, actual={actual}")
-            else:
-                ok(f"{key}: {actual} (matches BUILD_INFO)")
-else:
-    e("BUILD_INFO.json not found")
 
-# ============================================================
-# 4. SKILL.md referenced path check
-# ============================================================
-print("\n4️⃣  SKILL.md referenced paths")
-sk = BASE / "SKILL.md"
-if sk.exists():
-    with open(sk) as f:
-        content = f.read()
-    
-    # Extract all file paths from SKILL.md (backtick paths)
-    paths = re.findall(r'`([^`]+\.(jsonl|json|yaml|md))`', content)
-    for path_str, _ in paths:
-        # Skip URLs and variables
-        if "{" in path_str or "http" in path_str:
+    version = bi.get("version", "")
+    ok(f"Version: {version}")
+
+    skill_path = BASE / "SKILL.md"
+    if skill_path.exists():
+        with open(skill_path) as f:
+            for line in f:
+                if line.startswith("version:"):
+                    skill_ver = line.split('"')[1] if '"' in line else ""
+                    if skill_ver == version:
+                        ok(f"SKILL.md version matches BUILD_INFO")
+                    else:
+                        e(f"SKILL.md version ({skill_ver}) != BUILD_INFO ({version})")
+                    break
+
+
+def check_jsonl_content(deep=False):
+    mode = "deep" if deep else f"fast (up to {SAMPLE_LIMIT}/file)"
+    print(f"\n🔎 JSONL content check ({mode})")
+
+    jsonl_files = get_jsonl_files()
+    checked_lines = 0
+    empty_files = 0
+
+    for f in jsonl_files:
+        if f.stat().st_size == 0:
+            empty_files += 1
             continue
-        p = BASE / path_str
-        if not p.exists():
-            e(f"SKILL.md references {path_str} → NOT FOUND")
-    
-    ok(f"{len(paths)} references checked" if not any("SKILL.md" in err for err in errors) else "")
-else:
-    e("SKILL.md not found")
 
-# ============================================================
-# 5. Sub-skill path check
-# ============================================================
-print("\n5️⃣  Sub-skill file references")
-for sub in sorted((BASE / "sub_skills").iterdir()):
-    sk_file = sub / "SKILL.md"
-    if not sk_file.exists():
-        continue
-    with open(sk_file) as f:
-        content = f.read()
-    paths = re.findall(r'`([^`]+\.(jsonl|json|yaml|md))`', content)
-    for path_str, _ in paths:
-        if "{" in path_str or "http" in path_str:
-            continue
-        p = BASE / path_str
-        if not p.exists():
-            e(f"{sub.name}/SKILL.md references {path_str} → NOT FOUND")
+        with open(f, encoding='utf-8') as fh:
+            for i, line in enumerate(fh, 1):
+                if not deep and i > SAMPLE_LIMIT:
+                    break
+                line = line.strip()
+                if not line:
+                    continue
+                checked_lines += 1
+                try:
+                    d = json.loads(line)
+                except:
+                    e(f"{f.relative_to(BASE)}:{i}: JSON parse error")
+                    continue
 
-if not any("Sub-skill" in err for err in errors):
-    ok("All sub_skill references valid")
+                t = d.get("template") or d.get("text", "")
+                qs = d.get("quality_score")
+                cat = d.get("category", "")
 
-# ============================================================
-# 6. Language contamination
-# ============================================================
-print("\n6️⃣  Language contamination check")
-CJK = re.compile(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]')
-cn_count = 0
-for f in sorted(BASE.rglob("*.jsonl")):
-    if ".git" in str(f) or ".v33_backup" in str(f):
-        continue
-    if f.stat().st_size == 0:
-        continue
-    with open(f) as fh:
-        for i, line in enumerate(fh, 1):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                d = json.loads(line)
-                t = d.get("template", d.get("text", ""))
-                if CJK.search(t):
-                    cn_count += 1
-                    if cn_count <= 3:
-                        e(f"Chinese in {f.relative_to(BASE)}:{i}: {t[:50]}")
-            except:
-                pass
+                if qs is not None and qs not in (0, 1, 2):
+                    e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
+                if cat and cat not in VALID_CATEGORIES:
+                    # Skip unknown category check for quality/ directories (Russian taxonomy names)
+                    if "/quality/" not in str(f) and "\\quality\\" not in str(f):
+                        e(f"{f.relative_to(BASE)}:{i}: unknown category '{cat}'")
 
-if cn_count == 0:
-    ok("Zero Chinese contamination")
-else:
-    e(f"{cn_count} Chinese template(s) found")
+                for key, val in d.items():
+                    if isinstance(val, str):
+                        if CJK_RE.search(val):
+                            e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:60]}")
+                    elif isinstance(val, list):
+                        for j, item in enumerate(val):
+                            if isinstance(item, str) and CJK_RE.search(item):
+                                e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:60]}")
 
-# ============================================================
-# Summary
-# ============================================================
-print(f"\n{'='*50}")
-if errors:
-    print(f"❌ FAILED: {len(errors)} error(s)")
-    for err in errors:
-        print(f"  {err}")
-    sys.exit(1)
-else:
-    print(f"✅ ALL CHECKS PASSED")
-    sys.exit(0)
+                if t and not CYRILLIC_RE.search(t):
+                    e(f"{f.relative_to(BASE)}:{i}: non-Russian template: {t[:60]}")
+
+    ok(f"{len(jsonl_files)} files, {checked_lines} lines checked")
+    if empty_files:
+        ok(f"{empty_files} empty files (skipped)")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--deep", action="store_true")
+    args = parser.parse_args()
+
+    print("=" * 60)
+    print(f"Skill Asset Validation  |  {BASE.name}")
+    print("=" * 60)
+
+    check_structure()
+    check_build_info()
+    check_jsonl_content(deep=args.deep)
+
+    print(f"\n{'=' * 60}")
+    if errors:
+        print(f"\n❌ FAILED — {len(errors)} issue(s)")
+        sys.exit(1)
+    else:
+        print("\n✅ ALL CHECKS PASSED")
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

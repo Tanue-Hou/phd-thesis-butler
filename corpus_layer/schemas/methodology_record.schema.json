@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "phd_butler_v4/methodology_record",
+  "title": "Methodology Record — PhD Thesis Butler v4.0",
+  "description": "Describes a research methodology route: its approach type, requirements, typical section sequence, and common chapter structure.",
+  "version": "4.0",
+  "type": "object",
+  "required": [
+    "methodology_id",
+    "name_ru",
+    "discipline",
+    "cluster",
+    "approach_type",
+    "requires_model",
+    "requires_experiment",
+    "requires_dataset",
+    "typical_sections",
+    "common_chapter_structure",
+    "evidence_count",
+    "source"
+  ],
+  "properties": {
+    "methodology_id": {
+      "type": "string",
+      "pattern": "^methodology_[0-9]{4,}$",
+      "description": "Unique methodology record ID following convention: methodology_{incremental_id}",
+      "examples": ["methodology_0001", "methodology_0017"]
+    },
+    "name_ru": {
+      "type": "string",
+      "description": "Russian name of the methodology route.",
+      "examples": ["Экспериментальное исследование с моделированием", "Теоретико-аналитический подход"]
+    },
+    "discipline": {
+      "type": "string",
+      "description": "Academic discipline this methodology is associated with.",
+      "examples": ["информатика", "педагогика", "экономика"]
+    },
+    "cluster": {
+      "type": "string",
+      "enum": ["TECH_LIFE", "HUM_SOC", "ART_SPORT", "MATH_PHYS", "GLOBAL"],
+      "description": "Cluster derived from directory path."
+    },
+    "approach_type": {
+      "type": "string",
+      "enum": ["theoretical", "experimental", "simulation", "hybrid", "field_study", "comparative"],
+      "description": "Primary research approach classification."
+    },
+    "requires_model": {
+      "type": "boolean",
+      "description": "True if this methodology typically requires constructing or describing a formal model."
+    },
+    "requires_experiment": {
+      "type": "boolean",
+      "description": "True if this methodology typically requires running experiments or empirical tests."
+    },
+    "requires_dataset": {
+      "type": "boolean",
+      "description": "True if this methodology typically requires a dataset (empirical, survey, archival, etc.)."
+    },
+    "typical_sections": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "INTRO", "SURVEY", "MODEL", "METHOD", "EXPERIMENT",
+          "RESULT", "DISCUSSION", "CONCLUSION", "TRANSITION",
+          "FORMAL_DEFS", "ENGINEERING", "AREF", "UTILS"
+        ]
+      },
+      "description": "Ordered array of DIS categories typically appearing in dissertations using this methodology. Preserves typical document order.",
+      "examples": [
+        ["INTRO", "SURVEY", "MODEL", "METHOD", "EXPERIMENT", "RESULT", "DISCUSSION", "CONCLUSION"],
+        ["INTRO", "SURVEY", "METHOD", "RESULT", "DISCUSSION", "CONCLUSION"],
+        ["INTRO", "FORMAL_DEFS", "MODEL", "EXPERIMENT", "RESULT", "CONCLUSION"]
+      ]
+    },
+    "common_chapter_structure": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["section_name", "purpose_ru"],
+        "properties": {
+          "section_name": {
+            "type": "string",
+            "description": "Name of the chapter or major section (e.g., 'Глава 1', 'Обзор литературы')."
+          },
+          "purpose_ru": {
+            "type": "string",
+            "description": "Purpose of this section, expressed in Russian.",
+            "examples": [
+              "Обоснование актуальности и формулирование цели исследования",
+              "Систематизация существующих подходов и выявление пробелов",
+              "Описание разработанной модели или метода"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Common chapter structure for dissertations using this methodology, with section names and their purposes in Russian."
+    },
+    "evidence_count": {
+      "type": "object",
+      "description": "Evidence metadata for this methodology record.",
+      "required": ["count", "source", "confidence"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of source papers demonstrating this methodology pattern."
+        },
+        "source": {
+          "type": "string",
+          "description": "Source identifier. For private builds: paper_id(s). For public output: 'abstracted'."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "pending"],
+          "description": "Confidence: high (≥30 papers), medium (10-29), low (<10), pending (not computed)."
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "description": "Origin institution or collection. For public output: 'abstracted'."
+    }
+  },
+  "additionalProperties": false
+}

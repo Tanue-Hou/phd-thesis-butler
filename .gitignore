@@ -5,26 +5,28 @@ logs/*.pid
 # Except operations log (manual, tracked)
 !logs/operations.log
 
-# Data - too large for git
-data/MSU/*
-data/SPbSU/*
-data/BMSTU/*
-
-# But keep empty dir markers
-!data/MSU/.gitkeep
-!data/SPbSU/.gitkeep
-!data/BMSTU/.gitkeep
-
-# Generated artifacts - not tracked
-data/raw/
-data/merged/
-data/classified/
-queue/
-assets/cluster/*.jsonl
-assets/discipline/*.jsonl
-
-# Temp
-*.tmp
-*.temp
+# Python
 __pycache__/
 *.pyc
+*.pyo
+
+# Environment
+.env
+*.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Corpus build output
+.phd_build/
+
+# Raw data (PDFs, pipeline intermediates — too large for git)
+data/
+data/curated/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo

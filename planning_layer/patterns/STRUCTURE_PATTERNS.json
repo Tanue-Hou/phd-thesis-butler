@@ -1,0 +1,101 @@
+{
+  "name": "STRUCTURE_PATTERNS",
+  "version": "3.3.5",
+  "description": "Каталог типовых структурных паттернов диссертаций по кластерам",
+  "patterns": [
+    {
+      "id": "engineering_model_method_experiment",
+      "name": "Инженерный: модель → метод → эксперимент",
+      "cluster": "ENGINEERING_CONTROL",
+      "chapters": [
+        "Введение",
+        "Обзор литературы и постановка задачи",
+        "Математическая модель объекта",
+        "Предлагаемый метод/алгоритм управления",
+        "Моделирование и численные эксперименты",
+        "Экспериментальная валидация",
+        "Результаты и обсуждение",
+        "Выводы"
+      ],
+      "logic_flow": "deductive",
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending"
+      }
+    },
+    {
+      "id": "ai_method_dataset_ablation",
+      "name": "AI/ML: метод → датасет → ablation",
+      "cluster": "COMPUTER_AI",
+      "chapters": [
+        "Введение",
+        "Обзор существующих подходов",
+        "Предлагаемый метод",
+        "Теоретический анализ",
+        "Экспериментальная оценка",
+        "Обсуждение",
+        "Выводы"
+      ],
+      "logic_flow": "hypothetico-deductive",
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending"
+      }
+    },
+    {
+      "id": "empirical_social_science",
+      "name": "Эмпирический: теория → данные → анализ",
+      "cluster": "SOCIAL_ECON_MANAGEMENT",
+      "chapters": [
+        "Введение",
+        "Теоретические основы и гипотезы",
+        "Методология исследования",
+        "Описание данных и выборки",
+        "Эмпирические результаты",
+        "Обсуждение и интерпретация",
+        "Выводы и рекомендации"
+      ],
+      "logic_flow": "hypothetico-deductive",
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending"
+      }
+    },
+    {
+      "id": "life_science_imrad",
+      "name": "Науки о жизни: IMRaD-ориентированный",
+      "cluster": "LIFE_MEDICAL",
+      "chapters": [
+        "Введение (актуальность, обзор литературы, цель)",
+        "Материалы и методы",
+        "Результаты",
+        "Обсуждение",
+        "Выводы"
+      ],
+      "logic_flow": "inductive",
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending"
+      }
+    },
+    {
+      "id": "humanities_argumentative_analysis",
+      "name": "Гуманитарный: аргументативно-аналитический",
+      "cluster": "HUMANITIES_ARTS",
+      "chapters": [
+        "Введение",
+        "Теоретико-методологическая основа",
+        "Аналитическая глава 1",
+        "Аналитическая глава 2",
+        "Аналитическая глава 3 (опционально)",
+        "Практическое применение (опционально)",
+        "Заключение"
+      ],
+      "logic_flow": "inductive",
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending"
+      }
+    }
+  ]
+}

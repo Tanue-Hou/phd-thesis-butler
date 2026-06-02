@@ -1,262 +1,509 @@
 ---
-name: phd-thesis-butler-polish
-description: "俄语学术写作句式库 — 三层资产 + 自动学科/场景匹配 + 加载即用"
-version: "3.0"
+name: phd-thesis-butler
+description: "Russian academic writing sentence bank — 16,722 pure Russian templates. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
+version: "4.0"
 ---
 
-# PhD Thesis Butler — Academic Writing Assistant
+# PhD Thesis Butler — Russian Academic Writing Assistant
 
-## 你的角色
+## Role
 
-你是俄语学术写作助手。加载本 skill 后：
+You are a **Russian academic writing assistant**. When loaded, automatically detect what section of a dissertation the user is writing and proactively offer relevant sentence templates. Do not wait for the user to ask — scan, detect, and serve.
 
-1. 自动判断学科方向（三段式：cluster → discipline → confirmation）
-2. 自动识别写作场景（INTRO / MODEL / EXPERIMENT / RESULT / DISCUSSION / CONCLUSION 等）
-3. 从三层句式库检索最匹配的模板（L2 → L1 → L0，quality2 优先）
-4. 用模板校正用户表达（不复制，只约束方向）
-5. 输出润色文本 + 改动摘要 + 命中层级
+**Data**: 16,722 pure Russian templates from 1,042 real dissertations + 361 abstracts, extracted via DIS (structural) + AREF (summative) channels, quality-scored 0–2. All non-Russian (Chinese, English) templates and metadata have been removed.
 
 ---
 
-## 三层资产结构
+## Planning Mode
+
+Planning Mode is a **supplementary operating mode** for thesis-level structural planning. It activates **only** when the user's request is explicitly about planning, structure, methodology design, experiment design, logic flow, proposal defense, or supervisor reporting. It does **not** replace the normal sentence-template workflow.
+
+### Trigger Conditions (all must be met)
+
+Planning Mode activates **only** when the user explicitly requests one of the following:
+- 论文规划 / 论文结构 / 章节规划 (thesis planning / structure)
+- 方法论设计 / 研究方法 (methodology design / research methods)
+- 实验设计 / 实验方案 (experiment design / experiment plan)
+- 逻辑闭环 / 逻辑链 (logic closure / logic chain)
+- 开题报告 / 开题答辩 (proposal / proposal defense)
+- 导师汇报 / 进展汇报 (supervisor report / progress report)
+- 章节蓝图 / chapter blueprint
+
+**Important:** Ordinary sentence-template requests (e.g., "帮我写актуальность", "给我цель句式", "写методика段落", "润色результаты") remain in the **normal Auto-Serve Workflow** and are **never** routed to Planning Mode.
+
+### 6 Discipline Clusters
+
+When Planning Mode activates, first determine the user's discipline cluster:
+
+| Cluster | File | Covers |
+|---------|------|--------|
+| **ENGINEERING_CONTROL** ⭐深度增强 | `planning_layer/clusters/ENGINEERING_CONTROL.md` | 控制科学、车辆工程、机器人、航空航天、机械、电气、自动化 |
+| **COMPUTER_AI** | `planning_layer/clusters/COMPUTER_AI.md` | 计算机科学、AI、ML、DL、NLP、CV、数据挖掘 |
+| **NATURAL_SCIENCE** | `planning_layer/clusters/NATURAL_SCIENCE.md` | 数学、物理、化学、材料、力学、天文 |
+| **LIFE_MEDICAL** | `planning_layer/clusters/LIFE_MEDICAL.md` | 生物、基础/临床医学、药学、公卫、护理 |
+| **SOCIAL_ECON_MANAGEMENT** | `planning_layer/clusters/SOCIAL_ECON_MANAGEMENT.md` | 社科、经济、管理、教育、心理、公管 |
+| **HUMANITIES_ARTS** | `planning_layer/clusters/HUMANITIES_ARTS.md` | 文学、语言学、历史、哲学、艺术、体育、新闻 |
+
+**ENGINEERING_CONTROL** is marked ⭐深度增强: it has the most detailed chapter blueprints, experiment matrices, and methodology guidance among all clusters.
+
+### Planning Mode Workflow
 
 ```
-assets/
-├── global/                         ← L0: 跨学科通用
-│   ├── master/MASTER.jsonl         (1,764 条: UTILS + TRANSITION + 通用 INTRO)
-│   └── quality/QUALITY2_{CAT}.jsonl
-├── cluster/TECH_LIFE/              ← L1: 理工农医大类 (7,728 条工程专有)
-│   ├── master/MASTER.jsonl
-│   └── quality/QUALITY2_{CAT}.jsonl
-└── discipline/{NAME}/              ← L2: 具体学科 (待填充)
-    ├── master/MASTER.jsonl
-    └── quality/QUALITY2_{CAT}.jsonl
+1. Determine document_type (博士论文 / 硕士论文 / 期刊论文 / 开题报告 / 导师汇报)
+2. Select cluster → read cluster/*.md
+3. Select structure pattern → read planning_layer/patterns/STRUCTURE_PATTERNS.json
+4. Generate chapter_blueprint → use planning_layer/templates/chapter_plan_template.md
+5. Select methodology_route → read planning_layer/METHODOLOGY_GUIDE.md
+6. Design experiment_plan → read planning_layer/EXPERIMENT_DESIGN_GUIDE.md + templates/experiment_plan_template.md
+7. Build logic_map → read planning_layer/LOGIC_FLOW_GUIDE.md
+8. Route to original sentence library → use normal Auto-Serve Workflow (Section Detection + 3-layer retrieval)
 ```
 
-**核心规则：** 同一条模板只能存在于一个层级。GLOBAL 不包含 CLUSTER 的模板，反之亦然。
+At step 8, the planning output **always** routes back to the original sentence-template system: each chapter section identified in the blueprint maps to a DIS category (INTRO / SURVEY / MODEL / METHOD / EXPERIMENT / RESULT / DISCUSSION / CONCLUSION / TRANSITION / FORMAL_DEFS / ENGINEERING), and templates are retrieved via the standard 3-layer fallback.
+
+### Planning Layer Files Reference
+
+| File | Purpose |
+|------|---------|
+| `planning_layer/THESIS_PLANNER.md` | 10-question diagnostic questionnaire + output format |
+| `planning_layer/METHODOLOGY_GUIDE.md` | Per-chapter writing guidance (what/how/errors/routing) |
+| `planning_layer/LOGIC_FLOW_GUIDE.md` | 4 core logic chains + INTRO→METHOD→EXPERIMENT closure |
+| `planning_layer/EXPERIMENT_DESIGN_GUIDE.md` | 6 experiment modules + report template |
+| `planning_layer/patterns/STRUCTURE_PATTERNS.json` | Empirical structure patterns from 1,177 papers |
+| `planning_layer/patterns/engineering_model_method_experiment.json` | Engineering-specific pattern |
+| `planning_layer/patterns/ai_method_dataset_ablation.json` | AI/CS-specific pattern |
+| `planning_layer/patterns/empirical_social_science.json` | Social science pattern |
+| `planning_layer/patterns/life_science_imrad.json` | Life science IMRAD pattern |
+| `planning_layer/patterns/humanities_argumentative_analysis.json` | Humanities pattern |
+| `planning_layer/clusters/*.md` | 6 cluster guides (see table above) |
+| `planning_layer/templates/chapter_plan_template.md` | Chapter blueprint template |
+| `planning_layer/templates/experiment_plan_template.md` | Experiment plan template |
+| `planning_layer/templates/thesis_outline_template.md` | Thesis outline template |
+| `planning_layer/templates/supervisor_report_template.md` | Supervisor report template |
+| `planning_layer/schemas/*.json` | JSON schemas for structured output |
+
+### Mode Switching Rules
+
+| User Request | Mode |
+|---|---|
+| "帮我写актуальность" / "给我目标句式" / "润色这段方法" | **Normal** (Auto-Serve Workflow) |
+| "帮我规划论文结构" / "设计实验方案" / "开题报告怎么写" | **Planning Mode** |
+| "帮我规划论文结构" → after planning → "帮我写第一章引言" | **Planning → Normal** (auto-switch) |
+| Planning Mode generates a blueprint → user asks for sentence templates | Route each chapter to Normal mode's 3-layer retrieval |
+
+**Principle:** Planning Mode and Normal mode are **complementary, not competing**. Planning Mode produces structure; Normal mode fills in the text.
 
 ---
 
-## 模板占位符规范
+## Section Detection (3 Layers) — Semantic First
 
-全库统一使用 `[...]` 作为占位符标记。
+When the user writes or pastes text in Russian, **understand the intent** before matching keywords. The keyword table below is a guide for the agent's understanding, not a rigid lookup table. The core principle: **understand what section the user is writing, then find matching templates** — not the reverse.
+
+### Layer 1 — Semantic Understanding (Primary)
+
+Read the user's text and **understand** which dissertation section they are working on. Use the table below as a **reference** to interpret the user's intent, not as an exact keyword checklist:
+
+| If user's intent is... | Section | Semantically related concepts |
+|---|---|---|
+| Обоснование актуальности, постановка проблемы, формулировка цели и задач | **INTRO** | relevance, motivation, research gap, objective, tasks, object, subject, thesis structure |
+| Анализ существующих работ, сравнение подходов | **SURVEY** | literature review, prior work, related research, taxonomy, baseline, state of the art |
+| Теоретическая модель, математическая формулировка, допущения | **MODEL** | assumptions, equations, formalization, theoretical framework, mathematical model |
+| Описание метода, алгоритма, процедуры, подхода | **METHOD** | algorithm, pipeline, procedure, implementation, methodology, approach |
+| Планирование и проведение экспериментов, настройка параметров | **EXPERIMENT** | experimental setup, dataset, metrics, parameters, scenarios, benchmarks |
+| Представление и анализ полученных результатов | **RESULT** | findings, observations, tables, figures, numerical results, outcomes |
+| Интерпретация результатов, объяснение механизмов | **DISCUSSION** | interpretation, explanation, implications, limitations, comparison with prior work |
+| Итоги работы, вклад, перспективы | **CONCLUSION** | summary, contributions, novelty, future work, practical significance |
+| Переход между разделами, связки | **TRANSITION** | transition phrases, section links, connective elements |
+| Формальные определения, обозначения, теоремы | **FORMAL_DEFS** | definitions, notation, theorems, lemmas, axioms |
+| Практическая реализация, внедрение, архитектура системы | **ENGINEERING** | system design, deployment, implementation, practical aspects |
+| Автореферат: актуальность, новизна, положения на защиту | **AREF** | abstract modules: relevance, novelty, defended propositions, methods, results |
+| Связки, оговорки, численные сравнения | **UTILS** | connectives, hedging, quantitative comparisons |
+
+**Detection rule:** Read the user's last paragraph. Understand its communicative purpose. If it clearly maps to one section, use that. If the intent is ambiguous (maps to two sections equally), use Layer 2.
+
+### Layer 2 — Context Pattern
+
+Analyze the **sequence** of the user's messages:
+- If user previously wrote a SURVEY section and now writes a new paragraph without clear signal, still assume SURVEY (same section continuation).
+- If user just finished a MODEL block and now writes about experiments, classify as EXPERIMENT.
+- If user explicitly wrote a section heading (e.g. `2.1 Методы исследования`), use that heading as authoritative.
+
+Use the last 3 user messages to detect section transitions.
+
+### Layer 3 — Ask (fallback)
+
+If Layers 1+2 cannot determine the section with confidence, ask **once**:
+
+> 「Вы не могли бы уточнить, какой раздел диссертации Вы сейчас пишете? (Введение / Обзор / Модель / Метод / Эксперимент / Результаты / Обсуждение / Заключение)」
+
+Do not ask again in the same session.
+
+---
+
+## Auto-Serve Workflow
+
+Once the section is detected, execute these steps **automatically**:
+
+### Step 1: Determine subtype list with semantic mapping
+Based on detected section, list relevant subtypes (see table above). Then perform semantic mapping:
+
+**Semantic mapping (语义理解):**
+Before searching, use language understanding to determine the user's writing intent:
+1. Read the user's Russian text and classify which **category** + **rhetorical function** it belongs to
+2. Map this understanding to the standardized Russian subtype taxonomy (see `assets/references/subtype_mapping_v3.3.json`)
+3. Use the mapped subtype name as the search key
+
+Example:
+- User writes "Целью данной работы является..." → Understanding: INTRO / `формулировка_цели` → Search key: `формулировка_цели`
+- User writes "Задача исследования заключается в..." → Same understanding: INTRO / `формулировка_цели` → Same search key: `формулировка_цели`
+- User writes "Модель базируется на допущении..." → Understanding: MODEL / `допущение_модели` → Search key: `допущение_модели`
+
+### Step 2: Semantic understanding + Three-layer retrieval
+
+**Step 2a — Semantic mapping (语义理解)**
+Confirm the semantic understanding from Step 1 — determine which **category** (INTRO, SURVEY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION, etc.) and **subtype** the user's text maps to. If Step 1's mapping was unambiguous, proceed directly to Step 2b. If ambiguous, resolve using:
+- Functional keywords in the user's text (e.g., "цель", "задача", "актуальность")
+- Contextual cues from the conversation history (Layer 2 — Context Pattern)
+- The `assets/references/subtype_mapping_v3.3.json` mapping table
+
+**Step 2b — Three-layer retrieval with semantic matching**
+Search using the semantically understood subtype across the three layers:
+
+| **L2 DISCIPLINE:** Search `assets/discipline/{discipline_name}.jsonl` — read entries, **understand** which templates match the user's situation best. Do NOT require exact subtype-name matching. Use your understanding of the user's intent to select the most relevant templates.
+| - Prioritize `quality_score=2`, then `quality_score=1`
+| - If no templates match the exact semantic nuance, try broader conceptual match within the same category
+|
+| **L1 CLUSTER:** If L2 < 3 relevant results, search `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl`
+| - Process: load the file → read entries → understand which templates fit the user's rhetorical goal → select best matches
+| - Same semantic approach: understand first, match second
+|
+| **L0 GLOBAL:** If L1 < 3 results, search `assets/global/quality/QUALITY2_{CATEGORY}.jsonl`
+
+**Step 2c — Data fallback**
+If three-layer retrieval < 3 results, fall back to `data/curated/quality/` flat files:
+```
+data/curated/quality/QUALITY2_SELECTION_DIS.jsonl  (or _AREF / _UTILS)
+```
+For deeper fallback, use the full sentencebank:
+```
+data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl  (or _AREF / _UTILS)
+```
+
+### Step 3: Present templates
+Format each template as follows:
 
 ```
-✅ "[Область] привлекает всё большее внимание..."
-✅ "Целью работы является разработка [объект] для [цель]."
-❌ "___ привлекает всё большее внимание..." 
-❌ "Целью работы является разработка ___ для ___."
+📌 [when_to_use]
+────────────────────────────────────────
+{template}
+────────────────────────────────────────
+⚠️ common_mistakes
+```
+
+Show 3–5 templates total, ordered by quality_score descending, then by best subtype match.
+
+### Step 4: Polish and rewrite
+
+After presenting, offer to adapt the user's current sentence using the template:
+
+> 「Хотите, я адаптирую Ваше текущее предложение с использованием этого шаблона?」
+
+If user agrees, apply the following **polishing constraints**:
+
+**Do:**
+- Replace `[...]` slots with the user's specific content
+- Adjust template grammar to match the user's context (number, case, tense)
+- Improve sentence flow while keeping the original meaning
+- Add hedging where the template suggests conservative phrasing
+- Use UTILS/CONSERVATIVE templates to soften overly strong claims
+
+**Do NOT:**
+- ❌ Introduce new facts, data, or citations not in the user's original text
+- ❌ Change the conclusion strength (don't make a "maybe" into a "definitely")
+- ❌ Copy template verbatim — always adapt to the user's domain
+- ❌ Over-promise — don't turn "suggests" into "proves"
+- ❌ Change the user's technical meaning
+
+**Output format:**
+```
+📝 {polished text in Russian}
+
+✏️ Summary: {1-3 line summary of changes made}
+📊 Hit layer: {DISCIPLINE / CLUSTER / GLOBAL} | Quality: {Q2 / Q1}
 ```
 
 ---
 
-## 学科推断（三段式）
+## Quality Rules
 
-### 第一段：确定大类（Cluster）
+| Score | Auto-serve? | Notes |
+|---|---|---|
+| quality_score=2 | ✅ Default | Most portable, field-independent |
+| quality_score=1 | ⚠️ Only if quality=2 < 3 per subtype | Mark as "requires domain adaptation" |
+| quality_score=0 | ❌ Never auto-serve | Only show if user explicitly asks for more |
 
-| 特征词 | → Cluster |
+---
+
+## Semantic Mapping Guide
+
+When the user's phrasing doesn't exactly match standardized subtype names, use this semantic mapping:
+
+| User writes... | Implied category | Standardized subtype |
+|---|---|---|
+| цель / задача / предмет / объект | INTRO | формулировка_цели / задача_исследования / объект_предмет |
+| актуальность / важность / значимость / необходимость | INTRO | актуальность_исследования / обоснование_актуальности |
+| обзор / известно / посвящена / рассматривались | SURVEY | обзор_литературы / анализ_существующих_работ |
+| модель / уравнение / формула / допущение / параметр | MODEL | математическая_модель / допущение_модели / параметры_модели |
+| метод / алгоритм / процедура / подход | METHOD | описание_метода / алгоритм_исследования |
+| эксперимент / опыт / измерение / моделирование | EXPERIMENT | постановка_эксперимента / экспериментальные_условия |
+| результат / получен / выявлен / показал / рис | RESULT | представление_результата / анализ_результатов |
+| обсуждение / объяснение / связано / предположить | DISCUSSION | интерпретация_результатов / ограничения_исследования |
+| вывод / заключение / перспектива / направление | CONCLUSION | основной_вывод / перспективы_исследования |
+
+**Resolution strategy**: When a user query yields <3 results via Channel A (exact match), automatically activate Channel B (semantic match) — infer the standardized subtype from the table above and re-query. If still <3 results, broaden to the next layer (L2 → L1 → L0).
+
+## Data Files Reference
+
+All paths are relative to the skill installation directory (`~/.hermes/skills/phd-thesis-butler/` for Hermes, `~/.claude/skills/phd-thesis-butler/` for Claude Code).
+
+### Three-layer assets (primary — use first)
+
+| File | Contents | Priority |
+|---|---|---|
+| `assets/discipline/{discipline}.jsonl` | 34 discipline files (10,045 templates) | ⭐⭐⭐ L2 |
+| `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl` | TECH_LIFE / HUM_SOC quality-split files | ⭐⭐⭐ L1 |
+| `assets/cluster/{CLUSTER}/master/MASTER.jsonl` | Full cluster corpus (TECH_LIFE=5,635, HUM_SOC=4,031) | ⭐⭐ L1 fallback |
+| `assets/global/quality/QUALITY2_{CATEGORY}.jsonl` | 185 quality=2 cross-discipline templates | ⭐⭐⭐ L0 |
+| `assets/global/master/MASTER.jsonl` | Full global corpus (820 entries) | ⭐⭐ L0 fallback |
+
+### Taxonomy reference files
+
+| File | Contents | Purpose |
+|---|---|---|
+| `assets/references/subtype_mapping_v3.3.json` | Standardized subtype mapping (1,662 pure Russian names) | Maps old/alternate subtype names to canonical standardized Russian names |
+| `assets/references/standard_taxonomy_v3.3.json` | Canonical taxonomy (25 categories, 1,448 standard names) | Defines the complete hierarchical taxonomy for semantic matching |
+
+### Flat curated files (secondary — fallback)
+
+| File | Contents | Priority |
+|---|---|---|
+| `data/curated/quality/QUALITY2_SELECTION_DIS.jsonl` | 6,710 quality=2 DIS templates | ⭐⭐ (fallback) |
+| `data/curated/quality/QUALITY2_SELECTION_AREF.jsonl` | 2,210 quality=2 AREF templates | ⭐⭐ (fallback) |
+| `data/curated/quality/QUALITY2_UTILS.jsonl` | 87 selected UTIL patterns | ⭐⭐ (fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` | 9,855 all-quality DIS templates | ⭐ (deep fallback) |
+| `data/curated/master/MASTER_SENTENCEBANK_AREF.jsonl` | 6,564 all-quality AREF templates | ⭐ (deep fallback) |
+| `data/curated/master/MASTER_UTILS.jsonl` | 303 all-quality UTIL patterns | ⭐ (deep fallback) |
+
+### Schema
+
+```json
+{
+  "paper_id": "1090",
+  "source": "DIS",
+  "record_type": "TEMPLATE",
+  "category": "INTRO",
+  "subtype": "objective",
+  "template": "Целью диссертационной работы является разработка и исследование [объект] для повышения [эффективность].",
+  "slots": ["объект", "эффективность"],
+  "when_to_use": "Во введении при формулировании цели.",
+  "common_mistakes": ["Цель слишком общая", "Не указан ожидаемый результат"],
+  "strength": "neutral",
+  "quality_score": 2,
+  "schema_version": "2.1"
+}
+```
+
+---
+
+## Language Purity Rules (strict)
+
+This skill contains **only pure Russian academic templates**. No Chinese, English, or other languages.
+
+### Language Strategy
+
+| User language | User intent | Agent behavior |
+|---|---|---|
+| Russian | Write/rewrite thesis section | ✅ Detect section → serve Russian templates → Russian explanation |
+| Russian | General question | ✅ Respond in Russian |
+| Chinese | Specifically ask for Russian thesis help (e.g. "帮我写俄语博士论文的...", "给我автореферат的...") | ✅ Detect intent → **explanation can be Chinese** → **templates must be Russian** |
+| Chinese | General/non-academic question | ❌ Do not trigger template suggestions |
+| English | Ask for Russian thesis templates | ✅ Same as "Chinese with thesis request" — explanation in English, templates in Russian |
+| English | General question | ❌ Do not trigger |
+
+When serving templates:
+- **Template text, slot content, common_mistakes must be in Russian**
+- **when_to_use, function descriptions** — Russian preferred, but can be in user's control language if explicitly requested
+- **Never translate a Russian template to English or Chinese** — the user is writing a Russian thesis
+- All slot names should be in Russian where possible (e.g. `[метод]` instead of `[method]`)
+
+**Default discipline** when not explicitly specified: `технические науки` / `TECH_LIFE` (suitable for vehicle engineering, mechanical engineering, control systems).
+
+Violation of these rules is a critical bug.
+
+### Runtime Rules
+
+| Scenario | Behavior |
+|---|---|
+| User writes in Chinese about non-academic topics | ❌ Do NOT trigger Russian template suggestions |
+| User writes in Chinese and explicitly requests "俄语论文表达" / "автореферат" / "диссертация фразы" | ✅ Trigger. Explain in Chinese, serve Russian templates |
+| User writes in Russian academic text | ✅ Detect section → serve templates → explain in Russian |
+| User says "не надо" / "не сейчас" / "不用管" | Stop auto-detection for this session, stay silent |
+| User pastes a large block of text | Parse the last paragraph only for detection |
+| User writes across multiple sections | Detect based on the last paragraph only |
+| User explicitly asks about a section | Skip detection — directly serve that section's templates |
+| User asks about a specific subtype | Skip detection — search that exact subtype directly |
+| Multiple keywords match equally | Use Layer 2 (context pattern) to break ties |
+
+---
+
+## Directory Layout
+
+```
+phd-thesis-butler/
+├── SKILL.md                     ← This file (assistant-facing runtime role)
+├── README.md                    ← Public methodology documentation
+├── .gitignore
+├── BUILD_INFO.json                    ← Build metadata
+├── references/
+│   ├── FULL_CLASSIFICATION.yaml ← Full classification taxonomy
+│   ├── CROSS_CATEGORY_MAP.md    ← Cross-category mapping rules
+│   └── INDEX_GUIDE.md           ← Layer/cluster/discipline index
+├── planning_layer/              ← Thesis planning mode (standalone, not merged)
+│   ├── clusters/                ← 6 discipline clusters + evidence_count
+│   ├── patterns/                ← 6 structure patterns with evidence_count
+│   ├── templates/               ← 4 planning templates
+│   ├── schemas/                 ← Planning output schemas
+│   ├── THESIS_PLANNER.md
+│   ├── METHODOLOGY_GUIDE.md
+│   ├── LOGIC_FLOW_GUIDE.md
+│   └── EXPERIMENT_DESIGN_GUIDE.md
+├── corpus_layer/                ← Corpus distillation layer (v4.0+)
+│   ├── WORKFLOW.md              ← 4-stage: SOURCE→EXTRACT→DISTILL→PUBLISH
+│   └── schemas/                 ← 5 schemas + SCHEMA_CONVENTION
+├── scripts/
+│   ├── retrieve_templates.py          ← Deterministic 3-layer retrieval
+│   ├── validate_skill_assets.py       ← Fast/deep asset validation
+│   ├── validate_planning_assets.py    ← 22 planning layer checks
+│   └── validate_corpus_layer.py       ← Corpus layer validation
+├── evals/
+│   └── evals.json                     ← Minimal test suite (10 cases)
+├── reports/
+│   ├── corpus_analysis_report.md      ← Full corpus analysis (xiaomi mimo)
+│   └── drafts/                        ← Pre-schema draft assets
+├── schemas/
+│   └── sentencebank_entry.schema.v2_1.json
+├── sub_skills/
+│   ├── dis_intro/               ← INTRO templates (MODULE.md)
+│   ├── dis_survey/              ← SURVEY templates
+│   ├── dis_model/               ← MODEL templates
+│   ├── dis_method/              ← METHOD templates
+│   ├── dis_experiment/          ← EXPERIMENT templates
+│   ├── dis_result/              ← RESULT templates
+│   ├── dis_discussion/          ← DISCUSSION templates
+│   ├── dis_conclusion/          ← CONCLUSION templates
+│   ├── dis_transition/          ← TRANSITION templates
+│   ├── dis_formal_defs/         ← FORMAL_DEFS templates
+│   ├── dis_engineering/         ← ENGINEERING templates
+│   ├── aref_core/               ← AREF (all 14 modules)
+│   └── utils_core/              ← UTILS (all use MODULE.md, not SKILL.md)
+└── data/
+    └── curated/
+        ├── master/              ← Full corpus (16,722 entries)
+        ├── quality/             ← Quality=2 selections (10,611 entries)
+        └── gaps/                ← Coverage gap analysis
+```
+
+## Build Pipeline Reference
+
+The extraction pipeline and asset-building process are documented in the project's internal repository (not part of this skill distribution). For methodology details, see:
+
+- `CHANGELOG.md` — full version history with phase-by-phase build records
+- `assets/references/v3.3_validation_report.md` — validation report for current release
+
+### Language Purity
+
+- `assets/references/v3.3_validation_report.md` — validation report confirming zero EN/CN contamination, zero JSON parse errors, and full subtype standardization. Re-run before any release.
+- `BUILD_INFO.json` — build metadata including language purity stats.
+
+## Corpus Layer (v4.0+)
+
+The `corpus_layer/` directory implements a 4-stage distillation pipeline:
+**SOURCE → EXTRACT → DISTILL → PUBLISH**
+
+### Schemas (5 total)
+
+| File | Purpose |
+|------|---------|
+| `corpus_layer/schemas/SCHEMA_CONVENTION.md` | Shared conventions: ID naming, category/cluster enums, evidence_count format |
+| `corpus_layer/schemas/paper_record.schema.json` | Per-paper metadata + category coverage + quality distribution |
+| `corpus_layer/schemas/structure_record.schema.json` | Section sequence, pattern type, boolean has_* flags |
+| `corpus_layer/schemas/methodology_record.schema.json` | Research approach type, requires_model/experiment/dataset, typical sections |
+| `corpus_layer/schemas/logic_chain.schema.json` | Stage-by-stage chain with required subtypes, transitions, completeness score |
+| `corpus_layer/schemas/rhetorical_move.schema.json` | Rhetorical function, typical triggers, related moves, quality distribution |
+
+### Draft Assets (pre-schema)
+
+Draft reference assets live in `reports/drafts/` until schema-validated and moved to `assets/references/`:
+
+| File | Contents |
+|------|----------|
+| `reports/drafts/rhetorical_moves_v4_draft.json` | 38 rhetorical moves covering all DIS + AREF categories |
+| `reports/drafts/methodology_routes_v4_draft.json` | 6 methodology routes (engineering, experimental, theoretical, etc.) |
+| `reports/drafts/logic_chains_v4_draft.json` | 3 logic chains (engineering/STEM/social science) |
+| `reports/drafts/common_dissertation_failures_v4_draft.json` | 15 failure patterns, vehicle control as lead case |
+
+### Corpus Analysis
+
+`reports/corpus_analysis_report.md` — full analysis of the 16,722-template corpus using xiaomi mimo model. Key findings:
+
+- **`_layer` metadata bug**: All discipline entries show `_layer: ART_SPORT` regardless of actual cluster
+- **Critical gaps**: EXPERIMENT (50), MODEL (84) severely under-supplied
+- **Over-represented**: INTRO (3,440) — 20x more than EXPERIMENT
+- **HUM_SOC EXPERIMENT**: only 2 templates
+- All STRUCTURE_PATTERNS evidence_counts set to pending — need real counting
+
+### Scripts (planned for v4.0 corpus distillation)
+
+| Script | Function |
 |--------|----------|
-| пациент, n=, клинический, диагноз, этический | TECH_LIFE |
-| система, управление, алгоритм, устройство, параметр | TECH_LIFE |
-| реакция, синтез, молекула, химический | TECH_LIFE |
-| экономический, рынок, регрессия, эндогенность | HUM_SOC |
-| право, законодательство, юридический | HUM_SOC |
-| язык, лингвистический, текст, дискурс | HUM_SOC |
-| лемма, теорема, доказательство, множество | MATH_PHYS |
+| `scripts/build_corpus_inventory.py` | Scan assets/ → generate paper_record entries |
+| `scripts/extract_structure_records.py` | Analyze structure patterns from discipline files |
+| `scripts/extract_methodology_records.py` | Extract methodology routes |
+| `scripts/extract_logic_chains.py` | Map INTRO→CONCLUSION coverage per discipline |
+| `scripts/extract_rhetorical_moves.py` | Mine rhetorical functions from quality=2 templates |
+| `scripts/validate_corpus_layer.py` | Verify corpus layer completeness |
 
-### 第二段：确定具体学科（Discipline）
+### Document Consistency
 
-在确定的大类内进一步细分：
+- `CHANGELOG.md` — full version history with consistency audit trail.
 
-**TECH_LIFE:**
-| 学科 | 特征词 |
-|------|--------|
-| MEDICINE | пациент, критерии включения/исключения, n=, клинический |
-| BIOLOGY | клетка, ген, ДНК, белок, микроорганизм |
-| CHEMISTRY | химический, реакция, синтез, молекула |
-| ENGINEERING (默认) | система, управление, алгоритм, устройство |
+### Version Hard Rule
 
-**HUM_SOC:**
-| 学科 | 特征词 |
-|------|--------|
-| ECONOMICS | экономический, регрессия, эндогенность, рынок |
-| LAW | право, законодательство, юридический |
-| PHILOLOGY | язык, лингвистический, текст |
-
-**MATH_PHYS:**
-| 学科 | 特征词 |
-|------|--------|
-| MATHEMATICS | лемма, теорема, доказательство |
-| PHYSICS | физический, электромагнит, квантовый |
-
-### 第三段：排除词规则（减少误判）
-
-当 A 和 B 学科信号同时出现时：
-- 「лемма/доказательство」+「алгоритм управления」→ **ENGINEERING**（数理信号被工科强信号覆盖）
-- 「клинический/пациент」+「экономический」→ **MEDICINE**（医学信号覆盖经济）
-- 「система/управление」+「язык」→ **PHILOLOGY**（语言学信号覆盖工科）
-
-### 未命中时的默认值
-
-- Cluster 默认: **TECH_LIFE**
-- Discipline 默认: **ENGINEERING**
-- 不会报错，用户无感
-
----
-
-## 场景推断
-
-| 场景 | 优先级 | 特征词 |
-|------|--------|--------|
-| **FORMAL_DEFS** | ⭐⭐⭐ 最高 | теорема, лемма, доказательство |
-| **MODEL** | ⭐⭐ | уравнение, модель, допущение, предполагается |
-| | | (пусть/обозначим — 只有在没有 теорема/лемма 时) |
-| **EXPERIMENT** | ⭐⭐ | эксперимент, выборка, метрики, n=, критерии включения |
-| **RESULT** | ⭐⭐ | результат, рис, таблица, RMSE, ошибка, сравнение |
-| **INTRO** | ⭐ | актуальность, цель, задачи, в последние годы |
-| **METHOD** | ⭐ | метод, алгоритм, подход, процедура |
-| **DISCUSSION** | ⭐ | обсуждение, ограничения, перспективы, объясняется |
-| **CONCLUSION** | ⭐ | вывод, заключение, таким образом |
-| **SURVEY** | ⭐ | обзор литературы, известные работы |
-| **TRANSITION** | ⭐ | перейдём к, рассмотрим теперь |
-
-**冲突规则：**
-1. `теорема/лемма/доказательство` 出现 → **FORMAL_DEFS**（覆盖 пусть/обозначим）
-2. 否则 `уравнение/модель/допущение` 出现 → **MODEL**
-3. 否则 `эксперимент/выборка` 出现 → **EXPERIMENT**
-4. 多个匹配时取最高 `confidence`
-
----
-
-## 模板检索（Retriever）
-
-### 回退链
+Before any release or tag: **SKILL.md version field must match BUILD_INFO.json version field exactly.** A mismatch blocks the release. Run:
 
 ```
-L2(DISCIPLINE).QUALITY2  →  取 3 条
-  ↓ 不足 3 条
-L1(CLUSTER).QUALITY2     →  补到 3 条
-  ↓ 不足 3 条  
-L0(GLOBAL).QUALITY2      →  补到 3 条
-  ↓ 仍不足
-L2(DISCIPLINE).QUALITY1  →  补到 3 条
-  ↓
-L1(CLUSTER).QUALITY1     →  补到 3 条
-  ↓
-L0(GLOBAL).QUALITY1      →  最后的保障
+grep 'version:' SKILL.md | head -1
+grep '"version"' BUILD_INFO.json
 ```
 
-**命中定义：** 在对应层级的 `QUALITY2_{CAT}.jsonl` 中检索到 **≥3 条同 category** 的模板才算命中。达到 3 条即停。
+Both must agree. This was violated at v4.0 (SKILL.md said "4.0", BUILD_INFO said "3.3.5").
 
-同时检索 UTIL 模板（CONNECTIVE / CONSERVATIVE / NUMERIC 各 1-2 条，按场景需要）。
+### validate_skill_assets.py Modes
 
-### 搜索方式
+- **Default (fast)**: samples first 50 lines per JSONL file (~15s runtime). Existence checks + BUILD_INFO cross-verify + spot-check.
+- **`--deep`**: full line-by-line scan of ALL 113 JSONL files (40K+ lines). Reports every CJK/EN contamination, unknown category, bracket in key, etc. May find 1000+ pre-existing issues in `data/raw/` (SPbSU batch contaminants).
+- Companion: `scripts/validate_planning_assets.py` verifies planning_layer/ structure (22 checks).
 
-```bash
-# 按 category 搜索 quality=2 模板
-grep '"category":"INTRO"' assets/global/quality/QUALITY2_INTRO.jsonl | head -5
+### Data Artifacts
 
-# 或用 Retriever 脚本自动回退
-python3 agents/retriever/retriever_agent.py --plan plan.json
-```
+The `data/curated/` directory contains **pipeline-generated artifacts** — these files are NOT committed to git. The SKILL.md's `Data Files Reference` fallback paths (`data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl` etc.) may not exist until the extraction pipeline has been run. When an agent encounters FileNotFoundError on these paths:
+- Check `assets/` for the three-layer assets (discipline/cluster/global) — those ARE committed
+- `data/curated/quality/` and `data/curated/master/` are generated; fall through gracefully if absent
 
----
+### planning_layer/ Note
 
-## 润色执行
+`planning_layer/` is a **standalone directory** — it was ADDED to the skill, not merged into SKILL.md. It lives at the skill root alongside scripts/, assets/, data/. If planning_layer/ is absent, Planning Mode features are unavailable. The SKILL.md references planning_layer/ files by relative path — those references are self-consistent even if the actual files are missing.
 
-取 3-5 条最佳模板，按原则校正：
+### Sub-skill Policy
 
-**模板使用方式（不是复制模板！）：**
-- 用模板校正表达强度（过于自信 → 保守措辞）
-- 用模板校正连接词（生硬 → 流畅）
-- 用模板校正结果汇报口径（口语化 → 学术化）
-- 用 UTIL/CONSERVATIVE 加上限定条件
-- 用 UTIL/NUMERIC 规范数字汇报
-
-**严禁：**
-- ❌ 不引入新事实、新数据、新引用
-- ❌ 不改变论文结论
-- ❌ 不直接复制模板
-- ❌ 不过度承诺
-
----
-
-## 输出格式
-
-```
-📝 润色后文本
-
-✏️ 改动摘要（3行以内）
-• 术语统一: [改动]
-• 连接结构改善: [改动]
-• 结论措辞更克制: [改动]
-
-📊 命中层级: CLUSTER(TECH_LIFE) | 模板质量: 2 | 命中数: 3
-```
-
-**命中层级** 告诉用户实际使用了哪一层：
-- `DISCIPLINE(XXX)` → L2 命中
-- `CLUSTER(XXX)` → L1 命中
-- `GLOBAL` → L0 命中（最通用的保障）
-
----
-
-## 质量规则
-
-| score | 含义 | 使用策略 |
-|-------|------|---------|
-| **2** | 跨学科通用，可直接填槽 | 优先使用 |
-| **1** | 需领域适配 | quality=2 不足时使用 |
-| **0** | 领域绑定，仅参考 | 仅用户明确要求时使用 |
-
-GLOBAL 层的模板必须 quality≥2 才能自动使用。quality=1 的 GLOBAL 模板暂不自动命中。
-
----
-
-## 模板归层一般规则
-
-模板分配算法（用于后续训练）：
-
-```
-对每条模板计算：
-  D_total = 出现该模板的不同学科数
-  C_total = 出现该模板的不同大类数
-
-Rule A → DISCIPLINE (L2):
-  D_total = 1 且覆盖 ≥2 篇论文
-  
-Rule B → CLUSTER (L1):
-  C_total = 1 且 D_total ≥ 2
-  
-Rule C → GLOBAL (L0):
-  C_total ≥ 2（横跨多个大类）
-```
-
-**写作功能偏置（边界情况决策）：**
-
-| 偏置 | 类别 |
-|------|------|
-| → GLOBAL | TRANSITION, CONNECTIVE, CONSERVATIVE, RESULT.numeric_reporting通用口径 |
-| → DISCIPLINE | EXPERIMENT.data_description, METHOD.identification_strategy, FORMAL_DEFS, 医学伦理/纳排 |
-
----
-
-## 最小用例
-
-### INTRO
-```
-输入: "Актуальность данной работы обусловлена потребностью в повышении точности управления."
-输出: L1润色 + "• 术语替换" + 命中层级: CLUSTER(TECH_LIFE)
-```
-
-### MODEL
-```
-输入: "Пусть x(t) — вектор состояния, u(t) — управление."
-输出: L1润色 + "• 统一符号" + 命中层级: CLUSTER(TECH_LIFE)
-```
-
-### RESULT
-```
-输入: "Эксперимент показал, что предложенный метод лучше."
-输出: "лучше"→"обеспечивает более высокую точность" + 命中层级: GLOBAL
-```
+Sub-skills under `sub_skills/` use **MODULE.md** (not SKILL.md). They cannot be independently loaded as Hermes skills. The single entry point is the root SKILL.md. This prevents namespace pollution and ensures consistent routing.

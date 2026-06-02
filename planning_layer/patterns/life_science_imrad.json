@@ -1,0 +1,98 @@
+{
+  "pattern_id": "life_science_imrad",
+  "name": "IMRaD паттерн: Введение → Методы → Результаты → Обсуждение",
+  "cluster": "LIFE_MEDICAL",
+  "version": "3.3.5",
+  "description": "Стандартная структура диссертации в науках о жизни и медицине, основанная на формате IMRaD (Introduction, Methods, Results, and Discussion).",
+  "applicable_domains": [
+    "Биология",
+    "Медицина",
+    "Фармация",
+    "Ветеринария",
+    "Биотехнология",
+    "Экология"
+  ],
+  "chapter_structure": [
+    {
+      "chapter": 1,
+      "title": "Введение",
+      "sections": [
+        "Актуальность проблемы (epidemiology, prevalence, burden)",
+        "Обзор литературы (pathophysiology, current treatments)",
+        "Нерешённые вопросы (gaps in knowledge)",
+        "Цель исследования",
+        "Задачи исследования",
+        "Гипотеза"
+      ],
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending",
+        "notes": "Количество проанализированных литературных источников"
+      }
+    },
+    {
+      "chapter": 2,
+      "title": "Материалы и методы",
+      "sections": [
+        "Дизайн исследования (RCT, когортное, case-control, cross-sectional)",
+        "Этическое одобрение (IRB/ethics committee)",
+        "Участники / объекты исследования (inclusion/exclusion criteria)",
+        "Размер выборки (sample size calculation, statistical power)",
+        "Переменные и их операционализация",
+        "Инструменты и оборудование",
+        "Протокол вмешательства / эксперимента",
+        "Статистические методы",
+        "Критерии значимости (α, multiple testing correction)"
+      ],
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending",
+        "notes": "Размер выборки, power analysis, количество переменных"
+      }
+    },
+    {
+      "chapter": 3,
+      "title": "Результаты",
+      "sections": [
+        "Дескриптивная статистика",
+        "Основные результаты (primary outcomes)",
+        "Вторичные результаты (secondary outcomes)",
+        "Анализ подгрупп",
+        "Анализ чувствительности",
+        "Таблицы и графики с данными"
+      ],
+      "evidence_count": {
+        "value": "pending",
+        "confidence": "pending",
+        "notes": "p-value, confidence intervals, effect sizes, N per group"
+      }
+    },
+    {
+      "chapter": 4,
+      "title": "Обсуждение",
+      "sections": [
+        "Суммарная интерпретация результатов",
+        "Сравнение с предыдущими исследованиями",
+        "Биологическое/клиническое объяснение",
+        "Сильные стороны исследования",
+        "Ограничения (limitations)",
+        "Клинические импликации",
+        "Направления дальнейших исследований"
+      ]
+    },
+    {
+      "chapter": 5,
+      "title": "Выводы",
+      "sections": [
+        "Основные выводы по задачам",
+        "Практическая значимость",
+        "Рекомендации"
+      ]
+    }
+  ],
+  "evidence_count": {
+    "value": "pending",
+    "confidence": "pending",
+    "notes": "Общий evidence_count: суммарное количество участников, экспериментов, статистических тестов"
+  }
+}

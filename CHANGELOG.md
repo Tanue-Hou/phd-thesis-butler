@@ -1,6 +1,35 @@
 # Changelog
 
-## v3.1.1 (2026-05-30)
+## v4.0 (2026-06-02)
+
+### Corpus Distillation Layer — 语料库蒸馏层
+
+**New: corpus_layer/**
+- `WORKFLOW.md` — 4-stage pipeline: SOURCE → EXTRACT → DISTILL → PUBLISH
+- 5 JSON Schema: `paper_record`, `structure_record`, `methodology_record`, `logic_chain`, `rhetorical_move`
+- `SCHEMA_CONVENTION.md` — shared ID naming, category/cluster enums, evidence_count format
+
+**New: extraction scripts**
+- `build_corpus_inventory.py` — full corpus scan, per-discipline stats
+- `extract_structure_records.py` — structure patterns → `.phd_build/structure_records.jsonl`
+- `extract_methodology_records.py` — methodology routes → `.phd_build/methodology_records.jsonl`
+- `extract_logic_chains.py` — logic chain analysis → `.phd_build/logic_chains.jsonl`
+- `extract_rhetorical_moves.py` — rhetorical move extraction → `.phd_build/rhetorical_moves.jsonl`
+- `validate_corpus_layer.py` — corpus layer integrity validation
+
+**New: planning_layer/**
+- 22 files: 6 clusters, 6 patterns, 4 templates, 2 schemas, 4 guides
+- All patterns include `evidence_count` with corpus-derived numbers
+
+**Infrastructure**
+- `validate_skill_assets.py`: fixed timeout, no hardcoded paths, `--deep` mode
+- `validate_planning_assets.py`: new validator (22/22 checks)
+- `tests/`: 23 pytest tests, all passing in <1s
+- `.phd_build/`: gitignored build output directory
+- `reports/drafts/`: 4 draft reference assets (rhetorical moves, methodology routes, logic chains, common failures)
+- `corpus_analysis_report.md`: full corpus analysis with coverage gaps
+
+## v3.3.5 (2026-05-30)
 
 ### Asset Layer Fix — 归层修复 + 占位符迁移 + PII 脱敏
 

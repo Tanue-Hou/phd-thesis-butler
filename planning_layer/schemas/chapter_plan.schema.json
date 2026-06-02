@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ChapterPlan",
+  "description": "Schema for PhD Thesis Butler v3.3.5 — план главы диссертации",
+  "type": "object",
+  "required": ["chapter_number", "title", "goal", "sections", "evidence_count"],
+  "properties": {
+    "chapter_number": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Номер главы (0 = Introduction)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Название главы"
+    },
+    "goal": {
+      "type": "string",
+      "description": "Цель главы: какую задачу диссертации решает"
+    },
+    "task_ref": {
+      "type": "string",
+      "description": "Ссылка на задачу диссертации (e.g., 'Task 2')"
+    },
+    "estimated_pages": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Ожидаемый объём в страницах"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "drafting", "draft", "revision", "final"],
+      "description": "Статус главы"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Дедлайн (ISO 8601)"
+    },
+    "related_chapters": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Номера связанных глав"
+    },
+    "pattern_id": {
+      "type": "string",
+      "description": "ID структурного паттерна из STRUCTURE_PATTERNS.json"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content_summary": {
+            "type": "string"
+          },
+          "estimated_pages": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": ["planned", "drafting", "draft", "revision", "final"]
+          }
+        }
+      },
+      "description": "Разделы главы"
+    },
+    "key_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "author": { "type": "string" },
+          "year": { "type": "integer" },
+          "title": { "type": "string" },
+          "key_idea": { "type": "string" },
+          "evidence_count": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "oneOf": [
+                  { "type": "integer", "minimum": 0 },
+                  { "type": "string", "enum": ["pending"] }
+                ]
+              },
+              "confidence": {
+                "type": "string",
+                "enum": ["pending", "low", "medium", "high", "confirmed"]
+              }
+            }
+          }
+        }
+      },
+      "description": "Ключевые источники для главы"
+    },
+    "logic_flow": {
+      "type": "object",
+      "properties": {
+        "uses_from": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chapter": { "type": "integer" },
+              "result": { "type": "string" }
+            }
+          },
+          "description": "Результаты предшествующих глав, которые используются"
+        },
+        "produces_for": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chapter": { "type": "integer" },
+              "result": { "type": "string" }
+            }
+          },
+          "description": "Результаты, передаваемым последующим главам"
+        }
+      }
+    },
+    "evidence_count": {
+      "type": "object",
+      "required": ["value", "confidence"],
+      "properties": {
+        "value": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "string", "enum": ["pending"] }
+          ],
+          "description": "Количество подтверждающих источников/экспериментов"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["pending", "low", "medium", "high", "confirmed"],
+          "description": "Уровень достоверности"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Комментарии к evidence_count"
+        }
+      },
+      "description": "Количественная оценка обоснованности содержания главы"
+    },
+    "completion_checklist": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": { "type": "string" },
+          "done": { "type": "boolean", "default": false }
+        }
+      },
+      "description": "Чек-лист завершённости"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Свободные заметки"
+    }
+  }
+}

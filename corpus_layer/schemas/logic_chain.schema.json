@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "phd_butler_v4/logic_chain",
+  "title": "Logic Chain — PhD Thesis Butler v4.0",
+  "description": "Describes a complete INTRO→CONCLUSION logic chain: ordered stages from introduction through conclusion, with required subtypes, template counts, and completeness scoring.",
+  "version": "4.0",
+  "type": "object",
+  "required": [
+    "chain_id",
+    "discipline",
+    "cluster",
+    "stages",
+    "chain_completeness_score",
+    "evidence_count",
+    "source"
+  ],
+  "properties": {
+    "chain_id": {
+      "type": "string",
+      "pattern": "^chain_[0-9]{4,}$",
+      "description": "Unique logic chain ID following convention: chain_{incremental_id}",
+      "examples": ["chain_0001", "chain_0042"]
+    },
+    "discipline": {
+      "type": "string",
+      "description": "Academic discipline this logic chain is associated with.",
+      "examples": ["информатика", "педагогика", "экономика"]
+    },
+    "cluster": {
+      "type": "string",
+      "enum": ["TECH_LIFE", "HUM_SOC", "ART_SPORT", "MATH_PHYS", "GLOBAL"],
+      "description": "Cluster derived from directory path."
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage_name", "category", "required_subtypes", "min_templates", "typical_transition_to_next"],
+        "properties": {
+          "stage_name": {
+            "type": "string",
+            "description": "Descriptive name of the stage (e.g., 'Обоснование проблемы', 'Формулировка гипотезы')."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "INTRO", "SURVEY", "MODEL", "METHOD", "EXPERIMENT",
+              "RESULT", "DISCUSSION", "CONCLUSION", "TRANSITION",
+              "FORMAL_DEFS", "ENGINEERING", "AREF", "UTILS"
+            ],
+            "description": "DIS category this stage maps to."
+          },
+          "required_subtypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required rhetorical subtypes or AREF categories that must appear at this stage (e.g., 'АКТУАЛЬНОСТЬ', 'ЦЕЛЬ_ЗАДАЧИ', 'обзор_литературы').",
+            "examples": [
+              ["АКТУАЛЬНОСТЬ", "ЦЕЛЬ_ЗАДАЧИ"],
+              ["обзор_литературы", "СТЕПЕНЬ_РАЗРАБОТАННОСТИ"],
+              ["описание_модели", "допущение_модели"],
+              ["постановка_эксперимента"],
+              ["представление_результата", "интерпретация_результата"],
+              ["основной_вывод", "перспективы_исследования"]
+            ]
+          },
+          "min_templates": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum number of templates expected at this stage for a complete chain."
+          },
+          "typical_transition_to_next": {
+            "type": "string",
+            "description": "Russian phrase or pattern that typically transitions from this stage to the next.",
+            "examples": [
+              "На основе проведённого обзора сформулированы задачи исследования",
+              "Полученные результаты позволяют перейти к экспериментальной проверке",
+              "Таким образом, поставлена задача разработки..."
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Ordered array of stages from INTRO through CONCLUSION. Each stage represents a logical step in the dissertation's argumentation chain.",
+      "minItems": 2
+    },
+    "chain_completeness_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Completeness score (0.0–1.0). 1.0 = all stages present with required subtypes and min_templates met. Weighted by stage importance."
+    },
+    "gap_category": {
+      "type": ["string", "null"],
+      "enum": [
+        "INTRO", "SURVEY", "MODEL", "METHOD", "EXPERIMENT",
+        "RESULT", "DISCUSSION", "CONCLUSION", "TRANSITION",
+        "FORMAL_DEFS", "ENGINEERING", "AREF", "UTILS", null
+      ],
+      "description": "If completeness_score < 1.0, identifies the DIS category where the primary gap exists. Null if chain is complete."
+    },
+    "evidence_count": {
+      "type": "object",
+      "description": "Evidence metadata for this logic chain record.",
+      "required": ["count", "source", "confidence"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of source papers exhibiting this logic chain pattern."
+        },
+        "source": {
+          "type": "string",
+          "description": "Source identifier. For private builds: paper_id(s). For public output: 'abstracted'."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "pending"],
+          "description": "Confidence: high (≥30 papers), medium (10-29), low (<10), pending (not computed)."
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "description": "Origin institution or collection. For public output: 'abstracted'."
+    }
+  },
+  "additionalProperties": false
+}

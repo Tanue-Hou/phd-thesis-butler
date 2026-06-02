@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "phd_butler_v4/rhetorical_move",
+  "title": "Rhetorical Move — PhD Thesis Butler v4.0",
+  "description": "A rhetorical function template pattern: describes a reusable rhetorical move with Russian triggers, template counts, quality distribution, and usage guidance.",
+  "version": "4.0",
+  "type": "object",
+  "required": [
+    "move_id",
+    "category",
+    "russian_category",
+    "rhetorical_function",
+    "typical_triggers",
+    "template_count",
+    "quality_distribution",
+    "when_to_use",
+    "common_mistakes",
+    "related_moves",
+    "evidence_count",
+    "source"
+  ],
+  "properties": {
+    "move_id": {
+      "type": "string",
+      "pattern": "^move_[0-9]{4,}$",
+      "description": "Unique rhetorical move ID following convention: move_{incremental_id}",
+      "examples": ["move_0001", "move_0042"]
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "INTRO", "SURVEY", "MODEL", "METHOD", "EXPERIMENT",
+        "RESULT", "DISCUSSION", "CONCLUSION", "TRANSITION",
+        "FORMAL_DEFS", "ENGINEERING", "AREF", "UTILS"
+      ],
+      "description": "DIS category this rhetorical move belongs to."
+    },
+    "russian_category": {
+      "type": "string",
+      "enum": [
+        "АКТУАЛЬНОСТЬ", "НОВИЗНА", "ЦЕЛЬ_ЗАДАЧИ", "МЕТОДЫ",
+        "ОБЪЕКТ_ПРЕДМЕТ", "ПОЛОЖЕНИЯ", "ПРАКТИЧЕСКАЯ_ЗНАЧИМОСТЬ",
+        "ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ", "АПРОБАЦИЯ", "ВЫВОДЫ",
+        "ПЕРСПЕКТИВЫ", "СТЕПЕНЬ_РАЗРАБОТАННОСТИ", "ДОСТОВЕРНОСТЬ"
+      ],
+      "description": "Russian academic attestation (AREF) category this move maps to."
+    },
+    "rhetorical_function": {
+      "type": "string",
+      "description": "Description of the rhetorical function in Russian.",
+      "examples": [
+        "Обоснование актуальности исследования путём указания на нерешённые проблемы",
+        "Формулирование цели и задач диссертации",
+        "Постановка эксперимента и описание условий его проведения",
+        "Представление и интерпретация полученных результатов"
+      ]
+    },
+    "typical_triggers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of Russian phrases that typically signal this rhetorical move in text.",
+      "examples": [
+        ["Актуальность данной работы обусловлена", "Важность данной проблемы определяется", "Назрела необходимость"],
+        ["Целью настоящего исследования является", "Задача данной работы состоит в", "Поставлена цель"],
+        ["В ходе эксперимента было установлено", "Проведённый эксперимент показал", "Экспериментальная проверка"],
+        ["Полученные результаты свидетельствуют", "Анализ результатов показал", "Установлено, что"]
+      ]
+    },
+    "template_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of templates identified for this rhetorical move across the corpus."
+    },
+    "quality_distribution": {
+      "type": "object",
+      "description": "Distribution of quality scores across templates for this move.",
+      "required": ["Q2", "Q1", "Q0"],
+      "properties": {
+        "Q2": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of templates with quality_score = 2 (high quality, directly usable)."
+        },
+        "Q1": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of templates with quality_score = 1 (standard, needs minor editing)."
+        },
+        "Q0": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of templates with quality_score = 0 (low quality, needs major revision)."
+        }
+      }
+    },
+    "when_to_use": {
+      "type": "string",
+      "description": "Guidance in Russian on when to use this rhetorical move.",
+      "examples": [
+        "Используется во введении для обоснования выбора темы и её значимости для науки и практики.",
+        "Применяется при формулировании цели диссертации и постановке конкретных задач.",
+        "Используется в главе с экспериментальными данными для описания условий и методики проведения эксперимента."
+      ]
+    },
+    "common_mistakes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of common mistakes (in Russian) when using this rhetorical move.",
+      "examples": [
+        [
+          "Смешение обоснования актуальности с формулировкой проблемы",
+          "Отсутствие конкретных ссылок на нерешённые задачи",
+          "Чрезмерное обобщение без подтверждения данными"
+        ],
+        [
+          "Подмена цели перечислением задач",
+          "Несоответствие цели заявленной теме работы"
+        ],
+        [
+          "Отсутствие описания условий эксперимента",
+          "Недостаточная детализация методики проведения"
+        ]
+      ]
+    },
+    "related_moves": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^move_[0-9]{4,}$"
+      },
+      "description": "Array of related move_ids that typically co-occur or logically follow this move.",
+      "examples": [
+        ["move_0002", "move_0003"],
+        ["move_0001", "move_0005"],
+        ["move_0008", "move_0009", "move_0010"]
+      ]
+    },
+    "evidence_count": {
+      "type": "object",
+      "description": "Evidence metadata for this rhetorical move record.",
+      "required": ["count", "source", "confidence"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of source instances (templates) supporting this rhetorical move."
+        },
+        "source": {
+          "type": "string",
+          "description": "Source identifier. For private builds: paper_id(s). For public output: 'abstracted'."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "pending"],
+          "description": "Confidence: high (≥30 templates), medium (10-29), low (<10), pending (not computed)."
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "description": "Origin institution or collection. For public output: 'abstracted'."
+    }
+  },
+  "additionalProperties": false
+}

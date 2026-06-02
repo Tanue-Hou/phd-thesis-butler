@@ -1,0 +1,155 @@
+[
+  {
+    "chain_id": "CHAIN-ENG-CTRL-01",
+    "name_ru": "Логическая цепочка диссертации по управлению транспортными средствами",
+    "discipline": "engineering",
+    "cluster": "vehicle_control",
+    "stages": [
+      {
+        "stage_name": "vehicle_dynamics_problem",
+        "category": "INTRO",
+        "required_subtypes": ["problem_statement", "relevance_justification", "object_definition"],
+        "typical_transition_to_next": "Для решения задачи управления динамикой транспортного средства необходимо выбрать адекватную математическую модель шины, определяющую характер контакта колеса с дорожным покрытием."
+      },
+      {
+        "stage_name": "tire_model",
+        "category": "MODEL",
+        "required_subtypes": ["assumptions_list", "mathematical_formulation", "parameter_identification", "validity_domain"],
+        "typical_transition_to_next": "На основе выбранной модели шины разрабатывается наблюдатель (оценщик) состояния, позволяющий оценить неизмеряемые переменные в режиме реального времени."
+      },
+      {
+        "stage_name": "state_estimator",
+        "category": "MODEL",
+        "required_subtypes": ["algorithm_design", "convergence_proof", "observability_analysis", "noise_model"],
+        "typical_transition_to_next": "Разработанный оценщик состояния требует экспериментальной верификации на стенде или реальном транспортном средстве для подтверждения сходимости и точности."
+      },
+      {
+        "stage_name": "experiment",
+        "category": "EXPERIMENT",
+        "required_subtypes": ["test_setup", "measurement_protocol", "baseline_comparison", "repeatability"],
+        "typical_transition_to_next": "Полученные экспериментальные данные сопоставляются с результатами моделирования для оценки адекватности модели и работоспособности оценщика."
+      },
+      {
+        "stage_name": "validation",
+        "category": "RESULT",
+        "required_subtypes": ["model_experiment_comparison", "error_metrics", "statistical_significance", "operational_envelope"],
+        "typical_transition_to_next": "Результаты валидации позволяют сформулировать обоснованные выводы о применимости предложенного метода в заданном диапазоне условий."
+      },
+      {
+        "stage_name": "conclusion",
+        "category": "CONCLUSION",
+        "required_subtypes": ["contributions_summary", "limitations_acknowledgment", "future_work"],
+        "typical_transition_to_next": null
+      }
+    ],
+    "chain_completeness": 0.45,
+    "weakest_link": "MODEL",
+    "evidence_count": {"count": 0, "source": "pending", "confidence": "pending"}
+  },
+  {
+    "chain_id": "CHAIN-STEM-TYPICAL-01",
+    "name_ru": "Типовая логическая цепочка STEM-диссертации",
+    "discipline": "stem_general",
+    "cluster": "typical_stem",
+    "stages": [
+      {
+        "stage_name": "problem_formulation",
+        "category": "INTRO",
+        "required_subtypes": ["problem_statement", "relevance_justification", "research_questions", "hypotheses"],
+        "typical_transition_to_next": "Для обоснования актуальности поставленной проблемы необходим систематический обзор существующих подходов и выявление нерешённых вопросов."
+      },
+      {
+        "stage_name": "literature_survey",
+        "category": "SURVEY",
+        "required_subtypes": ["systematic_review", "gap_identification", "taxonomy", "critical_analysis"],
+        "typical_transition_to_next": "Выявленные в обзоре пробелы позволяют сформулировать математическую или концептуальную модель, описывающую исследуемое явление."
+      },
+      {
+        "stage_name": "model_development",
+        "category": "MODEL",
+        "required_subtypes": ["assumptions_list", "mathematical_formulation", "parameter_estimation", "validity_conditions"],
+        "typical_transition_to_next": "Построенная модель определяет требования к методу исследования, включая алгоритм решения и вычислительные ресурсы."
+      },
+      {
+        "stage_name": "method_design",
+        "category": "METHOD",
+        "required_subtypes": ["algorithm_description", "complexity_analysis", "implementation_details", "reproducibility_protocol"],
+        "typical_transition_to_next": "Предложенный метод подлежит экспериментальной проверке с использованием репрезентативных данных или физического эксперимента."
+      },
+      {
+        "stage_name": "experiment",
+        "category": "EXPERIMENT",
+        "required_subtypes": ["test_setup", "dataset_description", "baseline_comparison", "repeatability"],
+        "typical_transition_to_next": "Экспериментальные результаты подлежат количественному анализу с применением статистических методов."
+      },
+      {
+        "stage_name": "results",
+        "category": "RESULT",
+        "required_subtypes": ["quantitative_metrics", "statistical_significance", "visualization", "error_analysis"],
+        "typical_transition_to_next": "Полученные результаты требуют интерпретации в контексте исходных гипотез и существующих научных данных."
+      },
+      {
+        "stage_name": "discussion",
+        "category": "DISCUSSION",
+        "required_subtypes": ["hypothesis_evaluation", "comparison_with_prior_work", "limitations_analysis", "implications"],
+        "typical_transition_to_next": "На основании проведённого обсуждения формулируются итоговые выводы и направления дальнейших исследований."
+      },
+      {
+        "stage_name": "conclusion",
+        "category": "CONCLUSION",
+        "required_subtypes": ["contributions_summary", "limitations_acknowledgment", "future_work", "practical_applicability"],
+        "typical_transition_to_next": null
+      }
+    ],
+    "chain_completeness": 0.62,
+    "weakest_link": "MODEL",
+    "evidence_count": {"count": 0, "source": "pending", "confidence": "pending"}
+  },
+  {
+    "chain_id": "CHAIN-SOCIAL-SCI-01",
+    "name_ru": "Логическая цепочка диссертации в области социальных наук",
+    "discipline": "social_science",
+    "cluster": "social_science",
+    "stages": [
+      {
+        "stage_name": "theoretical_framework",
+        "category": "SURVEY",
+        "required_subtypes": ["theory_selection", "conceptual_framework", "construct_definitions", "gap_identification"],
+        "typical_transition_to_next": "На основе теоретической базы формулируется проверяемая гипотеза, связывающая ключевые конструкты исследования."
+      },
+      {
+        "stage_name": "hypothesis_formulation",
+        "category": "INTRO",
+        "required_subtypes": ["hypothesis_statement", "operationalization", "variable_definition", "expected_direction"],
+        "typical_transition_to_next": "Для проверки гипотезы необходимо спланировать сбор эмпирических данных с учётом репрезентативности и этических норм."
+      },
+      {
+        "stage_name": "data_collection",
+        "category": "EXPERIMENT",
+        "required_subtypes": ["sampling_method", "instrument_design", "data_quality_control", "ethical_approval"],
+        "typical_transition_to_next": "Собранные данные подлежат статистическому анализу с применением методов, соответствующих типу переменных и объёму выборки."
+      },
+      {
+        "stage_name": "analysis",
+        "category": "RESULT",
+        "required_subtypes": ["descriptive_statistics", "inferential_statistics", "effect_size", "assumption_checks"],
+        "typical_transition_to_next": "Результаты анализа интерпретируются в контексте теоретической рамки и сопоставляются с существующими эмпирическими данными."
+      },
+      {
+        "stage_name": "discussion",
+        "category": "DISCUSSION",
+        "required_subtypes": ["hypothesis_evaluation", "theoretical_implications", "limitations_analysis", "practical_implications"],
+        "typical_transition_to_next": "Итоговое обсуждение формирует основу для выводов о валидности гипотезы и вкладе в развитие теории."
+      },
+      {
+        "stage_name": "conclusion",
+        "category": "CONCLUSION",
+        "required_subtypes": ["contributions_summary", "limitations_acknowledgment", "future_work", "policy_recommendations"],
+        "typical_transition_to_next": null
+      }
+    ],
+    "chain_completeness": 0.55,
+    "weakest_link": null,
+    "evidence_count": {"count": 0, "source": "pending", "confidence": "pending"}
+  }
+]

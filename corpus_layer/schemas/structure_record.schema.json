@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "phd_butler_v4/structure_record",
+  "title": "Structure Record — PhD Thesis Butler v4.0",
+  "description": "Structural pattern record for a single source document, capturing section sequence, pattern type, and boolean flags.",
+  "version": "4.0",
+  "type": "object",
+  "required": [
+    "id",
+    "paper_id",
+    "section_sequence",
+    "discipline",
+    "cluster",
+    "section_count",
+    "pattern_type",
+    "evidence_count",
+    "source"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^structure_[0-9]{4,}$",
+      "description": "Unique structure record ID following convention: structure_{incremental_id}",
+      "examples": ["structure_0001", "structure_0042"]
+    },
+    "paper_id": {
+      "type": "string",
+      "pattern": "^paper_[0-9]{4,}$",
+      "description": "Reference to the parent paper_record this structure was extracted from."
+    },
+    "section_sequence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "INTRO", "SURVEY", "MODEL", "METHOD", "EXPERIMENT",
+          "RESULT", "DISCUSSION", "CONCLUSION", "TRANSITION",
+          "FORMAL_DEFS", "ENGINEERING", "AREF", "UTILS"
+        ]
+      },
+      "description": "Ordered array of DIS categories as they appear in the paper. Preserves document order.",
+      "examples": [
+        ["INTRO", "SURVEY", "MODEL", "METHOD", "EXPERIMENT", "RESULT", "DISCUSSION", "CONCLUSION"],
+        ["INTRO", "METHOD", "RESULT", "DISCUSSION", "CONCLUSION"],
+        ["INTRO", "SURVEY", "FORMAL_DEFS", "MODEL", "EXPERIMENT", "RESULT", "CONCLUSION"]
+      ]
+    },
+    "discipline": {
+      "type": "string",
+      "description": "Academic discipline extracted from source entries.",
+      "examples": ["политические науки", "экономика", "информатика"]
+    },
+    "cluster": {
+      "type": "string",
+      "enum": ["TECH_LIFE", "HUM_SOC", "ART_SPORT", "MATH_PHYS", "GLOBAL"],
+      "description": "Cluster derived from directory path (NOT from _layer field)."
+    },
+    "section_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of distinct categories in section_sequence."
+    },
+    "has_intro": {
+      "type": "boolean",
+      "description": "True if INTRO is present in section_sequence."
+    },
+    "has_survey": {
+      "type": "boolean",
+      "description": "True if SURVEY is present in section_sequence."
+    },
+    "has_model": {
+      "type": "boolean",
+      "description": "True if MODEL is present in section_sequence."
+    },
+    "has_method": {
+      "type": "boolean",
+      "description": "True if METHOD is present in section_sequence."
+    },
+    "has_experiment": {
+      "type": "boolean",
+      "description": "True if EXPERIMENT is present in section_sequence."
+    },
+    "has_result": {
+      "type": "boolean",
+      "description": "True if RESULT is present in section_sequence."
+    },
+    "has_discussion": {
+      "type": "boolean",
+      "description": "True if DISCUSSION is present in section_sequence."
+    },
+    "has_conclusion": {
+      "type": "boolean",
+      "description": "True if CONCLUSION is present in section_sequence."
+    },
+    "has_formal_defs": {
+      "type": "boolean",
+      "description": "True if FORMAL_DEFS is present in section_sequence."
+    },
+    "has_engineering": {
+      "type": "boolean",
+      "description": "True if ENGINEERING is present in section_sequence."
+    },
+    "has_transition": {
+      "type": "boolean",
+      "description": "True if TRANSITION is present in section_sequence."
+    },
+    "has_aref": {
+      "type": "boolean",
+      "description": "True if AREF is present in section_sequence."
+    },
+    "has_utils": {
+      "type": "boolean",
+      "description": "True if UTILS is present in section_sequence."
+    },
+    "pattern_type": {
+      "type": "string",
+      "enum": ["deductive", "inductive", "hypothetico-deductive", "mixed", "other"],
+      "description": "Classified structural pattern type based on section_sequence ordering.",
+      "$comment": "deductive: MODEL→METHOD→RESULT; inductive: SURVEY→METHOD→RESULT; hypothetico-deductive: SURVEY→MODEL→EXPERIMENT→RESULT"
+    },
+    "evidence_count": {
+      "type": "object",
+      "description": "Evidence metadata for this structure record.",
+      "required": ["count", "source", "confidence"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of papers sharing this exact structure pattern (for aggregated records) or 1 (for per-paper records)."
+        },
+        "source": {
+          "type": "string",
+          "description": "Source identifier. For private builds: paper_id(s). For public output: 'abstracted'."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "pending"],
+          "description": "Confidence: high (≥30 papers share pattern), medium (10-29), low (<10), pending (not computed)."
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "description": "Origin institution or collection. For public output: 'abstracted'."
+    }
+  },
+  "additionalProperties": false
+}

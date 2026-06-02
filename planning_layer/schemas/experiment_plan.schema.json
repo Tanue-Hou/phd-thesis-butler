@@ -1,0 +1,299 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExperimentPlan",
+  "description": "Schema for PhD Thesis Butler v3.3.5 — план эксперимента",
+  "type": "object",
+  "required": ["experiment_id", "title", "hypothesis", "variables", "protocol", "evidence_count"],
+  "properties": {
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^EXP-\\d{3,}$",
+      "description": "Уникальный идентификатор эксперимента (e.g., EXP-001)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Название эксперимента"
+    },
+    "chapter_ref": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Ссылка на номер главы диссертации"
+    },
+    "goal": {
+      "type": "string",
+      "description": "Цель эксперимента: какой вопрос отвечает"
+    },
+    "hypothesis": {
+      "type": "object",
+      "required": ["null_hypothesis", "alternative_hypothesis"],
+      "properties": {
+        "null_hypothesis": {
+          "type": "string",
+          "description": "H₀: нулевая гипотеза"
+        },
+        "alternative_hypothesis": {
+          "type": "string",
+          "description": "H₁: альтернативная гипотеза"
+        },
+        "success_criteria": {
+          "type": "string",
+          "description": "Критерий подтверждения гипотезы"
+        }
+      }
+    },
+    "variables": {
+      "type": "object",
+      "properties": {
+        "independent": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "units": { "type": "string" },
+              "range": { "type": "string" }
+            },
+            "required": ["name"]
+          },
+          "description": "Независимые переменные"
+        },
+        "dependent": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "units": { "type": "string" },
+              "metric": { "type": "string" }
+            },
+            "required": ["name"]
+          },
+          "description": "Зависимые переменные"
+        },
+        "controlled": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "fixed_value": { "type": "string" }
+            },
+            "required": ["name"]
+          },
+          "description": "Контролируемые переменные"
+        },
+        "confounding": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "mitigation": { "type": "string" }
+            },
+            "required": ["name"]
+          },
+          "description": "Помеховые переменные и способы минимизации"
+        }
+      }
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "model": { "type": "string" },
+          "purpose": { "type": "string" },
+          "calibration_date": { "type": "string", "format": "date" }
+        },
+        "required": ["name"]
+      },
+      "description": "Оборудование и инструменты"
+    },
+    "software": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "purpose": { "type": "string" }
+        },
+        "required": ["name"]
+      },
+      "description": "Программное обеспечение"
+    },
+    "protocol": {
+      "type": "object",
+      "required": ["type", "repetitions"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["laboratory", "field", "simulation", "validation", "survey", "mixed"],
+          "description": "Тип эксперимента"
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Количество повторов (N)"
+        },
+        "randomization": {
+          "type": "string",
+          "description": "Метод рандомизации"
+        },
+        "control_groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "preparation_steps": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "execution_steps": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "completion_steps": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "statistical_plan": {
+      "type": "object",
+      "properties": {
+        "sample_size": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Размер выборки"
+        },
+        "power_analysis": {
+          "type": "object",
+          "properties": {
+            "effect_size": { "type": "number" },
+            "alpha": { "type": "number", "default": 0.05 },
+            "power": { "type": "number", "default": 0.8 },
+            "calculated_n": { "type": "integer" }
+          }
+        },
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "purpose": { "type": "string" },
+              "alpha": { "type": "number", "default": 0.05 }
+            },
+            "required": ["name"]
+          }
+        },
+        "multiple_testing_correction": {
+          "type": "string",
+          "enum": ["none", "bonferroni", "holm", "fdr_bh", "by"],
+          "default": "none"
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string" },
+          "probability": { "type": "string", "enum": ["low", "medium", "high"] },
+          "impact": { "type": "string", "enum": ["low", "medium", "high"] },
+          "mitigation": { "type": "string" }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "preparation", "running", "analysis", "completed"],
+      "description": "Статус эксперимента"
+    },
+    "dates": {
+      "type": "object",
+      "properties": {
+        "planned_start": { "type": "string", "format": "date" },
+        "planned_end": { "type": "string", "format": "date" },
+        "actual_start": { "type": "string", "format": "date" },
+        "actual_end": { "type": "string", "format": "date" }
+      }
+    },
+    "evidence_count": {
+      "type": "object",
+      "required": ["value", "confidence"],
+      "properties": {
+        "value": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "string", "enum": ["pending"] }
+          ],
+          "description": "Количество наблюдений/повторов/подтверждений"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["pending", "low", "medium", "high", "confirmed"],
+          "description": "Уровень достоверности"
+        },
+        "preliminary_runs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Количество предварительных запусков"
+        },
+        "total_observations": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Общее количество наблюдений"
+        },
+        "p_value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "p-value после завершения"
+        },
+        "effect_size": {
+          "type": "number",
+          "description": "Размер эффекта (Cohen's d, eta² и др.)"
+        },
+        "confidence_interval": {
+          "type": "object",
+          "properties": {
+            "lower": { "type": "number" },
+            "upper": { "type": "number" },
+            "level": { "type": "number", "default": 0.95 }
+          }
+        },
+        "notes": {
+          "type": "string",
+          "description": "Комментарии к evidence_count"
+        }
+      },
+      "description": "Количественная оценка достоверности результатов эксперимента"
+    },
+    "expected_results": {
+      "type": "object",
+      "properties": {
+        "data_format": { "type": "string" },
+        "expected_effect_direction": { "type": "string" },
+        "visualizations": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Свободные заметки"
+    }
+  }
+}
