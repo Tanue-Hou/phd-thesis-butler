@@ -34,6 +34,23 @@
 
 ---
 
+## v5.1 更新说明 / What's New in v5.1 / Что нового в v5.1
+
+**核心策略：不重训练，只做结构增强、资产标准化和验证闭环。**
+
+| 模块 | 更新内容 |
+|:----|:---------|
+| **架构标准化** | 7类标准资产格式（typical_structures / chapter_sequence / research_question_types / methodology_routes / logic_chains / validation_patterns / chapter_writing_rules），统一JSON Schema校验 |
+| **学科资产重排** | 5个discipline JSON全部转换为v5.1标准格式，统计聚合数据保留，噪声结构（chapter_count>30）降权排除 |
+| **写作规则增强** | 每条规则增加 when_to_use、recommended_actions、common_failures、template_family_links，方法论路线增加 description 和 typical_steps，逻辑链增加 chain_description 和 writing_sequence |
+| **模板标注** | 40,997个句式模板全部标注 v5_cluster（AUTOMATION_CONTROL/SCI_TECH/AGRI_MED/ARTS_SPORTS/HUM_POL_ECON/GLOBAL），91.3%标记为纯俄语 |
+| **润色规则** | 从679篇深度分析数据中提炼学科专用润色规则（DO/DON'T/常见错误），存入 polishing_rules_v5.json |
+| **验证闭环** | smoke_test 7项测试全通过（含版本一致性、schema校验、目录完整性）；validate_skill_assets / validate_planning_assets 双验证器通过；无本地绝对路径硬编码 |
+| **数据清理** | CJK字符污染清理完毕（40,997条metadata字段清洗），非俄语模板标记为 mixed |
+| **文档修复** | README口径与公开仓库一致，不再宣称不存在的目录；版本统一为 5.1.0 |
+
+---
+
 <a id="zh"></a>
 
 ## 中文
