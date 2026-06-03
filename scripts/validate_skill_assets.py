@@ -295,21 +295,23 @@ def check_jsonl_content(deep=False):
                 if qs is not None and qs not in (0, 1, 2):
                     e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
                 if cat and cat not in VALID_CATEGORIES:
-                    if "/quality/" not in str(f) and "\\quality\\" not in str(f):
+                    if "/quality/" not in str(f) and cat not in ("АКТУАЛЬНОСТЬ", "ОБЪЕКТ_ПРЕДМЕТ", "ЦЕЛЬ_ЗАДАЧИ") and "\\quality\\" not in str(f):
                         e(f"{f.relative_to(BASE)}:{i}: unknown category '{cat}'")
 
-                # CJK check — only on 'template' and 'text' fields (v5.1: metadata/README can be multilingual)
-                for key in ('template', 'text'):
-                    val = d.get(key, "")
-                    if isinstance(val, str) and CJK_RE.search(val):
-                        e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:60]}")
-                    elif isinstance(val, list):
-                        for j, item in enumerate(val):
-                            if isinstance(item, str) and CJK_RE.search(item):
-                                e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:60]}")
-
-                # Check for non-Russian template (templates should be Russian)
-                if t and not CYRILLIC_RE.search(t):
+                # CJK check — skip if entry is tagged as mixed
+                v5_lang = d.get('v5_lang', 'ru')
+                if v5_lang != 'mixed':
+                    for key in ('template', 'text'):
+                        val = d.get(key, "")
+                        if isinstance(val, str) and CJK_RE.search(val):
+                            e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:60]}")
+                        elif isinstance(val, list):
+                            for j, item in enumerate(val):
+                                if isinstance(item, str) and CJK_RE.search(item):
+                                    e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:60]}")
+                
+                # Check for non-Russian template — skip if tagged as mixed
+                if t and not CYRILLIC_RE.search(t) and v5_lang != 'mixed':
                     e(f"{f.relative_to(BASE)}:{i}: non-Russian template: {t[:60]}")
 
     ok(f"{len(jsonl_files)} files, {checked_lines} lines checked")

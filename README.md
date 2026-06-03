@@ -100,7 +100,7 @@ PhD Thesis Butler v5.1
 │   ├── corpus_summary_v5.json      — 语料库摘要
 │   └── cross_cluster_insights_v5.json — 跨聚类对比分析
 │
-├── 🔬 数据管线 (scripts/pipeline/ — 构建用，公开仓库不含)
+├── 🔬 数据管线 (scripts/pipeline/ — 构建使用，公开仓库不含)
 │   ├── layer0_ingest.py    — PDF入库
 │   ├── layer1_fulltext.py  — 全文抽取
 │   ├── layer2_structure.py — 章节结构解析
@@ -109,11 +109,9 @@ PhD Thesis Butler v5.1
 │   ├── layer5_distill.py   — 范式蒸馏（统计聚合）
 │   └── layer6_publish.py   — 公开资产构建
 │
-├── 🧪 验证体系 (构建用，公开仓库不含)
-│   ├── tests/              — pytest 测试套件 (23项)
+├── 🧪 验证体系 (构建使用，公开仓库不含)
 │   ├── validate_skill_assets.py   — 资产完整性检查
-│   ├── validate_planning_assets.py— 规划层验证
-│   └── validate_corpus_layer.py   — 语料层验证
+│   └── validate_planning_assets.py— 规划层验证
 │
 ├── 🔌 扩展层（v5.0预留）
 │   ├── extension_layer/    — 用户私有论文扩展包
@@ -243,8 +241,8 @@ python3 -m pytest tests/ -q
 
 - `SKILL.md` — инструкции для AI-агента
 - `assets/references/disciplines/` — профили по 5 кластерам
-- `scripts/pipeline/` — полный конвейер обработки (Layer 0–6)
-- `tests/` — 23 теста pytest
+- `scripts/pipeline/` — полный конвейер обработки (Layer 0–6, не входит в публичный репозиторий)
+- `tests/` — 23 теста pytest (не входит в публичный репозиторий)
 
 ### 3. Конвейер данных (Layer 0–6)
 
@@ -323,8 +321,8 @@ Same structure as the Chinese section. Key components:
 
 - `SKILL.md` — agent-facing runtime instructions
 - `assets/references/disciplines/` — 5 discipline writing profiles
-- `scripts/pipeline/` — full processing pipeline (Layer 0–6)
-- `tests/` — 23 pytest test suite
+- `scripts/pipeline/` — full processing pipeline (Layer 0–6, not in public repo)
+- `tests/` — 23 pytest test suite (not in public repo)
 
 ### 3. Data Pipeline (Layer 0–6)
 
@@ -402,10 +400,10 @@ phd-thesis-butler/
 │   ├── pipeline/               # Layer 0–6 pipeline scripts
 │   ├── retrieve_templates.py   # Template retrieval CLI
 │   └── validate_*.py           # Validation scripts
-├── corpus_layer/               # Corpus distillation design
-│   └── schemas/                # JSON schemas
+├── corpus_layer/               # Corpus distillation design (not in public repo)
+│   └── schemas/                # JSON schemas (not in public repo)
 ├── extension_layer/            # User extension pack design
 ├── reading_layer/              # Document reading cache
-├── tests/                      # 23 pytest tests
-└── data/                       # Source PDFs (private, gitignored)
+├── tests/                      # 23 pytest tests (not in public repo)
+├── data/                       # Source PDFs (private, gitignored)
 ```

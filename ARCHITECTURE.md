@@ -1,4 +1,4 @@
-# PhD Thesis Butler v4.0 — 架构
+# PhD Thesis Butler v5.1 — 架构
 
 ## 整体结构
 
@@ -114,7 +114,7 @@ pytest -q                    # 单元测试
 ## 版本演进
 
 ```
-v2.0 ─→ v3.0 ─→ v3.3.5 ─→ v4.0
+v2.0 ─→ v3.0 ─→ v3.3.5 ─→ v5.1
 管线搭建    三层资产   数据清洗   语料蒸馏层
            planning  纯俄语     schema + 脚本
            mode                + evidence_count
