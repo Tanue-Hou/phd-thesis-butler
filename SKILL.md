@@ -202,6 +202,21 @@ Format each template as follows:
 
 Show 3–5 templates total, ordered by quality_score descending, then by best subtype match.
 
+### Step 3.5: Load cluster-specific polishing rules
+
+After detecting the user's cluster (via `v5_cluster` field on templates or from Layer 3 analysis), load the corresponding rules from `assets/references/polishing_rules_v5.json`:
+
+```python
+rules = json.load(open("assets/references/polishing_rules_v5.json"))
+cluster = detected_cluster  # e.g. "AUTOMATION_CONTROL"
+do_rules = rules["clusters"][cluster]["do_rules"]
+dont_rules = rules["clusters"][cluster]["dont_rules"]
+common_mistakes = rules["clusters"][cluster]["common_mistakes"]
+avg_logic = rules["clusters"][cluster]["avg_logic_completeness"]
+```
+
+Use these rules to inform the polish step below. Give priority to templates whose `v5_cluster` matches the user's detected cluster.
+
 ### Step 4: Polish and rewrite
 
 After presenting, offer to adapt the user's current sentence using the template:

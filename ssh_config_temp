@@ -1,0 +1,5 @@
+# GitHub - Tanue-Hou account
+Host github.com
+  HostName github.com
+  IdentityFile ~/.ssh/github_phd
+  IdentitiesOnly yes

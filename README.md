@@ -66,7 +66,14 @@ PhD Thesis Butler v5.0
 │   ├── planning_layer/   — 论文规划指南（6个学科聚类）
 │   └── scripts/          — 检索、验证、用户扩展脚本
 │
-├── 📚 语料库蒸馏资产 (assets/references/)
+├── 📝 句式模板库 (assets/ — 独立资产，管线重新训练不影响)
+│   ├── global/            — 跨学科通用模板 (~7,030个)
+│   ├── cluster/           — 按旧聚类归类 (~23,922个)
+│   │   ├── HUM_SOC/       — 人文社科类 (~9,003个)
+│   │   └── TECH_LIFE/     — 理工技术类 (~14,358个)
+│   └── discipline/        — 34个学科专用文件
+│
+├── 📚 语料库蒸馏资产 (assets/references/ — 管线输出，可重建)
 │   ├── disciplines/      — 5大学科写作范式
 │   │   ├── AUTOMATION_CONTROL.json  — 自动控制/车辆工程 (148篇)
 │   │   ├── SCI_TECH.json           — 理工科 (771篇)
