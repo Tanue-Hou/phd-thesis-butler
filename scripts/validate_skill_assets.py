@@ -35,13 +35,19 @@ VALID_CATEGORIES = {
     'INTRO', 'SURVEY', 'MODEL', 'METHOD', 'EXPERIMENT', 'RESULT',
     'DISCUSSION', 'CONCLUSION', 'TRANSITION', 'FORMAL_DEFS', 'ENGINEERING',
     'AREF', 'UTILS',
+    # AREF categories (Russian dissertation review standard)
+    'АКТУАЛЬНОСТЬ', 'НОВИЗНА', 'ЦЕЛЬ_ЗАДАЧИ', 'МЕТОДЫ',
+    'ОБЪЕКТ_ПРЕДМЕТ', 'ПОЛОЖЕНИЯ', 'ПРАКТИЧЕСКАЯ_ЗНАЧИМОСТЬ',
+    'ТЕОРЕТИЧЕСКАЯ_ЗНАЧИМОСТЬ', 'АПРОБАЦИЯ', 'ВЫВОДЫ',
+    'ПЕРСПЕКТИВЫ', 'СТЕПЕНЬ_РАЗРАБОТАННОСТИ', 'ДОСТОВЕРНОСТЬ',
+    'СТРУКТУРА',
 }
 
 EXPECTED_DISCIPLINES = [
     'AUTOMATION_CONTROL', 'SCI_TECH', 'AGRI_MED', 'ARTS_SPORTS', 'HUM_POL_ECON',
 ]
 
-MAX_LEAKED_TEXT_LEN = 200  # strings longer than this may be original text leakage
+MAX_LEAKED_TEXT_LEN = 500  # strings longer than this may be original text leakage (increased for v5.1 enhanced Russian descriptions)
 
 
 def e(msg):
@@ -295,8 +301,7 @@ def check_jsonl_content(deep=False):
                 if qs is not None and qs not in (0, 1, 2):
                     e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
                 if cat and cat not in VALID_CATEGORIES:
-                    if "/quality/" not in str(f) and cat not in ("АКТУАЛЬНОСТЬ", "ОБЪЕКТ_ПРЕДМЕТ", "ЦЕЛЬ_ЗАДАЧИ") and "\\quality\\" not in str(f):
-                        e(f"{f.relative_to(BASE)}:{i}: unknown category '{cat}'")
+                    e(f"{f.relative_to(BASE)}:{i}: unknown category '{cat}'")
 
                 # CJK check — skip if entry is tagged as mixed
                 v5_lang = d.get('v5_lang', 'ru')

@@ -62,7 +62,7 @@ def has_russian_template(entry):
     return bool(CYRILLIC_RE.search(t))
 
 def load_quality_jsonl(path):
-    """Load a JSONL file, return list of dicts, filtering CJK entries."""
+    """Load a JSONL file, return list of dicts, filtering CJK-only entries."""
     if not path.exists():
         return []
     result = []
@@ -73,9 +73,12 @@ def load_quality_jsonl(path):
                 continue
             try:
                 e = json.loads(line)
-                # Filter out contaminated and non-Russian entries entirely.
-                if entry_has_cjk(e) or not has_russian_template(e):
-                    continue
+                # Allow v5_lang=mixed templates through (acknowledged multilingual)
+                # Filter out only entries with CJK that are NOT tagged as mixed
+                v5_lang = e.get('v5_lang', 'ru')
+                if v5_lang != 'mixed':
+                    if entry_has_cjk(e) or not has_russian_template(e):
+                        continue
                 result.append(e)
             except json.JSONDecodeError:
                 continue
@@ -126,53 +129,58 @@ def retrieve(args):
             score = semantic_score(t, query_words)
             results.append((score, layer_name, e))
 
-    # --- L2: DISCIPLINE (primary) ---
+    # --- Semantic search across ALL layers ---
+    # DISCIPLINE layer
     discipline_path = BASE / "assets/discipline" / f"{disc_file}.jsonl"
     disc_entries = load_quality_jsonl(discipline_path)
     try_add(disc_entries, "DISCIPLINE")
-
-    # If DISCIPLINE already has >= limit results, stop here
-    discipline_count = sum(1 for _, ln, _ in results if ln == "DISCIPLINE")
-    if discipline_count >= limit:
-        final = [r for r in results if r[1] == "DISCIPLINE"][:limit]
-    else:
-        # --- L1: CLUSTER (fallback) ---
-        cluster_path = BASE / f"assets/cluster/{cluster}/quality/QUALITY2_{category}.jsonl"
-        if not cluster_path.exists():
-            cluster_path = BASE / f"assets/cluster/{cluster}/quality/QUALITY2_ALL.jsonl"
-        cluster_entries = load_quality_jsonl(cluster_path)
-        try_add(cluster_entries, "CLUSTER")
-
-        cluster_count = sum(1 for _, ln, _ in results if ln == "CLUSTER")
-        if discipline_count + cluster_count >= limit:
-            # Take all DISCIPLINE + enough CLUSTER to reach limit
-            disc_r = [r for r in results if r[1] == "DISCIPLINE"]
-            clust_r = [r for r in results if r[1] == "CLUSTER"]
-            needed = limit - len(disc_r)
-            final = disc_r + clust_r[:needed]
-        else:
-            # --- L0: GLOBAL (deep fallback) ---
-            global_path = BASE / f"assets/global/quality/QUALITY2_{category}.jsonl"
-            if not global_path.exists():
-                global_path = BASE / "assets/global/quality/QUALITY2_ALL.jsonl"
-            global_entries = load_quality_jsonl(global_path)
-            try_add(global_entries, "GLOBAL")
-
-            disc_r = [r for r in results if r[1] == "DISCIPLINE"]
-            clust_r = [r for r in results if r[1] == "CLUSTER"]
-            glob_r = [r for r in results if r[1] == "GLOBAL"]
-            needed = limit - len(disc_r) - len(clust_r)
-            final = disc_r + clust_r + glob_r[:needed]
-
-    # Sort within final list: quality_score desc, semantic_score desc
-    final.sort(key=lambda r: (-r[2].get("quality_score", 0), -r[0]))
-
-    # Format output — filter CJK one more time (belt and suspenders)
+    
+    # CLUSTER layer
+    cluster_path = BASE / f"assets/cluster/{cluster}/quality/QUALITY2_{category}.jsonl"
+    if not cluster_path.exists():
+        cluster_path = BASE / f"assets/cluster/{cluster}/quality/QUALITY2_ALL.jsonl"
+    cluster_entries = load_quality_jsonl(cluster_path)
+    try_add(cluster_entries, "CLUSTER")
+    
+    # GLOBAL layer
+    global_path = BASE / f"assets/global/quality/QUALITY2_{category}.jsonl"
+    if not global_path.exists():
+        global_path = BASE / "assets/global/quality/QUALITY2_ALL.jsonl"
+    global_entries = load_quality_jsonl(global_path)
+    try_add(global_entries, "GLOBAL")
+    
+    # Globally sort by: semantic_score desc, quality_score desc, layer_priority
+    # Layer priority: DISCIPLINE=3, CLUSTER=2, GLOBAL=1 (tiebreaker)
+    layer_priority = {"DISCIPLINE": 3, "CLUSTER": 2, "GLOBAL": 1}
+    
+    # For English queries, boost global mixed templates
+    query_has_cyrillic = bool(CYRILLIC_RE.search(query)) if query else True
+    
+    final = []
+    for score, layer_name, entry in results:
+        t = entry.get("template", entry.get("text", ""))
+        if entry_has_cjk(entry) and entry.get('v5_lang') != 'mixed':
+            continue
+        
+        # Calculate effective score
+        lang_boost = 0
+        if not query_has_cyrillic and layer_name == "GLOBAL" and entry.get('v5_lang') == 'mixed':
+            lang_boost = 5  # Boost English templates for English queries
+        
+        effective_score = score + lang_boost
+        final.append((effective_score, layer_name, entry))
+    
+    # Sort: -effective_score, -quality_score, -layer_priority
+    final.sort(key=lambda r: (-r[0], -r[2].get("quality_score", 0), -layer_priority.get(r[1], 0)))
+    
+    # Deduplicate and limit
+    seen = set()
     output = []
     for score, layer_name, entry in final:
         t = entry.get("template", entry.get("text", ""))
-        if entry_has_cjk(entry):
+        if t in seen:
             continue
+        seen.add(t)
         output.append({
             "template": t,
             "category": entry.get("category", ""),
@@ -182,6 +190,8 @@ def retrieve(args):
             "quality_score": entry.get("quality_score", 0),
             "hit_layer": layer_name,
         })
+        if len(output) >= limit:
+            break
 
     return output[:limit]
 
