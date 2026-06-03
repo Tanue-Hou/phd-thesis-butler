@@ -1,421 +1,53 @@
 {
   "cluster": "HUM_POL_ECON",
   "total_papers": 792,
-  "structure": {
-    "cluster": "HUM_POL_ECON",
+  "scope": {
+    "clusters_covered": [
+      "HUM_POL_ECON"
+    ],
     "total_papers": 792,
-    "structure_composition": {
+    "data_sources": [
+      "heading_clean",
+      "toc_clean",
+      "partial_structure"
+    ],
+    "limitations": []
+  },
+  "evidence_summary": {
+    "structure_quality": {
       "heading_clean": 594,
       "toc_clean": 181,
       "partial_structure": 17
     },
-    "chapter_count_statistics": {
+    "chapter_stats": {
       "mean": 205.1,
       "median": 131,
       "min": 1,
       "max": 3288,
       "count": 675
     },
-    "page_count_statistics": {
+    "page_stats": {
       "mean": 220.5,
       "median": 207,
       "min": -1,
       "max": 2032,
       "count": 788
     },
-    "typical_structure": {
-      "typical_chapter_range": "1-3288",
-      "median_chapters": 131,
-      "median_pages": 207
-    }
-  },
-  "methodology": {
-    "cluster": "HUM_POL_ECON",
-    "total_papers": 792,
-    "top_methodology_hints": {
-      "theoretical": 534,
-      "comparative": 169,
-      "experimental": 47,
-      "model_based": 22,
-      "empirical": 6,
-      "historical_analysis": 5,
-      "field_study": 4,
-      "algorithm": 4,
-      "unknown": 1,
-      "corpus_based": 1,
-      "simulation": 1
-    },
-    "top_experiment_types": {
-      "comparison": 189,
-      "field_test": 18,
-      "simulation": 10,
-      "field_study": 8,
-      "ablation": 3,
-      "comparative_analysis": 2,
-      "bench_test": 2,
-      "textual_analysis": 2,
-      "e": 2,
-      "t": 2
-    },
+    "deep_analysis_available": 118,
     "classification_confidence": {
       "high": 767,
       "medium": 19,
       "low": 6
-    },
-    "deep_analysis_available": 118,
-    "deep_methodology_routes": {
-      "теоретико-аналитический": 4,
-      "comparative": 3,
-      "сравнительно-правовой": 3,
-      "теоретико-правовой анализ": 2,
-      "experimental": 2,
-      "историко-сравнительный анализ": 2,
-      "сравнительно-исторический анализ": 2,
-      "многокритериальная оптимизация и принятие решений (МАИ, метод медианы Кемени)": 1,
-      "теоретико-методологический анализ с элементами структурно-функционального подхода": 1,
-      "model_based": 1
-    },
-    "deep_experiment_types": {
-      "theory_only": 75,
-      "experiment": 18,
-      "field_test": 15,
-      "simulation": 10
     }
   },
-  "logic_chain": {
-    "cluster": "HUM_POL_ECON",
-    "total_papers": 792,
-    "top_logic_skeletons": [
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 625
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 41
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 23
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "analysis",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 23
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "analysis",
-          "conclusion"
-        ],
-        "frequency": 10
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "comparison",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 7
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 6
-      },
-      {
-        "skeleton": [
-          "problem",
-          "goal",
-          "method",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 4
-      },
-      {
-        "skeleton": [],
-        "frequency": 4
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "conclusion"
-        ],
-        "frequency": 3
-      }
-    ],
-    "deep_logic_completeness": {
-      "mean": 0.7,
-      "median": 0.71,
-      "min": 0.0,
-      "max": 1.0,
-      "count": 118
-    },
-    "common_skeleton_elements": {
-      "has_problem": 36,
-      "has_gap": 30,
-      "has_goal": 34,
-      "has_method": 29,
-      "has_experiment": 5,
-      "has_result": 23,
-      "has_conclusion": 37
+  "limitations": [
+    {
+      "issue": "noisy structure detected: median=131, max=3288",
+      "impact": "Chapter count statistics are unreliable for typical structure estimation",
+      "recommendation": "Use toc_clean papers only for structural analysis"
     }
-  },
-  "writing_patterns": {
-    "cluster": "HUM_POL_ECON",
-    "total_papers": 792,
-    "top_evidence_terms": [
-      {
-        "term": "автореферат",
-        "frequency": 52
-      },
-      {
-        "term": "исторические науки",
-        "frequency": 51
-      },
-      {
-        "term": "филологические науки",
-        "frequency": 44
-      },
-      {
-        "term": "правовое регулирование",
-        "frequency": 23
-      },
-      {
-        "term": "юридические науки",
-        "frequency": 22
-      },
-      {
-        "term": "политические науки",
-        "frequency": 21
-      },
-      {
-        "term": "экономические науки",
-        "frequency": 20
-      },
-      {
-        "term": "внешняя политика",
-        "frequency": 16
-      },
-      {
-        "term": "международные отношения",
-        "frequency": 15
-      },
-      {
-        "term": "лингвистика",
-        "frequency": 15
-      },
-      {
-        "term": "цифровизация",
-        "frequency": 13
-      },
-      {
-        "term": "глобализация",
-        "frequency": 11
-      },
-      {
-        "term": "психологические науки",
-        "frequency": 10
-      },
-      {
-        "term": "социологические науки",
-        "frequency": 10
-      },
-      {
-        "term": "диссертация",
-        "frequency": 9
-      },
-      {
-        "term": "русский язык",
-        "frequency": 9
-      },
-      {
-        "term": "дискурс",
-        "frequency": 9
-      },
-      {
-        "term": "социально-экономическое развитие",
-        "frequency": 9
-      },
-      {
-        "term": "цифровая экономика",
-        "frequency": 9
-      },
-      {
-        "term": "законодательство",
-        "frequency": 9
-      },
-      {
-        "term": "семантика",
-        "frequency": 8
-      },
-      {
-        "term": "философия",
-        "frequency": 8
-      },
-      {
-        "term": "историография",
-        "frequency": 8
-      },
-      {
-        "term": "конкурентоспособность",
-        "frequency": 8
-      },
-      {
-        "term": "экономический рост",
-        "frequency": 8
-      },
-      {
-        "term": "устойчивое развитие",
-        "frequency": 8
-      },
-      {
-        "term": "поэтика",
-        "frequency": 7
-      },
-      {
-        "term": "политика",
-        "frequency": 7
-      },
-      {
-        "term": "литературоведение",
-        "frequency": 7
-      },
-      {
-        "term": "социальные сети",
-        "frequency": 6
-      },
-      {
-        "term": "идентичность",
-        "frequency": 6
-      },
-      {
-        "term": "Китай",
-        "frequency": 6
-      },
-      {
-        "term": "мягкая сила",
-        "frequency": 6
-      },
-      {
-        "term": "государственная политика",
-        "frequency": 6
-      },
-      {
-        "term": "сравнительный анализ",
-        "frequency": 6
-      },
-      {
-        "term": "журналистика",
-        "frequency": 6
-      },
-      {
-        "term": "перевод",
-        "frequency": 6
-      },
-      {
-        "term": "языковая картина мира",
-        "frequency": 6
-      },
-      {
-        "term": "литература",
-        "frequency": 6
-      },
-      {
-        "term": "экономическая теория",
-        "frequency": 6
-      },
-      {
-        "term": "юрисдикция",
-        "frequency": 6
-      },
-      {
-        "term": "цифровая трансформация",
-        "frequency": 5
-      },
-      {
-        "term": "государственное управление",
-        "frequency": 5
-      },
-      {
-        "term": "история",
-        "frequency": 5
-      },
-      {
-        "term": "политическая коммуникация",
-        "frequency": 5
-      },
-      {
-        "term": "педагогические науки",
-        "frequency": 5
-      },
-      {
-        "term": "политические_науки",
-        "frequency": 5
-      },
-      {
-        "term": "лингвокультурология",
-        "frequency": 5
-      },
-      {
-        "term": "лингводидактика",
-        "frequency": 5
-      },
-      {
-        "term": "публицистика",
-        "frequency": 5
-      }
-    ],
+  ],
+  "coverage_notes": {
     "disciplines_covered": {
       "философские_науки": 24,
       "экономические_науки": 9,
@@ -427,93 +59,503 @@
       "другие_науки": 1,
       "филологических_наук": 1
     },
-    "deep_writing_patterns": {
-      "академический стиль": 5,
-      "академический стиль изложения": 3,
-      "описательность вместо аналитичности": 2,
-      "сравнительный анализ": 2,
-      "четкая структурированность": 2,
-      "четкое разделение на теоретическую и эмпирическую части": 2,
-      "терминологическая точность": 2,
-      "ссылки на первоисточники": 2,
-      "историческая хронология": 2,
-      "Четкая трехчастная структура: анализ → разработка → апробация": 1,
-      "Наличие глоссария терминов": 1,
-      "Последовательное наращивание сложности от обзора к собственным разработкам": 1,
-      "активное использование неологизмов": 1,
-      "концептуальные нововведения": 1,
-      "табличное представление данных": 1,
-      "перечисление показателей влияния": 1,
-      "классификационные схемы": 1,
-      "Академический стиль с обилием абстрактных конструкций": 1,
-      "Широкое использование терминологических дефиниций": 1,
-      "Последовательное раскрытие задач во введении (6 задач — по 2 на главу)": 1
-    },
-    "deep_read_priority_distribution": {
+    "deep_read_priorities": {
       "low": 478,
       "medium": 197,
       "high": 117
     }
   },
-  "common_failures": {
-    "cluster": "HUM_POL_ECON",
+  "sampling_summary": {
     "total_papers": 792,
-    "structure_quality_issues": [
-      {
-        "pattern": "low_classification_confidence",
-        "frequency": 6,
-        "impact": "低置信度聚类结果不可靠，需人工验证",
-        "suggestion": "增加更多章节结构特征或全文分析"
+    "deep_analyzed": 118,
+    "classification_confidence": {
+      "high": 767,
+      "medium": 19,
+      "low": 6
+    }
+  },
+  "typical_structures": [
+    {
+      "id": "hum_pol_econ_typical_structure",
+      "description": "Typical structure pattern for HUM_POL_ECON dissertations",
+      "note": "Chapter count statistics were unreliable (noisy structure). Structure based on logic chain and methodology analysis.",
+      "recommended_framework": "问题的提出→文献综述→理论框架→研究方法→分析结果→讨论→结论",
+      "evidence_basis": "Derived from deep logic analysis of Layer 4 classified papers",
+      "confidence": "medium"
+    }
+  ],
+  "chapter_sequence": [
+    {
+      "id": "hum_pol_econ_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 625,
+      "evidence_count": 625
+    },
+    {
+      "id": "hum_pol_econ_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 41,
+      "evidence_count": 41
+    },
+    {
+      "id": "hum_pol_econ_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "model",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 23,
+      "evidence_count": 23
+    },
+    {
+      "id": "hum_pol_econ_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "analysis",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 23,
+      "evidence_count": 23
+    },
+    {
+      "id": "hum_pol_econ_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "analysis",
+        "conclusion"
+      ],
+      "frequency": 10,
+      "evidence_count": 10
+    }
+  ],
+  "research_question_types": [
+    {
+      "id": "hum_pol_econ_rq_theoretical",
+      "type": "theoretical",
+      "frequency": 534,
+      "evidence_count": 534,
+      "when_to_use": "When research requires theoretical approach"
+    },
+    {
+      "id": "hum_pol_econ_rq_comparative",
+      "type": "comparative",
+      "frequency": 169,
+      "evidence_count": 169,
+      "when_to_use": "When research requires comparative approach"
+    },
+    {
+      "id": "hum_pol_econ_rq_experimental",
+      "type": "experimental",
+      "frequency": 47,
+      "evidence_count": 47,
+      "when_to_use": "When research requires experimental approach"
+    },
+    {
+      "id": "hum_pol_econ_rq_model_based",
+      "type": "model_based",
+      "frequency": 22,
+      "evidence_count": 22,
+      "when_to_use": "When research requires model_based approach"
+    },
+    {
+      "id": "hum_pol_econ_rq_empirical",
+      "type": "empirical",
+      "frequency": 6,
+      "evidence_count": 6,
+      "when_to_use": "When research requires empirical approach"
+    },
+    {
+      "id": "hum_pol_econ_rq_historical_anal",
+      "type": "historical_analysis",
+      "frequency": 5,
+      "evidence_count": 5,
+      "when_to_use": "When research requires historical_analysis approach"
+    },
+    {
+      "id": "hum_pol_econ_rq_field_study",
+      "type": "field_study",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "When research requires field_study approach"
+    },
+    {
+      "id": "hum_pol_econ_rq_algorithm",
+      "type": "algorithm",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "When research requires algorithm approach"
+    }
+  ],
+  "methodology_routes": [
+    {
+      "id": "hum_pol_econ_meth_теоретико-анали",
+      "method": "теоретико-аналитический",
+      "frequency": 4,
+      "evidence_count": 4,
+      "layer4_count": 4,
+      "description": "теоретико-аналитический方法论。适用于人文/政治/经济/法律/教育类论文。"
+    },
+    {
+      "id": "hum_pol_econ_meth_comparative",
+      "method": "comparative",
+      "frequency": 3,
+      "evidence_count": 3,
+      "layer4_count": 3,
+      "description": "比较方法：1) 选取案例 2) 维度定义 3) 比较分析 4) 模式识别 5) 结论归纳。适用于人文/政治/经济/法律/教育类论文。",
+      "typical_steps": [
+        "比较方法：1",
+        "选取案例 2",
+        "维度定义 3",
+        "比较分析 4",
+        "模式识别 5"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_meth_сравнительно-пр",
+      "method": "сравнительно-правовой",
+      "frequency": 3,
+      "evidence_count": 3,
+      "layer4_count": 3,
+      "description": "сравнительно-правовой方法论。适用于人文/政治/经济/法律/教育类论文。"
+    },
+    {
+      "id": "hum_pol_econ_meth_теоретико-право",
+      "method": "теоретико-правовой анализ",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "теоретико-правовой анализ方法论。适用于人文/政治/经济/法律/教育类论文。"
+    },
+    {
+      "id": "hum_pol_econ_meth_experimental",
+      "method": "experimental",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "实证方法：1) 假设提出 2) 变量定义 3) 数据收集 4) 模型检验 5) 结果讨论。适用于人文/政治/经济/法律/教育类论文。",
+      "typical_steps": [
+        "实证方法：1",
+        "假设提出 2",
+        "变量定义 3",
+        "数据收集 4",
+        "模型检验 5"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_meth_историко-сравни",
+      "method": "историко-сравнительный анализ",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "историко-сравнительный анализ方法论。适用于人文/政治/经济/法律/教育类论文。"
+    },
+    {
+      "id": "hum_pol_econ_meth_сравнительно-ис",
+      "method": "сравнительно-исторический анализ",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "сравнительно-исторический анализ方法论。适用于人文/政治/经济/法律/教育类论文。"
+    },
+    {
+      "id": "hum_pol_econ_meth_многокритериаль",
+      "method": "многокритериальная оптимизация и принятие решений (МАИ, метод медианы Кемени)",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "многокритериальная оптимизация и принятие решений (МАИ, метод медианы Кемени)方法论。适用于人文/政治/经济/法律/教育类论文。"
+    }
+  ],
+  "logic_chains": [
+    {
+      "id": "hum_pol_econ_logic_main",
+      "completeness_score": 0.7,
+      "element_counts": {
+        "has_problem": 36,
+        "has_gap": 30,
+        "has_goal": 34,
+        "has_method": 29,
+        "has_experiment": 5,
+        "has_result": 23,
+        "has_conclusion": 37
       },
-      {
-        "pattern": "partial_structure_only",
-        "frequency": 17,
-        "impact": "仅部分章节结构可识别",
-        "suggestion": "补充关键词信号增强检测"
-      }
-    ],
-    "logic_chain_gaps": [
-      {
-        "gap": "отсутствие эмпирической верификации теоретических положений",
-        "frequency": 2
+      "evidence_count": 118,
+      "layer4_count": 118,
+      "mapping": {
+        "problem": 36,
+        "goal": 34,
+        "method": 29,
+        "experiment": 5,
+        "result": 23,
+        "conclusion": 37
       },
-      {
-        "gap": "отсутствие экспериментальной проверки гипотез",
-        "frequency": 2
-      },
-      {
-        "gap": "отсутствие эмпирического исследования",
-        "frequency": 2
-      },
-      {
-        "gap": "experiment",
-        "frequency": 2
-      },
-      {
-        "gap": "Слабая обоснованность выбора конкретных методов (МАИ, медиана Кемени) среди альтернатив",
-        "frequency": 1
-      },
-      {
-        "gap": "Отсутствие реального полевого тестирования на практических кейсах организаций",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствие эмпирической верификации теоретических конструктов",
-        "frequency": 1
-      },
-      {
-        "gap": "слабая обоснованность выборки для анализа молодежи в 2.3",
-        "frequency": 1
-      },
-      {
-        "gap": "результаты экспериментов не описаны в предоставленных данных",
-        "frequency": 1
-      },
-      {
-        "gap": "Отсутствует четкое выделение исследовательского gap в литературе — формулируется скорее актуальность проблемы",
-        "frequency": 1
-      }
-    ],
-    "low_confidence_rate": 0.008
+      "chain_description": "适用于社会科学、经济学、法学、教育学等学科。典型闭环：研究问题→理论分析→实证/案例分析→结论",
+      "writing_sequence": "问题的提出→文献综述→理论框架→研究方法→分析结果→讨论→结论"
+    }
+  ],
+  "validation_patterns": [
+    {
+      "id": "hum_pol_econ_val_comparison",
+      "validation_type": "comparison",
+      "frequency": 189,
+      "evidence_count": 189
+    },
+    {
+      "id": "hum_pol_econ_val_field_test",
+      "validation_type": "field_test",
+      "frequency": 18,
+      "evidence_count": 18
+    },
+    {
+      "id": "hum_pol_econ_val_simulation",
+      "validation_type": "simulation",
+      "frequency": 10,
+      "evidence_count": 10
+    },
+    {
+      "id": "hum_pol_econ_val_field_study",
+      "validation_type": "field_study",
+      "frequency": 8,
+      "evidence_count": 8
+    },
+    {
+      "id": "hum_pol_econ_val_ablation",
+      "validation_type": "ablation",
+      "frequency": 3,
+      "evidence_count": 3
+    },
+    {
+      "id": "hum_pol_econ_val_comparative_ana",
+      "validation_type": "comparative_analysis",
+      "frequency": 2,
+      "evidence_count": 2
+    }
+  ],
+  "chapter_writing_rules": [
+    {
+      "id": "hum_pol_econ_rule_академический с",
+      "pattern": "академический стиль",
+      "frequency": 5,
+      "evidence_count": 5,
+      "when_to_use": "当论文需要讨论或描述「академический стиль」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_rule_академический с",
+      "pattern": "академический стиль изложения",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「академический стиль изложения」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_rule_описательность ",
+      "pattern": "описательность вместо аналитичности",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「описательность вместо аналитичности」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_rule_сравнительный а",
+      "pattern": "сравнительный анализ",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「сравнительный анализ」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_rule_четкая структур",
+      "pattern": "четкая структурированность",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「четкая структурированность」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_rule_четкое разделен",
+      "pattern": "четкое разделение на теоретическую и эмпирическую части",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「четкое разделение на теоретическую и эмпирическую части」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_rule_терминологическ",
+      "pattern": "терминологическая точность",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「терминологическая точность」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "hum_pol_econ_rule_ссылки на перво",
+      "pattern": "ссылки на первоисточники",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「ссылки на первоисточники」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与人文/政治/经济/法律/教育论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    }
+  ],
+  "_conversion": {
+    "version": "5.1",
+    "timestamp": "2026-06-03T08:45:58.557921",
+    "noise_warning": "noisy structure detected: median=131, max=3288",
+    "total_fields": 6
   }
 }

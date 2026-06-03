@@ -1,467 +1,479 @@
 {
   "cluster": "ARTS_SPORTS",
   "total_papers": 96,
-  "structure": {
-    "cluster": "ARTS_SPORTS",
+  "scope": {
+    "clusters_covered": [
+      "ARTS_SPORTS"
+    ],
     "total_papers": 96,
-    "structure_composition": {
+    "data_sources": [
+      "heading_clean",
+      "toc_clean",
+      "partial_structure"
+    ],
+    "limitations": []
+  },
+  "evidence_summary": {
+    "structure_quality": {
       "heading_clean": 68,
       "toc_clean": 24,
       "partial_structure": 4
     },
-    "chapter_count_statistics": {
+    "chapter_stats": {
       "mean": 159.5,
       "median": 70,
       "min": 1,
       "max": 904,
       "count": 86
     },
-    "page_count_statistics": {
+    "page_stats": {
       "mean": 207.9,
       "median": 199,
       "min": -1,
       "max": 892,
       "count": 96
     },
-    "typical_structure": {
-      "typical_chapter_range": "1-904",
-      "median_chapters": 70,
-      "median_pages": 199
-    }
-  },
-  "methodology": {
-    "cluster": "ARTS_SPORTS",
-    "total_papers": 96,
-    "top_methodology_hints": {
-      "theoretical": 68,
-      "comparative": 18,
-      "experimental": 10
-    },
-    "top_experiment_types": {
-      "comparison": 17,
-      "bench_test": 1
-    },
+    "deep_analysis_available": 33,
     "classification_confidence": {
       "high": 95,
       "medium": 1
-    },
-    "deep_analysis_available": 33,
-    "deep_methodology_routes": {
-      "теоретико-аналитический": 2,
-      "синтетический литературоведческо-философский подход с акцентом на жанрово-типологический и структурно-конструктивистский методы": 1,
-      "интертекстуальный анализ": 1,
-      "историко-литературный анализ с элементами мифопоэтического метода": 1,
-      "лингвопоэтический анализ текстов (close reading + элементы лингвистического анализа)": 1,
-      "теоретико-эмпирический с акцентом на контент-анализ и качественные методы": 1,
-      "теоретико-исторический анализ литературного жанра с элементами компаративистики": 1,
-      "терминологический анализ словарей и справочников": 1,
-      "теоретико-литературоведческий анализ": 1,
-      "сопоставительный (компаративный) метод": 1
-    },
-    "deep_experiment_types": {
-      "theory_only": 27,
-      "experiment": 5,
-      "field_test": 1
     }
   },
-  "logic_chain": {
-    "cluster": "ARTS_SPORTS",
-    "total_papers": 96,
-    "top_logic_skeletons": [
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 87
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "analysis",
-          "conclusion"
-        ],
-        "frequency": 2
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "analysis",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 2
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "classification",
-          "analysis",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "historical_analysis",
-          "conclusion"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "conclusion"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 1
-      }
-    ],
-    "deep_logic_completeness": {
-      "mean": 0.7,
-      "median": 0.72,
-      "min": 0.45,
-      "max": 1.0,
-      "count": 33
-    },
-    "common_skeleton_elements": {
-      "has_problem": 7,
-      "has_gap": 7,
-      "has_goal": 7,
-      "has_method": 7,
-      "has_experiment": 2,
-      "has_result": 4,
-      "has_conclusion": 7
+  "limitations": [
+    {
+      "issue": "noisy structure detected: median=70, max=904",
+      "impact": "Chapter count statistics are unreliable for typical structure estimation",
+      "recommendation": "Use toc_clean papers only for structural analysis"
     }
-  },
-  "writing_patterns": {
-    "cluster": "ARTS_SPORTS",
-    "total_papers": 96,
-    "top_evidence_terms": [
-      {
-        "term": "искусствоведение",
-        "frequency": 15
-      },
-      {
-        "term": "литературоведение",
-        "frequency": 7
-      },
-      {
-        "term": "литература",
-        "frequency": 7
-      },
-      {
-        "term": "филологические науки",
-        "frequency": 6
-      },
-      {
-        "term": "проза",
-        "frequency": 6
-      },
-      {
-        "term": "архитектура",
-        "frequency": 5
-      },
-      {
-        "term": "драматургия",
-        "frequency": 5
-      },
-      {
-        "term": "театр",
-        "frequency": 5
-      },
-      {
-        "term": "жанр",
-        "frequency": 4
-      },
-      {
-        "term": "роман",
-        "frequency": 4
-      },
-      {
-        "term": "Чехов",
-        "frequency": 4
-      },
-      {
-        "term": "поэтика",
-        "frequency": 4
-      },
-      {
-        "term": "автореферат",
-        "frequency": 3
-      },
-      {
-        "term": "живопись",
-        "frequency": 3
-      },
-      {
-        "term": "антиутопия",
-        "frequency": 3
-      },
-      {
-        "term": "драма",
-        "frequency": 3
-      },
-      {
-        "term": "пьеса",
-        "frequency": 3
-      },
-      {
-        "term": "поэзия",
-        "frequency": 3
-      },
-      {
-        "term": "импрессионизм",
-        "frequency": 3
-      },
-      {
-        "term": "Гален",
-        "frequency": 3
-      },
-      {
-        "term": "лирика",
-        "frequency": 3
-      },
-      {
-        "term": "художественная среда",
-        "frequency": 2
-      },
-      {
-        "term": "скульптура",
-        "frequency": 2
-      },
-      {
-        "term": "искусство",
-        "frequency": 2
-      },
-      {
-        "term": "иконография",
-        "frequency": 2
-      },
-      {
-        "term": "массовый спорт",
-        "frequency": 2
-      },
-      {
-        "term": "утопия",
-        "frequency": 2
-      },
-      {
-        "term": "творчество",
-        "frequency": 2
-      },
-      {
-        "term": "аллюзии",
-        "frequency": 2
-      },
-      {
-        "term": "Гоголь",
-        "frequency": 2
-      },
-      {
-        "term": "стих",
-        "frequency": 2
-      },
-      {
-        "term": "ритм",
-        "frequency": 2
-      },
-      {
-        "term": "философская сказка",
-        "frequency": 2
-      },
-      {
-        "term": "жанровые особенности",
-        "frequency": 2
-      },
-      {
-        "term": "литературная сказка",
-        "frequency": 2
-      },
-      {
-        "term": "экфрасис",
-        "frequency": 2
-      },
-      {
-        "term": "образ художника",
-        "frequency": 2
-      },
-      {
-        "term": "журналистский текст",
-        "frequency": 2
-      },
-      {
-        "term": "блогосфера",
-        "frequency": 2
-      },
-      {
-        "term": "ретардация",
-        "frequency": 2
-      },
-      {
-        "term": "теория драмы",
-        "frequency": 2
-      },
-      {
-        "term": "метафоры",
-        "frequency": 2
-      },
-      {
-        "term": "риторика",
-        "frequency": 2
-      },
-      {
-        "term": "литературная критика",
-        "frequency": 2
-      },
-      {
-        "term": "лингвистический проект",
-        "frequency": 2
-      },
-      {
-        "term": "Чайка",
-        "frequency": 2
-      },
-      {
-        "term": "игровой контент",
-        "frequency": 2
-      },
-      {
-        "term": "цифровые СМИ",
-        "frequency": 2
-      },
-      {
-        "term": "интертекстуальность",
-        "frequency": 2
-      },
-      {
-        "term": "неореализм",
-        "frequency": 2
-      }
-    ],
+  ],
+  "coverage_notes": {
     "disciplines_covered": {
       "искусствоведение": 1,
       "другие_науки": 1
     },
-    "deep_writing_patterns": {
-      "академический стиль": 3,
-      "массивные перечисления авторов (more than 30 имен) без смысловой дифференциации — маркер формального соответствия требованиям": 1,
-      "использование конструкций 'если..., то...' для последовательного противопоставления утопии и антиутопии — структурированный, но схематичный приём": 1,
-      "повторное использование одного и того же текста методологии в трёх разных разделах": 1,
-      "заголовки фрагментарны и представляют собой обрезанные предложения, а не тематические названия разделов": 1,
-      "Главы 2-5 построены по единой схеме: сюжетный мотив → система персонажей → детали поэтики → общие выводы": 1,
-      "Каждая из четырёх аналитических глав посвящена одному претексту (или паре претекстов), что обеспечивает глубину анализа": 1,
-      "Глава 1 выполняет двойную роль: обзор литературы + методологическое обоснование": 1,
-      "Активное использование терминологического аппарата (претекст, аллюзия, пародийность/пародичность, мимикрия, рециклизация)": 1,
-      "Ссылки на апробацию через 5 публикаций в рецензируемых изданиях, включая «Вестник МГУ. Филология» и «Новый мир»": 1,
-      "смешение библиографических записей с заголовками в оглавлении": 1,
-      "использование эмоционально-оценочных формулировок в научном тексте": 1,
-      "повторение введения в разделе обзора литературы": 1,
-      "Использование научного аппарата (сноски, ссылки на издания)": 1,
-      "Формулировка тезисов на защиту в заключении": 1,
-      "Описание практических применений результатов (курсы, спецкурсы)": 1,
-      "Академический стиль с терминологией (анафония, парономазия, брюитизмы, гипограмма)": 1,
-      "четкое выдвижение положений на защиту с эмпирическим обоснованием": 1,
-      "последовательная логика от глобальных трендов (цифровизация) к частным проявлениям (жанровые трансформации)": 1,
-      "использование терминологического аппарата (медиатекст, мультимедиатекст) с обоснованием": 1
-    },
-    "deep_read_priority_distribution": {
+    "deep_read_priorities": {
       "low": 43,
       "high": 33,
       "medium": 20
     }
   },
-  "common_failures": {
-    "cluster": "ARTS_SPORTS",
+  "sampling_summary": {
     "total_papers": 96,
-    "structure_quality_issues": [
-      {
-        "pattern": "partial_structure_only",
-        "frequency": 4,
-        "impact": "仅部分章节结构可识别",
-        "suggestion": "补充关键词信号增强检测"
-      }
-    ],
-    "logic_chain_gaps": [
-      {
-        "gap": "experiment",
-        "frequency": 2
+    "deep_analyzed": 33,
+    "classification_confidence": {
+      "high": 95,
+      "medium": 1
+    }
+  },
+  "typical_structures": [
+    {
+      "id": "arts_sports_typical_structure",
+      "description": "Typical structure pattern for ARTS_SPORTS dissertations",
+      "note": "Chapter count statistics were unreliable (noisy structure). Structure based on logic chain and methodology analysis.",
+      "recommended_framework": "问题的提出→研究对象与方法→理论基础→分析与讨论→结论与建议",
+      "evidence_basis": "Derived from deep logic analysis of Layer 4 classified papers",
+      "confidence": "medium"
+    }
+  ],
+  "chapter_sequence": [
+    {
+      "id": "arts_sports_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 87,
+      "evidence_count": 87
+    },
+    {
+      "id": "arts_sports_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "analysis",
+        "conclusion"
+      ],
+      "frequency": 2,
+      "evidence_count": 2
+    },
+    {
+      "id": "arts_sports_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "analysis",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 2,
+      "evidence_count": 2
+    },
+    {
+      "id": "arts_sports_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "classification",
+        "analysis",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 1,
+      "evidence_count": 1
+    },
+    {
+      "id": "arts_sports_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "historical_analysis",
+        "conclusion"
+      ],
+      "frequency": 1,
+      "evidence_count": 1
+    }
+  ],
+  "research_question_types": [
+    {
+      "id": "arts_sports_rq_theoretical",
+      "type": "theoretical",
+      "frequency": 68,
+      "evidence_count": 68,
+      "when_to_use": "When research requires theoretical approach"
+    },
+    {
+      "id": "arts_sports_rq_comparative",
+      "type": "comparative",
+      "frequency": 18,
+      "evidence_count": 18,
+      "when_to_use": "When research requires comparative approach"
+    },
+    {
+      "id": "arts_sports_rq_experimental",
+      "type": "experimental",
+      "frequency": 10,
+      "evidence_count": 10,
+      "when_to_use": "When research requires experimental approach"
+    }
+  ],
+  "methodology_routes": [
+    {
+      "id": "arts_sports_meth_теоретико-анали",
+      "method": "теоретико-аналитический",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "теоретико-аналитический方法论。适用于艺术/体育/文化研究类论文。"
+    },
+    {
+      "id": "arts_sports_meth_синтетический л",
+      "method": "синтетический литературоведческо-философский подход с акцентом на жанрово-типологический и структурно-конструктивистский методы",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "синтетический литературоведческо-философский подход с акцентом на жанрово-типологический и структурно-конструктивистский методы方法论。适用于艺术/体育/文化研究类论文。"
+    },
+    {
+      "id": "arts_sports_meth_интертекстуальн",
+      "method": "интертекстуальный анализ",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "интертекстуальный анализ方法论。适用于艺术/体育/文化研究类论文。"
+    },
+    {
+      "id": "arts_sports_meth_историко-литера",
+      "method": "историко-литературный анализ с элементами мифопоэтического метода",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "историко-литературный анализ с элементами мифопоэтического метода方法论。适用于艺术/体育/文化研究类论文。"
+    },
+    {
+      "id": "arts_sports_meth_лингвопоэтическ",
+      "method": "лингвопоэтический анализ текстов (close reading + элементы лингвистического анализа)",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "лингвопоэтический анализ текстов (close reading + элементы лингвистического анализа)方法论。适用于艺术/体育/文化研究类论文。"
+    },
+    {
+      "id": "arts_sports_meth_теоретико-эмпир",
+      "method": "теоретико-эмпирический с акцентом на контент-анализ и качественные методы",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "теоретико-эмпирический с акцентом на контент-анализ и качественные методы方法论。适用于艺术/体育/文化研究类论文。"
+    },
+    {
+      "id": "arts_sports_meth_теоретико-истор",
+      "method": "теоретико-исторический анализ литературного жанра с элементами компаративистики",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "теоретико-исторический анализ литературного жанра с элементами компаративистики方法论。适用于艺术/体育/文化研究类论文。"
+    },
+    {
+      "id": "arts_sports_meth_терминологическ",
+      "method": "терминологический анализ словарей и справочников",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "терминологический анализ словарей и справочников方法论。适用于艺术/体育/文化研究类论文。"
+    }
+  ],
+  "logic_chains": [
+    {
+      "id": "arts_sports_logic_main",
+      "completeness_score": 0.7,
+      "element_counts": {
+        "has_problem": 7,
+        "has_gap": 7,
+        "has_goal": 7,
+        "has_method": 7,
+        "has_experiment": 2,
+        "has_result": 4,
+        "has_conclusion": 7
       },
-      {
-        "gap": "отсутствие эмпирического эксперимента (компенсировано текстуальным анализом, но нивелирует воспроизводимость)",
-        "frequency": 1
+      "evidence_count": 33,
+      "layer4_count": 33,
+      "mapping": {
+        "problem": 7,
+        "goal": 7,
+        "method": 7,
+        "experiment": 2,
+        "result": 4,
+        "conclusion": 7
       },
-      {
-        "gap": "методологический блок троекратно дублируется (введение, обзор литературы, метод) — снижает чёткость разграничения этапов",
-        "frequency": 1
-      },
-      {
-        "gap": "не показан процесс выделения признаков антиутопического сознания — критерии отбора декларированы, но не продемонстрированы пошагово",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствует явная дискуссия с альтернативными классификациями чешской антиутопии",
-        "frequency": 1
-      },
-      {
-        "gap": "Отсутствует количественная верификация результатов (нет статистики аллюзий, частотности претекстов)",
-        "frequency": 1
-      },
-      {
-        "gap": "Не представлен эксплицитный критерий разграничения аллюзии и случайного совпадения",
-        "frequency": 1
-      },
-      {
-        "gap": "Нет систематического сравнения собственных интерпретаций с альтернативными прочтениями других исследователей",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствие систематического сравнительного анализа с современниками",
-        "frequency": 1
-      },
-      {
-        "gap": "слабая операционализация понятий «женского голоса» и «творческой идентичности»",
-        "frequency": 1
-      }
-    ],
-    "low_confidence_rate": 0.0
+      "chain_description": "适用于艺术理论、体育科学或文化研究。典型闭环：研究对象→理论框架→分析→讨论→结论",
+      "writing_sequence": "问题的提出→研究对象与方法→理论基础→分析与讨论→结论与建议"
+    }
+  ],
+  "validation_patterns": [
+    {
+      "id": "arts_sports_val_comparison",
+      "validation_type": "comparison",
+      "frequency": 17,
+      "evidence_count": 17
+    },
+    {
+      "id": "arts_sports_val_bench_test",
+      "validation_type": "bench_test",
+      "frequency": 1,
+      "evidence_count": 1
+    }
+  ],
+  "chapter_writing_rules": [
+    {
+      "id": "arts_sports_rule_академический с",
+      "pattern": "академический стиль",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「академический стиль」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "arts_sports_rule_массивные переч",
+      "pattern": "массивные перечисления авторов (more than 30 имен) без смысловой дифференциации — маркер формального соответствия требованиям",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "当论文需要讨论或描述「массивные перечисления авторов (more than 30 имен) без смысловой дифференциации — маркер формального соответствия требованиям」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "arts_sports_rule_использование к",
+      "pattern": "использование конструкций 'если..., то...' для последовательного противопоставления утопии и антиутопии — структурированный, но схематичный приём",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "当论文需要讨论或描述「использование конструкций 'если..., то...' для последовательного противопоставления утопии и антиутопии — структурированный, но схематичный приём」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "arts_sports_rule_повторное испол",
+      "pattern": "повторное использование одного и того же текста методологии в трёх разных разделах",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "当论文需要讨论或描述「повторное использование одного и того же текста методологии в трёх разных разделах」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "arts_sports_rule_заголовки фрагм",
+      "pattern": "заголовки фрагментарны и представляют собой обрезанные предложения, а не тематические названия разделов",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "当论文需要讨论或描述「заголовки фрагментарны и представляют собой обрезанные предложения, а не тематические названия разделов」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "arts_sports_rule_Главы 2-5 постр",
+      "pattern": "Главы 2-5 построены по единой схеме: сюжетный мотив → система персонажей → детали поэтики → общие выводы",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "当论文需要讨论或描述「Главы 2-5 построены по единой схеме: сюжетный мотив → система персонажей → детали поэтики → общие выводы」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "arts_sports_rule_Каждая из четыр",
+      "pattern": "Каждая из четырёх аналитических глав посвящена одному претексту (или паре претекстов), что обеспечивает глубину анализа",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "当论文需要讨论或描述「Каждая из четырёх аналитических глав посвящена одному претексту (или паре претекстов), что обеспечивает глубину анализа」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "arts_sports_rule_Глава 1 выполня",
+      "pattern": "Глава 1 выполняет двойную роль: обзор литературы + методологическое обоснование",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "当论文需要讨论或描述「Глава 1 выполняет двойную роль: обзор литературы + методологическое обоснование」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与艺术/体育/文化研究论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    }
+  ],
+  "_conversion": {
+    "version": "5.1",
+    "timestamp": "2026-06-03T08:45:58.548716",
+    "noise_warning": "noisy structure detected: median=70, max=904",
+    "total_fields": 6
   }
 }

@@ -1,433 +1,55 @@
 {
   "cluster": "SCI_TECH",
   "total_papers": 771,
-  "structure": {
-    "cluster": "SCI_TECH",
+  "scope": {
+    "clusters_covered": [
+      "SCI_TECH"
+    ],
     "total_papers": 771,
-    "structure_composition": {
+    "data_sources": [
+      "heading_clean",
+      "toc_clean",
+      "partial_structure",
+      "noisy_or_failed"
+    ],
+    "limitations": []
+  },
+  "evidence_summary": {
+    "structure_quality": {
       "heading_clean": 482,
       "toc_clean": 276,
       "partial_structure": 9,
       "noisy_or_failed": 4
     },
-    "chapter_count_statistics": {
+    "chapter_stats": {
       "mean": 106.1,
       "median": 62,
       "min": 1,
       "max": 952,
       "count": 700
     },
-    "page_count_statistics": {
+    "page_stats": {
       "mean": 134.3,
       "median": 133,
       "min": -1,
       "max": 765,
       "count": 760
     },
-    "typical_structure": {
-      "typical_chapter_range": "1-952",
-      "median_chapters": 62,
-      "median_pages": 133
-    }
-  },
-  "methodology": {
-    "cluster": "SCI_TECH",
-    "total_papers": 771,
-    "top_methodology_hints": {
-      "experimental": 421,
-      "theoretical": 185,
-      "model_based": 97,
-      "algorithm": 45,
-      "simulation": 22,
-      "comparative": 6,
-      "observational": 3
-    },
-    "top_experiment_types": {
-      "bench_test": 217,
-      "comparison": 153,
-      "simulation": 144,
-      "field_test": 56,
-      "ablation": 9,
-      "lab_test": 3,
-      "e": 2,
-      "t": 2,
-      "real_video": 1,
-      "b": 1
-    },
+    "deep_analysis_available": 192,
     "classification_confidence": {
       "high": 688,
       "medium": 47,
       "low": 36
-    },
-    "deep_analysis_available": 192,
-    "deep_methodology_routes": {
-      "экспериментальный": 12,
-      "теоретический анализ": 6,
-      "theoretical": 5,
-      "model_based": 4,
-      "experimental": 4,
-      "теоретико-экспериментальный": 3,
-      "экспериментальный с элементами численного моделирования": 2,
-      "теоретический": 2,
-      "теоретическое исследование": 2,
-      "model_based — имитационное цифровое моделирование отражательных характеристик 3D-объектов на основе фотометрических моделей и статистического моделирования": 1
-    },
-    "deep_experiment_types": {
-      "experiment": 108,
-      "simulation": 38,
-      "theory_only": 29,
-      "field_test": 8,
-      "simulation|experiment": 2,
-      "simulation + experiment": 1,
-      "simulation+experiment": 1,
-      "simulation|experiment|field_test": 1,
-      "simulation|theory_only": 1,
-      "experiment|simulation": 1
     }
   },
-  "logic_chain": {
-    "cluster": "SCI_TECH",
-    "total_papers": 771,
-    "top_logic_skeletons": [
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 543
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 73
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 13
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 11
-      },
-      {
-        "skeleton": [
-          "problem",
-          "goal",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 8
-      },
-      {
-        "skeleton": [
-          "problem",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 8
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "model",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 6
-      },
-      {
-        "skeleton": [
-          "problem",
-          "goal",
-          "method",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 4
-      },
-      {
-        "skeleton": [
-          "problem",
-          "method",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 4
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "simulation",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 3
-      }
-    ],
-    "deep_logic_completeness": {
-      "mean": 0.8,
-      "median": 0.85,
-      "min": 0.05,
-      "max": 1.0,
-      "count": 190
-    },
-    "common_skeleton_elements": {
-      "has_problem": 35,
-      "has_gap": 23,
-      "has_goal": 28,
-      "has_method": 27,
-      "has_experiment": 17,
-      "has_result": 32,
-      "has_conclusion": 33
+  "limitations": [
+    {
+      "issue": "noisy structure detected: median=62, max=952",
+      "impact": "Chapter count statistics are unreliable for typical structure estimation",
+      "recommendation": "Use toc_clean papers only for structural analysis"
     }
-  },
-  "writing_patterns": {
-    "cluster": "SCI_TECH",
-    "total_papers": 771,
-    "top_evidence_terms": [
-      {
-        "term": "синтез",
-        "frequency": 42
-      },
-      {
-        "term": "физико-математические науки",
-        "frequency": 23
-      },
-      {
-        "term": "моделирование",
-        "frequency": 16
-      },
-      {
-        "term": "численное моделирование",
-        "frequency": 15
-      },
-      {
-        "term": "математическое моделирование",
-        "frequency": 13
-      },
-      {
-        "term": "математическая модель",
-        "frequency": 13
-      },
-      {
-        "term": "автореферат",
-        "frequency": 12
-      },
-      {
-        "term": "химические науки",
-        "frequency": 10
-      },
-      {
-        "term": "численные методы",
-        "frequency": 9
-      },
-      {
-        "term": "биологические науки",
-        "frequency": 9
-      },
-      {
-        "term": "географические науки",
-        "frequency": 9
-      },
-      {
-        "term": "геолого-минералогические науки",
-        "frequency": 9
-      },
-      {
-        "term": "лиганды",
-        "frequency": 9
-      },
-      {
-        "term": "прочность",
-        "frequency": 8
-      },
-      {
-        "term": "напряженно-деформированное состояние",
-        "frequency": 8
-      },
-      {
-        "term": "алгоритм",
-        "frequency": 8
-      },
-      {
-        "term": "кристаллическая структура",
-        "frequency": 8
-      },
-      {
-        "term": "геологическое строение",
-        "frequency": 8
-      },
-      {
-        "term": "ЯМР",
-        "frequency": 8
-      },
-      {
-        "term": "оптимизация",
-        "frequency": 7
-      },
-      {
-        "term": "спектроскопия",
-        "frequency": 7
-      },
-      {
-        "term": "морфология",
-        "frequency": 7
-      },
-      {
-        "term": "катализаторы",
-        "frequency": 7
-      },
-      {
-        "term": "катализатор",
-        "frequency": 7
-      },
-      {
-        "term": "неорганическая химия",
-        "frequency": 7
-      },
-      {
-        "term": "физико-химические свойства",
-        "frequency": 7
-      },
-      {
-        "term": "механические свойства",
-        "frequency": 6
-      },
-      {
-        "term": "машиностроение",
-        "frequency": 6
-      },
-      {
-        "term": "метод конечных элементов",
-        "frequency": 6
-      },
-      {
-        "term": "экспериментальное исследование",
-        "frequency": 6
-      },
-      {
-        "term": "плазма",
-        "frequency": 6
-      },
-      {
-        "term": "биологические_науки",
-        "frequency": 6
-      },
-      {
-        "term": "биоинформатика",
-        "frequency": 6
-      },
-      {
-        "term": "биофизика",
-        "frequency": 6
-      },
-      {
-        "term": "геохимия",
-        "frequency": 6
-      },
-      {
-        "term": "магнитные свойства",
-        "frequency": 6
-      },
-      {
-        "term": "водород",
-        "frequency": 6
-      },
-      {
-        "term": "гетероциклы",
-        "frequency": 6
-      },
-      {
-        "term": "нейронные сети",
-        "frequency": 5
-      },
-      {
-        "term": "программный комплекс",
-        "frequency": 5
-      },
-      {
-        "term": "алгоритмы",
-        "frequency": 5
-      },
-      {
-        "term": "устойчивость",
-        "frequency": 5
-      },
-      {
-        "term": "фазовые переходы",
-        "frequency": 5
-      },
-      {
-        "term": "экология",
-        "frequency": 5
-      },
-      {
-        "term": "минералогия",
-        "frequency": 5
-      },
-      {
-        "term": "рентгеноструктурный анализ",
-        "frequency": 5
-      },
-      {
-        "term": "растворимость",
-        "frequency": 5
-      },
-      {
-        "term": "кристаллические структуры",
-        "frequency": 5
-      },
-      {
-        "term": "машинное обучение",
-        "frequency": 5
-      },
-      {
-        "term": "космический аппарат",
-        "frequency": 4
-      }
-    ],
+  ],
+  "coverage_notes": {
     "disciplines_covered": {
       "технические_науки": 125,
       "физико-математические_науки": 16,
@@ -435,99 +57,503 @@
       "геолого-минералогические_науки": 3,
       "другие_науки": 2
     },
-    "deep_writing_patterns": {
-      "наличие выводов по каждой главе": 4,
-      "каждая глава завершается выводами": 4,
-      "Стандартная структура биологической диссертации": 3,
-      "Стандартная структура автореферата": 3,
-      "стандартная структура автореферата": 3,
-      "structured_sections": 3,
-      "стандартная структура российской кандидатской диссертации": 2,
-      "Каждая глава завершается выводами": 2,
-      "детальное описание методологии": 2,
-      "минимальная детализация": 2,
-      "подробное описание методологии": 2,
-      "четкая структурированность": 2,
-      "чёткая структура по главам": 2,
-      "mathematical_formulations": 2,
-      "положения выносятся на защиту": 2,
-      "терминологическая точность": 2,
-      "академический стиль": 2,
-      "последовательное наращивание масштаба эксперимента от образцов к полноразмерной модели": 1,
-      "четкое разделение на численный и экспериментальный блоки в главе 3": 1,
-      "дублирование оценки эффективности АСТР в главах 3 и 4 на разных масштабах": 1
-    },
-    "deep_read_priority_distribution": {
+    "deep_read_priorities": {
       "medium": 447,
       "high": 172,
       "low": 152
     }
   },
-  "common_failures": {
-    "cluster": "SCI_TECH",
+  "sampling_summary": {
     "total_papers": 771,
-    "structure_quality_issues": [
-      {
-        "pattern": "low_classification_confidence",
-        "frequency": 36,
-        "impact": "低置信度聚类结果不可靠，需人工验证",
-        "suggestion": "增加更多章节结构特征或全文分析"
+    "deep_analyzed": 192,
+    "classification_confidence": {
+      "high": 688,
+      "medium": 47,
+      "low": 36
+    }
+  },
+  "typical_structures": [
+    {
+      "id": "sci_tech_typical_structure",
+      "description": "Typical structure pattern for SCI_TECH dissertations",
+      "note": "Chapter count statistics were unreliable (noisy structure). Structure based on logic chain and methodology analysis.",
+      "recommended_framework": "概述研究背景→综述现有方法→指出不足→提出新方法→理论/实验验证→结果分析→结论",
+      "evidence_basis": "Derived from deep logic analysis of Layer 4 classified papers",
+      "confidence": "medium"
+    }
+  ],
+  "chapter_sequence": [
+    {
+      "id": "sci_tech_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 543,
+      "evidence_count": 543
+    },
+    {
+      "id": "sci_tech_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "model",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 73,
+      "evidence_count": 73
+    },
+    {
+      "id": "sci_tech_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 13,
+      "evidence_count": 13
+    },
+    {
+      "id": "sci_tech_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "model",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 11,
+      "evidence_count": 11
+    },
+    {
+      "id": "sci_tech_seq_problem_goal_method",
+      "sequence": [
+        "problem",
+        "goal",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 8,
+      "evidence_count": 8
+    }
+  ],
+  "research_question_types": [
+    {
+      "id": "sci_tech_rq_experimental",
+      "type": "experimental",
+      "frequency": 421,
+      "evidence_count": 421,
+      "when_to_use": "When research requires experimental approach"
+    },
+    {
+      "id": "sci_tech_rq_theoretical",
+      "type": "theoretical",
+      "frequency": 185,
+      "evidence_count": 185,
+      "when_to_use": "When research requires theoretical approach"
+    },
+    {
+      "id": "sci_tech_rq_model_based",
+      "type": "model_based",
+      "frequency": 97,
+      "evidence_count": 97,
+      "when_to_use": "When research requires model_based approach"
+    },
+    {
+      "id": "sci_tech_rq_algorithm",
+      "type": "algorithm",
+      "frequency": 45,
+      "evidence_count": 45,
+      "when_to_use": "When research requires algorithm approach"
+    },
+    {
+      "id": "sci_tech_rq_simulation",
+      "type": "simulation",
+      "frequency": 22,
+      "evidence_count": 22,
+      "when_to_use": "When research requires simulation approach"
+    },
+    {
+      "id": "sci_tech_rq_comparative",
+      "type": "comparative",
+      "frequency": 6,
+      "evidence_count": 6,
+      "when_to_use": "When research requires comparative approach"
+    },
+    {
+      "id": "sci_tech_rq_observational",
+      "type": "observational",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "When research requires observational approach"
+    }
+  ],
+  "methodology_routes": [
+    {
+      "id": "sci_tech_meth_экспериментальн",
+      "method": "экспериментальный",
+      "frequency": 12,
+      "evidence_count": 12,
+      "layer4_count": 12,
+      "description": "экспериментальный方法论。适用于理工科（物理/数学/化学/工程）类论文。"
+    },
+    {
+      "id": "sci_tech_meth_теоретический а",
+      "method": "теоретический анализ",
+      "frequency": 6,
+      "evidence_count": 6,
+      "layer4_count": 6,
+      "description": "теоретический анализ方法论。适用于理工科（物理/数学/化学/工程）类论文。"
+    },
+    {
+      "id": "sci_tech_meth_theoretical",
+      "method": "theoretical",
+      "frequency": 5,
+      "evidence_count": 5,
+      "layer4_count": 5,
+      "description": "理论分析方法：1) 建立假设 2) 数学推导 3) 边界条件 4) 近似分析 5) 理论预测验证。适用于理工科（物理/数学/化学/工程）类论文。",
+      "typical_steps": [
+        "理论分析方法：1",
+        "建立假设 2",
+        "数学推导 3",
+        "边界条件 4",
+        "近似分析 5"
+      ]
+    },
+    {
+      "id": "sci_tech_meth_model_based",
+      "method": "model_based",
+      "frequency": 4,
+      "evidence_count": 4,
+      "layer4_count": 4,
+      "description": "基于模型的方法：1) 确定模型假设 2) 建立方程 3) 参数确定 4) 模型验证 5) 灵敏度分析。适用于理工科（物理/数学/化学/工程）类论文。",
+      "typical_steps": [
+        "基于模型的方法：1",
+        "确定模型假设 2",
+        "建立方程 3",
+        "参数确定 4",
+        "模型验证 5"
+      ]
+    },
+    {
+      "id": "sci_tech_meth_experimental",
+      "method": "experimental",
+      "frequency": 4,
+      "evidence_count": 4,
+      "layer4_count": 4,
+      "description": "实验方法：1) 设计实验装置 2) 制定测量方案 3) 标定仪器 4) 数据采集 5) 误差分析。适用于理工科（物理/数学/化学/工程）类论文。",
+      "typical_steps": [
+        "实验方法：1",
+        "设计实验装置 2",
+        "制定测量方案 3",
+        "标定仪器 4",
+        "数据采集 5"
+      ]
+    },
+    {
+      "id": "sci_tech_meth_теоретико-экспе",
+      "method": "теоретико-экспериментальный",
+      "frequency": 3,
+      "evidence_count": 3,
+      "layer4_count": 3,
+      "description": "теоретико-экспериментальный方法论。适用于理工科（物理/数学/化学/工程）类论文。"
+    },
+    {
+      "id": "sci_tech_meth_экспериментальн",
+      "method": "экспериментальный с элементами численного моделирования",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "экспериментальный с элементами численного моделирования方法论。适用于理工科（物理/数学/化学/工程）类论文。"
+    },
+    {
+      "id": "sci_tech_meth_теоретический",
+      "method": "теоретический",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "теоретический方法论。适用于理工科（物理/数学/化学/工程）类论文。"
+    }
+  ],
+  "logic_chains": [
+    {
+      "id": "sci_tech_logic_main",
+      "completeness_score": 0.8,
+      "element_counts": {
+        "has_problem": 35,
+        "has_gap": 23,
+        "has_goal": 28,
+        "has_method": 27,
+        "has_experiment": 17,
+        "has_result": 32,
+        "has_conclusion": 33
       },
-      {
-        "pattern": "noisy_or_failed_structure",
-        "frequency": 4,
-        "impact": "PDF结构解析失败，无法提取章节信息",
-        "suggestion": "尝试OCR处理或手动标注章节结构"
+      "evidence_count": 190,
+      "layer4_count": 190,
+      "mapping": {
+        "problem": 35,
+        "goal": 28,
+        "method": 27,
+        "experiment": 17,
+        "result": 32,
+        "conclusion": 33
       },
-      {
-        "pattern": "partial_structure_only",
-        "frequency": 9,
-        "impact": "仅部分章节结构可识别",
-        "suggestion": "补充关键词信号增强检测"
-      }
-    ],
-    "logic_chain_gaps": [
-      {
-        "gap": "Отсутствие экспериментальных данных",
-        "frequency": 2
-      },
-      {
-        "gap": "не указана явно сравнительная оценка с существующими решениями в виде квантифицированных метрик",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствие количественного сравнения предложенных моделей с существующими базовыми подходами",
-        "frequency": 1
-      },
-      {
-        "gap": "нет явного обоснования выбора конкретных параметров регуляризации",
-        "frequency": 1
-      },
-      {
-        "gap": "слабая связь между гониоспектрофотометрическими измерениями и итоговыми моделями — неясно, насколько обширна экспериментальная база данных",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствие дискуссии о границах применимости предложенных моделей",
-        "frequency": 1
-      },
-      {
-        "gap": "слабая связь между аналитическими методиками (Глава 2) и задачей определения орбит (Глава 4) — переход неочевиден",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствие количественного сравнения предложенных показателей эффективности с альтернативными метриками из литературы",
-        "frequency": 1
-      },
-      {
-        "gap": "неполная верификация результатов — только одна модель атмосферы, ограниченный набор сценариев",
-        "frequency": 1
-      },
-      {
-        "gap": "нет анализа чувствительности результатов к исходным допущениям (например, баллистический коэффициент)",
-        "frequency": 1
-      }
-    ],
-    "low_confidence_rate": 0.047
+      "chain_description": "适用于理论推导、实验验证或计算分析的论文。典型闭环：理论框架→建模→数值/实验验证→结果讨论→结论",
+      "writing_sequence": "概述研究背景→综述现有方法→指出不足→提出新方法→理论/实验验证→结果分析→结论"
+    }
+  ],
+  "validation_patterns": [
+    {
+      "id": "sci_tech_val_bench_test",
+      "validation_type": "bench_test",
+      "frequency": 217,
+      "evidence_count": 217
+    },
+    {
+      "id": "sci_tech_val_comparison",
+      "validation_type": "comparison",
+      "frequency": 153,
+      "evidence_count": 153
+    },
+    {
+      "id": "sci_tech_val_simulation",
+      "validation_type": "simulation",
+      "frequency": 144,
+      "evidence_count": 144
+    },
+    {
+      "id": "sci_tech_val_field_test",
+      "validation_type": "field_test",
+      "frequency": 56,
+      "evidence_count": 56
+    },
+    {
+      "id": "sci_tech_val_ablation",
+      "validation_type": "ablation",
+      "frequency": 9,
+      "evidence_count": 9
+    },
+    {
+      "id": "sci_tech_val_lab_test",
+      "validation_type": "lab_test",
+      "frequency": 3,
+      "evidence_count": 3
+    }
+  ],
+  "chapter_writing_rules": [
+    {
+      "id": "sci_tech_rule_наличие выводов",
+      "pattern": "наличие выводов по каждой главе",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "当论文需要讨论或描述「наличие выводов по каждой главе」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "sci_tech_rule_каждая глава за",
+      "pattern": "каждая глава завершается выводами",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "当论文需要讨论或描述「каждая глава завершается выводами」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "sci_tech_rule_Стандартная стр",
+      "pattern": "Стандартная структура биологической диссертации",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「Стандартная структура биологической диссертации」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "sci_tech_rule_Стандартная стр",
+      "pattern": "Стандартная структура автореферата",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「Стандартная структура автореферата」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "sci_tech_rule_стандартная стр",
+      "pattern": "стандартная структура автореферата",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「стандартная структура автореферата」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "sci_tech_rule_structured_sect",
+      "pattern": "structured_sections",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「structured_sections」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "sci_tech_rule_стандартная стр",
+      "pattern": "стандартная структура российской кандидатской диссертации",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「стандартная структура российской кандидатской диссертации」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "sci_tech_rule_Каждая глава за",
+      "pattern": "Каждая глава завершается выводами",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「Каждая глава завершается выводами」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与理工科（物理/数学/化学/工程）论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    }
+  ],
+  "_conversion": {
+    "version": "5.1",
+    "timestamp": "2026-06-03T08:45:58.530683",
+    "noise_warning": "noisy structure detected: median=62, max=952",
+    "total_fields": 6
   }
 }

@@ -1,432 +1,50 @@
 {
   "cluster": "AGRI_MED",
   "total_papers": 268,
-  "structure": {
-    "cluster": "AGRI_MED",
+  "scope": {
+    "clusters_covered": [
+      "AGRI_MED"
+    ],
     "total_papers": 268,
-    "structure_composition": {
+    "data_sources": [
+      "heading_clean",
+      "toc_clean"
+    ],
+    "limitations": []
+  },
+  "evidence_summary": {
+    "structure_quality": {
       "heading_clean": 180,
       "toc_clean": 88
     },
-    "chapter_count_statistics": {
+    "chapter_stats": {
       "mean": 199.1,
       "median": 143,
       "min": 1,
       "max": 1581,
       "count": 245
     },
-    "page_count_statistics": {
+    "page_stats": {
       "mean": 190.9,
       "median": 158,
       "min": -1,
       "max": 1130,
       "count": 263
     },
-    "typical_structure": {
-      "typical_chapter_range": "1-1581",
-      "median_chapters": 143,
-      "median_pages": 158
-    }
-  },
-  "methodology": {
-    "cluster": "AGRI_MED",
-    "total_papers": 268,
-    "top_methodology_hints": {
-      "experimental": 223,
-      "comparative": 20,
-      "model_based": 10,
-      "theoretical": 6,
-      "algorithm": 5,
-      "simulation": 2,
-      "field_study": 1,
-      "clinical": 1
-    },
-    "top_experiment_types": {
-      "comparison": 62,
-      "bench_test": 53,
-      "field_test": 42,
-      "simulation": 14,
-      "clinical_trial": 6,
-      "experimental": 1,
-      "in_vivo_preclinical": 1,
-      "ablation": 1,
-      "real_vehicle": 1,
-      "clinical_study": 1
-    },
+    "deep_analysis_available": 187,
     "classification_confidence": {
       "high": 264,
       "medium": 4
-    },
-    "deep_analysis_available": 187,
-    "deep_methodology_routes": {
-      "экспериментальный": 8,
-      "experimental": 8,
-      "клиническое экспериментальное исследование": 2,
-      "экспериментальное клиническое исследование": 2,
-      "comparative analysis": 2,
-      "экспериментальный (клинический)": 2,
-      "CFD-моделирование и параметрическая оптимизация проточной части центробежного насоса": 1,
-      "экспериментальный — разработка и натурные испытания пневматического аппланационного датчика артериального давления с компенсационным методом измерения": 1,
-      "mathematical_modeling": 1,
-      "экспериментальный — многоканальные биоимпедансные измерения тонуса сосудов конечностей у здоровых добровольцев": 1
-    },
-    "deep_experiment_types": {
-      "experiment": 143,
-      "field_test": 30,
-      "simulation": 6,
-      "theory_only": 4,
-      "simulation|experiment": 2,
-      "simulation+experiment": 1
     }
   },
-  "logic_chain": {
-    "cluster": "AGRI_MED",
-    "total_papers": 268,
-    "top_logic_skeletons": [
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 225
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 10
-      },
-      {
-        "skeleton": [
-          "problem",
-          "goal",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 7
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "model",
-          "method",
-          "simulation",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem: ранняя диагностика сердечных заболеваний актуальна",
-          "gap: существующие методы идентификации биосигналов применяются только на заключительном этапе болезней",
-          "goal: разработка алгоритмов формирования признаков электро-, сейсмо- и гирокардиосигналов",
-          "method: информационный анализ, формирование характерных признаков, кодирование кардиоциклов",
-          "model: модель погрешностей электросейсмокардиоблока (ЭСКБ)",
-          "experiment: измерение и исследование электро-, сейсмо- и гирокардиосигналов на реальных данных",
-          "result: алгоритмы расчёта кардиоциклов и респираторных циклов",
-          "conclusion: методика кодирования и анализа механических колебаний грудной клетки"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem:неравномерность и неиндивидуализированность криовоздействия",
-          "gap:отсутствие регулируемого охлаждения биообъекта",
-          "goal:разработка оборудования с управляемым криовоздействием",
-          "method:экспериментальное исследование динамики охлаждения",
-          "experiment:измерение температур газа и поверхности в нерегулируемом/регулируемом режиме",
-          "result:данные о распределении температур и динамике охлаждения",
-          "conclusion:путь к индивидуализации и регулированию криотерапии"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem: высокая смертность от ССЗ в России",
-          "gap: отсутствие валидированной русскоязычной версии MSPSS и DS14; недостаточная изученность роли психосоциальных факторов",
-          "goal: валидация шкал и оценка влияния психосоциальных факторов на прогноз у кардиологических пациентов",
-          "method: психодиагностические опросники, эксплораторный и конфирматорный факторный анализ, оценка надежности (альфа Кронбаха, тест-ретест)",
-          "experiment: клиническое наблюдение когорты пациентов с ИБС после ЧКВ",
-          "result: подтверждена трёхфакторная структура MSPSS, идентифицированы значимые психосоциальные предикторы осложнений и смерти",
-          "conclusion: разработаны прогностические шкалы оценки 10-летнего риска"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "механизмы регуляции гемодинамики нарушены при хронической ЛАГ",
-          "недостаточно данных о перестройках левого желудочка при хронической лёгочной гипертензии",
-          "изучение адаптивных изменений миокарда ЛЖ и ПЖ",
-          "экспериментальное изучение функциональных параметров сердца",
-          "модель хронической ЛАГ",
-          "компенсаторное усиление сократимости и скорости расслабления ЛЖ",
-          "адаптивный характер перестройки для поддержания сердечного выброса"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem of antibiotic resistance",
-          "gap in effective biofilm treatment",
-          "goal to explore phage mechanisms",
-          "experimental study of phage-biofilm interactions",
-          "demonstration of synergy",
-          "conclusion on therapeutic potential"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem:低效ФДТ due to photosensitizer aggregation",
-          "gap:缺乏有效光敏剂递送平台",
-          "goal:разработка платформы доставки на основе наноалмазов",
-          "method:модификация наноалмазов карбоксильными группами, создание гибридных систем",
-          "experiment:цитотоксичность, измерение АФК, синглетного кислорода, кинетика на культурах клеток",
-          "result:получены функционализированные ГС, определены характеристики адсорбции и генерации АФК",
-          "conclusion:платформа на основе НА перспективна для повышения эффективности ФДТ"
-        ],
-        "frequency": 1
-      }
-    ],
-    "deep_logic_completeness": {
-      "mean": 0.8,
-      "median": 0.85,
-      "min": 0.0,
-      "max": 1.0,
-      "count": 186
-    },
-    "common_skeleton_elements": {
-      "has_problem": 9,
-      "has_gap": 6,
-      "has_goal": 9,
-      "has_method": 7,
-      "has_experiment": 4,
-      "has_result": 7,
-      "has_conclusion": 9
+  "limitations": [
+    {
+      "issue": "noisy structure detected: median=143, max=1581",
+      "impact": "Chapter count statistics are unreliable for typical structure estimation",
+      "recommendation": "Use toc_clean papers only for structural analysis"
     }
-  },
-  "writing_patterns": {
-    "cluster": "AGRI_MED",
-    "total_papers": 268,
-    "top_evidence_terms": [
-      {
-        "term": "пациенты",
-        "frequency": 17
-      },
-      {
-        "term": "диагностика",
-        "frequency": 11
-      },
-      {
-        "term": "лечение",
-        "frequency": 10
-      },
-      {
-        "term": "стоматология",
-        "frequency": 10
-      },
-      {
-        "term": "медицина",
-        "frequency": 8
-      },
-      {
-        "term": "заболеваемость",
-        "frequency": 8
-      },
-      {
-        "term": "сердечно-сосудистые заболевания",
-        "frequency": 7
-      },
-      {
-        "term": "профилактика",
-        "frequency": 7
-      },
-      {
-        "term": "качество жизни",
-        "frequency": 6
-      },
-      {
-        "term": "здравоохранение",
-        "frequency": 6
-      },
-      {
-        "term": "COVID-19",
-        "frequency": 5
-      },
-      {
-        "term": "цитокины",
-        "frequency": 5
-      },
-      {
-        "term": "онкологические заболевания",
-        "frequency": 5
-      },
-      {
-        "term": "медицинской помощи",
-        "frequency": 5
-      },
-      {
-        "term": "патогенез",
-        "frequency": 4
-      },
-      {
-        "term": "вакцинация",
-        "frequency": 4
-      },
-      {
-        "term": "биоорганическая химия",
-        "frequency": 4
-      },
-      {
-        "term": "урология",
-        "frequency": 4
-      },
-      {
-        "term": "цитотоксичность",
-        "frequency": 4
-      },
-      {
-        "term": "биосовместимость",
-        "frequency": 4
-      },
-      {
-        "term": "кариес зубов",
-        "frequency": 4
-      },
-      {
-        "term": "пациентов",
-        "frequency": 4
-      },
-      {
-        "term": "кариес",
-        "frequency": 4
-      },
-      {
-        "term": "медицинская помощь",
-        "frequency": 4
-      },
-      {
-        "term": "реабилитация",
-        "frequency": 4
-      },
-      {
-        "term": "АТФ",
-        "frequency": 3
-      },
-      {
-        "term": "ишемическая болезнь сердца",
-        "frequency": 3
-      },
-      {
-        "term": "иммунология",
-        "frequency": 3
-      },
-      {
-        "term": "молекулярная биология",
-        "frequency": 3
-      },
-      {
-        "term": "злокачественные новообразования",
-        "frequency": 3
-      },
-      {
-        "term": "глиобластома",
-        "frequency": 3
-      },
-      {
-        "term": "биологические науки",
-        "frequency": 3
-      },
-      {
-        "term": "фотодинамическая терапия",
-        "frequency": 3
-      },
-      {
-        "term": "гипоксия",
-        "frequency": 3
-      },
-      {
-        "term": "эпидемиология",
-        "frequency": 3
-      },
-      {
-        "term": "клеточная биология",
-        "frequency": 3
-      },
-      {
-        "term": "пролиферация",
-        "frequency": 3
-      },
-      {
-        "term": "медицинские науки",
-        "frequency": 3
-      },
-      {
-        "term": "терапия",
-        "frequency": 3
-      },
-      {
-        "term": "клиническая картина",
-        "frequency": 3
-      },
-      {
-        "term": "психическое здоровье",
-        "frequency": 3
-      },
-      {
-        "term": "медицинская психология",
-        "frequency": 3
-      },
-      {
-        "term": "лечения",
-        "frequency": 3
-      },
-      {
-        "term": "in vivo",
-        "frequency": 3
-      },
-      {
-        "term": "рецепторы",
-        "frequency": 3
-      },
-      {
-        "term": "психические расстройства",
-        "frequency": 3
-      },
-      {
-        "term": "биомедицина",
-        "frequency": 3
-      },
-      {
-        "term": "качество жизни пациентов",
-        "frequency": 3
-      },
-      {
-        "term": "компьютерная томография",
-        "frequency": 3
-      },
-      {
-        "term": "нейровизуализация",
-        "frequency": 3
-      }
-    ],
+  ],
+  "coverage_notes": {
     "disciplines_covered": {
       "технические_науки": 6,
       "медицинских_наук": 4,
@@ -437,80 +55,498 @@
       "химических_наук": 1,
       "биологических_наук": 1
     },
-    "deep_writing_patterns": {
-      "стандартная структура медицинской диссертации": 14,
-      "Стандартная структура медицинской диссертации": 7,
-      "детальное описание методов": 5,
-      "научный стиль": 4,
-      "стандартная структура диссертации": 4,
-      "академический стиль": 4,
-      "comparative_analysis": 3,
-      "подробное описание методологии": 3,
-      "четкое разделение на теоретическую и практическую части": 3,
-      "статистические данные": 3,
-      "structured_sections": 2,
-      "четкая нумерация разделов": 2,
-      "междисциплинарный подход": 2,
-      "наличие списка сокращений": 2,
-      "Каждая глава завершается разделом 'Выводы'": 2,
-      "четкая структурированность": 2,
-      "Детальное описание методов диагностики": 2,
-      "стандартная академическая структура": 2,
-      "клиническая терминология": 2,
-      "чёткая дедуктивная структура: обзор → метод → верификация → выводы": 1
-    },
-    "deep_read_priority_distribution": {
+    "deep_read_priorities": {
       "high": 185,
       "medium": 74,
       "low": 9
     }
   },
-  "common_failures": {
-    "cluster": "AGRI_MED",
+  "sampling_summary": {
     "total_papers": 268,
-    "structure_quality_issues": [],
-    "logic_chain_gaps": [
-      {
-        "gap": "отсутствует явная формулировка гипотезы",
-        "frequency": 2
+    "deep_analyzed": 187,
+    "classification_confidence": {
+      "high": 264,
+      "medium": 4
+    }
+  },
+  "typical_structures": [
+    {
+      "id": "agri_med_typical_structure",
+      "description": "Typical structure pattern for AGRI_MED dissertations",
+      "note": "Chapter count statistics were unreliable (noisy structure). Structure based on logic chain and methodology analysis.",
+      "recommended_framework": "研究背景和意义→文献综述→研究假设→材料与方法→结果→讨论→结论",
+      "evidence_basis": "Derived from deep logic analysis of Layer 4 classified papers",
+      "confidence": "medium"
+    }
+  ],
+  "chapter_sequence": [
+    {
+      "id": "agri_med_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 225,
+      "evidence_count": 225
+    },
+    {
+      "id": "agri_med_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "model",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 10,
+      "evidence_count": 10
+    },
+    {
+      "id": "agri_med_seq_problem_goal_method",
+      "sequence": [
+        "problem",
+        "goal",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 7,
+      "evidence_count": 7
+    },
+    {
+      "id": "agri_med_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "model",
+        "method",
+        "simulation",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 1,
+      "evidence_count": 1
+    },
+    {
+      "id": "agri_med_seq_problem: ранняя диагностика сердечных заболеваний актуальна_gap: существующие методы идентификации биосигналов применяются только на заключительном этапе болезней_goal: разработка алгоритмов формирования признаков электро-, сейсмо- и гирокардиосигналов",
+      "sequence": [
+        "problem: ранняя диагностика сердечных заболеваний актуальна",
+        "gap: существующие методы идентификации биосигналов применяются только на заключительном этапе болезней",
+        "goal: разработка алгоритмов формирования признаков электро-, сейсмо- и гирокардиосигналов",
+        "method: информационный анализ, формирование характерных признаков, кодирование кардиоциклов",
+        "model: модель погрешностей электросейсмокардиоблока (ЭСКБ)",
+        "experiment: измерение и исследование электро-, сейсмо- и гирокардиосигналов на реальных данных",
+        "result: алгоритмы расчёта кардиоциклов и респираторных циклов",
+        "conclusion: методика кодирования и анализа механических колебаний грудной клетки"
+      ],
+      "frequency": 1,
+      "evidence_count": 1
+    }
+  ],
+  "research_question_types": [
+    {
+      "id": "agri_med_rq_experimental",
+      "type": "experimental",
+      "frequency": 223,
+      "evidence_count": 223,
+      "when_to_use": "When research requires experimental approach"
+    },
+    {
+      "id": "agri_med_rq_comparative",
+      "type": "comparative",
+      "frequency": 20,
+      "evidence_count": 20,
+      "when_to_use": "When research requires comparative approach"
+    },
+    {
+      "id": "agri_med_rq_model_based",
+      "type": "model_based",
+      "frequency": 10,
+      "evidence_count": 10,
+      "when_to_use": "When research requires model_based approach"
+    },
+    {
+      "id": "agri_med_rq_theoretical",
+      "type": "theoretical",
+      "frequency": 6,
+      "evidence_count": 6,
+      "when_to_use": "When research requires theoretical approach"
+    },
+    {
+      "id": "agri_med_rq_algorithm",
+      "type": "algorithm",
+      "frequency": 5,
+      "evidence_count": 5,
+      "when_to_use": "When research requires algorithm approach"
+    },
+    {
+      "id": "agri_med_rq_simulation",
+      "type": "simulation",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "When research requires simulation approach"
+    },
+    {
+      "id": "agri_med_rq_field_study",
+      "type": "field_study",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "When research requires field_study approach"
+    },
+    {
+      "id": "agri_med_rq_clinical",
+      "type": "clinical",
+      "frequency": 1,
+      "evidence_count": 1,
+      "when_to_use": "When research requires clinical approach"
+    }
+  ],
+  "methodology_routes": [
+    {
+      "id": "agri_med_meth_экспериментальн",
+      "method": "экспериментальный",
+      "frequency": 8,
+      "evidence_count": 8,
+      "layer4_count": 8,
+      "description": "экспериментальный方法论。适用于农林医/生物/药学类论文。"
+    },
+    {
+      "id": "agri_med_meth_experimental",
+      "method": "experimental",
+      "frequency": 8,
+      "evidence_count": 8,
+      "layer4_count": 8,
+      "description": "实验方法：1) 样本选择 2) 分组设计 3) 实验干预 4) 数据采集 5) 统计分析。适用于农林医/生物/药学类论文。",
+      "typical_steps": [
+        "实验方法：1",
+        "样本选择 2",
+        "分组设计 3",
+        "实验干预 4",
+        "数据采集 5"
+      ]
+    },
+    {
+      "id": "agri_med_meth_клиническое экс",
+      "method": "клиническое экспериментальное исследование",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "клиническое экспериментальное исследование方法论。适用于农林医/生物/药学类论文。"
+    },
+    {
+      "id": "agri_med_meth_экспериментальн",
+      "method": "экспериментальное клиническое исследование",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "экспериментальное клиническое исследование方法论。适用于农林医/生物/药学类论文。"
+    },
+    {
+      "id": "agri_med_meth_comparative ana",
+      "method": "comparative analysis",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "comparative analysis方法论。适用于农林医/生物/药学类论文。"
+    },
+    {
+      "id": "agri_med_meth_экспериментальн",
+      "method": "экспериментальный (клинический)",
+      "frequency": 2,
+      "evidence_count": 2,
+      "layer4_count": 2,
+      "description": "экспериментальный (клинический)方法论。适用于农林医/生物/药学类论文。"
+    },
+    {
+      "id": "agri_med_meth_CFD-моделирован",
+      "method": "CFD-моделирование и параметрическая оптимизация проточной части центробежного насоса",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "CFD-моделирование и параметрическая оптимизация проточной части центробежного насоса方法论。适用于农林医/生物/药学类论文。"
+    },
+    {
+      "id": "agri_med_meth_экспериментальн",
+      "method": "экспериментальный — разработка и натурные испытания пневматического аппланационного датчика артериального давления с компенсационным методом измерения",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "экспериментальный — разработка и натурные испытания пневматического аппланационного датчика артериального давления с компенсационным методом измерения方法论。适用于农林医/生物/药学类论文。"
+    }
+  ],
+  "logic_chains": [
+    {
+      "id": "agri_med_logic_main",
+      "completeness_score": 0.8,
+      "element_counts": {
+        "has_problem": 9,
+        "has_gap": 6,
+        "has_goal": 9,
+        "has_method": 7,
+        "has_experiment": 4,
+        "has_result": 7,
+        "has_conclusion": 9
       },
-      {
-        "gap": "отсутствуют in-vivo эксперименты на крови — верификация только на водно-глицериновой смеси (гидравлика), без прямого подтверждения гемолиза/тромбоза на реальной крови",
-        "frequency": 1
+      "evidence_count": 186,
+      "layer4_count": 186,
+      "mapping": {
+        "problem": 9,
+        "goal": 9,
+        "method": 7,
+        "experiment": 4,
+        "result": 7,
+        "conclusion": 9
       },
-      {
-        "gap": "в оглавлении отсутствует явный раздел «Задачи исследования» как нумерованный список — задачи перечислены только во введении",
-        "frequency": 1
-      },
-      {
-        "gap": "нет явного сравнения предложенного метода с эталонными/клиническими методами (метод Короткова, осциллометрия) в контролируемом эксперименте",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствует количественная верификация точности измерений АД относительно референсного метода",
-        "frequency": 1
-      },
-      {
-        "gap": "не указана выборка испытуемых для пилотных исследований и протокол эксперимента",
-        "frequency": 1
-      },
-      {
-        "gap": "разрыв между теоретической моделью (уравнение Кортевега–де-Фриза) и экспериментальной валидацией — модель применяется для оценки СРПВ, но не для калибровки датчика",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствие количественной оценки воспроизводимости результатов между сессиями",
-        "frequency": 1
-      },
-      {
-        "gap": "не приведены детали статистической мощности выборки добровольцев",
-        "frequency": 1
-      },
-      {
-        "gap": "нет явного сравнения с референсным «золотым стандартом» измерения тонуса сосудов",
-        "frequency": 1
-      }
-    ],
-    "low_confidence_rate": 0.0
+      "chain_description": "适用于生物医学、农业科学或药学实验。典型闭环：研究背景→材料与方法→实验结果→讨论→结论",
+      "writing_sequence": "研究背景和意义→文献综述→研究假设→材料与方法→结果→讨论→结论"
+    }
+  ],
+  "validation_patterns": [
+    {
+      "id": "agri_med_val_comparison",
+      "validation_type": "comparison",
+      "frequency": 62,
+      "evidence_count": 62
+    },
+    {
+      "id": "agri_med_val_bench_test",
+      "validation_type": "bench_test",
+      "frequency": 53,
+      "evidence_count": 53
+    },
+    {
+      "id": "agri_med_val_field_test",
+      "validation_type": "field_test",
+      "frequency": 42,
+      "evidence_count": 42
+    },
+    {
+      "id": "agri_med_val_simulation",
+      "validation_type": "simulation",
+      "frequency": 14,
+      "evidence_count": 14
+    },
+    {
+      "id": "agri_med_val_clinical_trial",
+      "validation_type": "clinical_trial",
+      "frequency": 6,
+      "evidence_count": 6
+    },
+    {
+      "id": "agri_med_val_experimental",
+      "validation_type": "experimental",
+      "frequency": 1,
+      "evidence_count": 1
+    }
+  ],
+  "chapter_writing_rules": [
+    {
+      "id": "agri_med_rule_стандартная стр",
+      "pattern": "стандартная структура медицинской диссертации",
+      "frequency": 14,
+      "evidence_count": 14,
+      "when_to_use": "当论文需要讨论或描述「стандартная структура медицинской диссертации」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "agri_med_rule_Стандартная стр",
+      "pattern": "Стандартная структура медицинской диссертации",
+      "frequency": 7,
+      "evidence_count": 7,
+      "when_to_use": "当论文需要讨论或描述「Стандартная структура медицинской диссертации」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "agri_med_rule_детальное описа",
+      "pattern": "детальное описание методов",
+      "frequency": 5,
+      "evidence_count": 5,
+      "when_to_use": "当论文需要讨论或描述「детальное описание методов」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "agri_med_rule_научный стиль",
+      "pattern": "научный стиль",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "当论文需要讨论或描述「научный стиль」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "agri_med_rule_стандартная стр",
+      "pattern": "стандартная структура диссертации",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "当论文需要讨论或描述「стандартная структура диссертации」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "agri_med_rule_академический с",
+      "pattern": "академический стиль",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "当论文需要讨论或描述「академический стиль」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "agri_med_rule_comparative_ana",
+      "pattern": "comparative_analysis",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「comparative_analysis」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "agri_med_rule_подробное описа",
+      "pattern": "подробное описание методологии",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「подробное описание методологии」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与农林医/生物/药学论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    }
+  ],
+  "_conversion": {
+    "version": "5.1",
+    "timestamp": "2026-06-03T08:45:58.539691",
+    "noise_warning": "noisy structure detected: median=143, max=1581",
+    "total_fields": 6
   }
 }

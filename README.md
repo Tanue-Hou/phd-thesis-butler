@@ -1,4 +1,4 @@
-# PhD Thesis Butler v5.0 — Dissertation Writing Intelligence Platform
+# PhD Thesis Butler v5.1 — Dissertation Writing Intelligence Platform
 
 [中](#zh) · [Рус](#ru) · [EN](#en)
 
@@ -40,7 +40,7 @@
 
 ### 1. 项目简介
 
-**PhD Thesis Butler v5.0** 是一个面向俄罗斯副博士（кандидат наук）学位论文写作的智能辅助平台。它的核心使命是：**让AI助手在不需要重读千篇论文的前提下，获得编写俄罗斯学位论文的专业能力**。
+**PhD Thesis Butler v5.1** 是一个面向俄罗斯副博士（кандидат наук）学位论文写作的智能辅助平台。它的核心使命是：**让AI助手在不需要重读千篇论文的前提下，获得编写俄罗斯学位论文的专业能力**。
 
 **核心理念：** 源语料 → 蒸馏写作知识 → 验证模板/结构/评估标准 → 运行时检索与规划 → 可选私有扩展
 
@@ -58,7 +58,7 @@
 ### 2. 技能架构
 
 ```
-PhD Thesis Butler v5.0
+PhD Thesis Butler v5.1
 │
 ├── 📦 核心组件
 │   ├── SKILL.md          — 智能体运行时指令（agent-facing）
@@ -83,7 +83,7 @@ PhD Thesis Butler v5.0
 │   ├── corpus_summary_v5.json      — 语料库摘要
 │   └── cross_cluster_insights_v5.json — 跨聚类对比分析
 │
-├── 🔬 数据管线 (scripts/pipeline/)
+├── 🔬 数据管线 (scripts/pipeline/ — 构建用，公开仓库不含)
 │   ├── layer0_ingest.py    — PDF入库
 │   ├── layer1_fulltext.py  — 全文抽取
 │   ├── layer2_structure.py — 章节结构解析
@@ -92,7 +92,7 @@ PhD Thesis Butler v5.0
 │   ├── layer5_distill.py   — 范式蒸馏（统计聚合）
 │   └── layer6_publish.py   — 公开资产构建
 │
-├── 🧪 验证体系
+├── 🧪 验证体系 (构建用，公开仓库不含)
 │   ├── tests/              — pytest 测试套件 (23项)
 │   ├── validate_skill_assets.py   — 资产完整性检查
 │   ├── validate_planning_assets.py— 规划层验证
@@ -205,7 +205,7 @@ python3 -m pytest tests/ -q
 
 ### 1. Обзор
 
-**PhD Thesis Butler v5.0** — это интеллектуальная платформа-помощник для написания кандидатских диссертаций на русском языке. Основная миссия: дать AI-ассистенту возможность профессионально помогать с диссертацией без необходимости перечитывать тысячи исходных работ.
+**PhD Thesis Butler v5.1** — это интеллектуальная платформа-помощник для написания кандидатских диссертаций на русском языке. Основная миссия: дать AI-ассистенту возможность профессионально помогать с диссертацией без необходимости перечитывать тысячи исходных работ.
 
 **Основной принцип:** Исходный корпус → дистиллированное знание о письме → проверенные шаблоны/структуры/критерии → поиск и планирование во время работы → опциональные частные расширения.
 
@@ -285,7 +285,7 @@ python3 -m pytest tests/ -q
 
 ### 1. Overview
 
-**PhD Thesis Butler v5.0** is a dissertation writing intelligence platform for Russian PhD (кандидат наук) theses. Its core mission: **give an AI assistant professional dissertation-writing capability without re-reading thousands of source papers**.
+**PhD Thesis Butler v5.1** is a dissertation writing intelligence platform for Russian PhD (кандидат наук) theses. Its core mission: **give an AI assistant professional dissertation-writing capability without re-reading thousands of source papers**.
 
 **Core principle:** Source corpus → distilled writing knowledge → validated templates/structures/rubrics → runtime retrieval & planning → optional private extension packs.
 

@@ -1,8 +1,8 @@
 {
   "project": "phd-thesis-butler",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "release_date": "2026-06-03",
-  "schema_version": "5.0",
+  "schema_version": "5.1",
   "description": "Corpus-distilled Russian dissertation writing intelligence platform. Aggregated from 2,118 Russian dissertations (3 universities), with 679 deep analyses across 5 discipline clusters.",
   "templates": {
     "total": 16722,
@@ -13,7 +13,11 @@
   "sources": {
     "total_documents": 2118,
     "universities": 3,
-    "universities_list": ["BMSTU", "MSU", "SPbSU"],
+    "universities_list": [
+      "BMSTU",
+      "MSU",
+      "SPbSU"
+    ],
     "deep_analyzed": 679,
     "skipped": 148,
     "skip_reason": "PDF corrupted or unparseable (noisy_or_failed)"
@@ -62,7 +66,11 @@
     "layer5_distillation": 6
   },
   "data_sources": {
-    "universities": ["BMSTU", "MSU", "SPbSU"],
+    "universities": [
+      "BMSTU",
+      "MSU",
+      "SPbSU"
+    ],
     "corpus_size": 2118,
     "deep_analyzed": 679
   }

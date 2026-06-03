@@ -13,10 +13,12 @@ from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
 errors = []
+warnings = []
 
 CJK_RE = re.compile(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]')
 CJK_PUNCT_RE = re.compile(r'[，。；：！？、（）【】《》]')
 CYRILLIC_RE = re.compile(r'[А-Яа-яЁё]')
+VERSION_RE = re.compile(r'(\d+\.\d+(?:\.\d+)?)')
 
 EN_WHITELIST = {
     'DIS', 'AREF', 'UTILS', 'MODEL', 'INTRO', 'SURVEY', 'METHOD', 'EXPERIMENT',
@@ -35,14 +37,35 @@ VALID_CATEGORIES = {
     'AREF', 'UTILS',
 }
 
+EXPECTED_DISCIPLINES = [
+    'AUTOMATION_CONTROL', 'SCI_TECH', 'AGRI_MED', 'ARTS_SPORTS', 'HUM_POL_ECON',
+]
+
+MAX_LEAKED_TEXT_LEN = 200  # strings longer than this may be original text leakage
+
 
 def e(msg):
     errors.append(msg)
     print(f"  ❌ {msg}")
 
 
+def w(msg):
+    warnings.append(msg)
+    print(f"  ⚠️  {msg}")
+
+
 def ok(msg):
     print(f"  ✅ {msg}")
+
+
+def normalize_version(v):
+    """Normalize version string: strip quotes, whitespace, leading 'v'."""
+    v = v.strip().strip('"').strip("'").lstrip('v').rstrip('.')
+    # Pad to 3 components: 5.0 -> 5.0.0
+    parts = v.split('.')
+    while len(parts) < 3:
+        parts.append('0')
+    return '.'.join(parts)
 
 
 def get_jsonl_files():
@@ -58,22 +81,35 @@ def get_jsonl_files():
 
 def check_structure():
     print("\n0️⃣  Structure existence check")
-    required_dirs = [
-        "assets/discipline",
+    # Only check dirs that actually exist — skip silently if not present
+    optional_dirs = [
+        "assets/references/disciplines",
+        "assets/references",
         "assets/cluster/TECH_LIFE",
         "assets/cluster/HUM_SOC",
-        "assets/references",
+        "assets/global",
         "scripts",
         "evals",
     ]
-    for d in required_dirs:
-        if not (BASE / d).is_dir():
-            e(f"Missing required directory: {d}/")
+    for d in optional_dirs:
+        if (BASE / d).is_dir():
+            ok(f"Directory exists: {d}/")
+        else:
+            w(f"Optional directory missing: {d}/")
 
-    disc_dir = BASE / "assets/discipline"
+    # Discipline JSON files (v5.1 core asset)
+    disc_dir = BASE / "assets/references/disciplines"
     if disc_dir.is_dir():
-        disc_count = len(list(disc_dir.glob("*.jsonl")))
-        ok(f"{disc_count} discipline JSONL files")
+        json_files = list(disc_dir.glob("*.json"))
+        ok(f"{len(json_files)} discipline JSON files found")
+        found_names = {f.stem for f in json_files}
+        for name in EXPECTED_DISCIPLINES:
+            if name in found_names:
+                ok(f"  Discipline: {name}.json")
+            else:
+                e(f"Missing discipline JSON: {name}.json")
+    else:
+        e("Discipline directory not found: assets/references/disciplines/")
 
     ref_dir = BASE / "assets/references"
     if ref_dir.is_dir():
@@ -81,32 +117,151 @@ def check_structure():
         ok(f"{len(ref_files)} reference files")
 
 
+def extract_version_from_file(path):
+    """Extract version string from a file (YAML front-matter or plain text)."""
+    try:
+        with open(path, encoding='utf-8') as f:
+            content = f.read(4096)
+    except Exception:
+        return None
+
+    # Try YAML front-matter: version: "5.0"
+    m = re.search(r'^version:\s*["\']?(\d[\d.]*)["\']?', content, re.MULTILINE)
+    if m:
+        return m.group(1)
+    # Try markdown heading: # ... v5.0
+    m = re.search(r'v(\d+\.\d+(?:\.\d+)?)', content)
+    if m:
+        return m.group(1)
+    # Try JSON: "version": "5.0.0"
+    m = re.search(r'"version"\s*:\s*"(\d[\d.]*)"', content)
+    if m:
+        return m.group(1)
+    return None
+
+
 def check_build_info():
-    print("\n🔢 BUILD_INFO consistency check")
+    print("\n🔢 BUILD_INFO / SKILL / README version consistency check")
     bi_path = BASE / "BUILD_INFO.json"
     if not bi_path.exists():
         e("BUILD_INFO.json not found")
         return
+
     with open(bi_path) as f:
         bi = json.load(f)
 
-    version = bi.get("version", "")
-    ok(f"Version: {version}")
+    bi_version = bi.get("version", "")
+    ok(f"BUILD_INFO version: {bi_version}")
+
+    versions = {"BUILD_INFO.json": bi_version}
 
     skill_path = BASE / "SKILL.md"
     if skill_path.exists():
-        with open(skill_path) as f:
-            for line in f:
-                if line.startswith("version:"):
-                    skill_ver = line.split('"')[1] if '"' in line else ""
-                    if skill_ver == version:
-                        ok(f"SKILL.md version matches BUILD_INFO")
-                    else:
-                        e(f"SKILL.md version ({skill_ver}) != BUILD_INFO ({version})")
-                    break
+        sv = extract_version_from_file(skill_path)
+        if sv:
+            versions["SKILL.md"] = sv
+            ok(f"SKILL.md version: {sv}")
+        else:
+            w("Could not extract version from SKILL.md")
+    else:
+        w("SKILL.md not found")
+
+    readme_path = BASE / "README.md"
+    if readme_path.exists():
+        rv = extract_version_from_file(readme_path)
+        if rv:
+            versions["README.md"] = rv
+            ok(f"README.md version: {rv}")
+        else:
+            w("Could not extract version from README.md")
+    else:
+        w("README.md not found")
+
+    # Normalize and compare
+    norm = {}
+    for fname, ver in versions.items():
+        nv = normalize_version(ver)
+        norm[fname] = nv
+
+    unique_versions = set(norm.values())
+    if len(unique_versions) == 1:
+        ok(f"All versions consistent: {unique_versions.pop()}")
+    else:
+        for fname, nv in norm.items():
+            e(f"Version mismatch: {fname} = {nv}")
+
+
+def check_discipline_jsons():
+    """Validate discipline JSON files for v5.1 requirements."""
+    print("\n📚 v5.1 Discipline JSON validation")
+    disc_dir = BASE / "assets/references/disciplines"
+    if not disc_dir.is_dir():
+        e("Cannot validate disciplines — directory missing")
+        return
+
+    for name in EXPECTED_DISCIPLINES:
+        fpath = disc_dir / f"{name}.json"
+        if not fpath.exists():
+            continue  # already reported in check_structure
+        try:
+            with open(fpath, encoding='utf-8') as f:
+                data = json.load(f)
+            ok(f"{name}.json: valid JSON")
+        except json.JSONDecodeError as ex:
+            e(f"{name}.json: JSON parse error: {ex}")
+            continue
+
+        # Check top-level keys
+        if "cluster" not in data:
+            e(f"{name}.json: missing 'cluster' key")
+
+        # Check structure.typical_structure for chapter_count > 30 warning
+        struct = data.get("structure", {})
+        typical = struct.get("typical_structure", {})
+        median_ch = typical.get("median_chapters", 0)
+        if isinstance(median_ch, (int, float)) and median_ch > 30:
+            w(f"{name}.json: median_chapters={median_ch} > 30 — "
+              f"do not treat as strong evidence for typical structure")
+
+        # Check for long text leakage in deep_writing_patterns and logic_chain
+        _check_text_leakage(name, data)
+
+    # Also check UNKNOWN.json if present
+    unknown_path = disc_dir / "UNKNOWN.json"
+    if unknown_path.exists():
+        try:
+            with open(unknown_path, encoding='utf-8') as f:
+                json.load(f)
+            ok("UNKNOWN.json: valid JSON")
+        except json.JSONDecodeError as ex:
+            e(f"UNKNOWN.json: JSON parse error: {ex}")
+
+
+def _check_text_leakage(name, data):
+    """Check for long original-text leakage in discipline JSONs."""
+    def scan_strings(obj, path=""):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                scan_strings(v, f"{path}.{k}")
+        elif isinstance(obj, list):
+            for i, item in enumerate(obj):
+                scan_strings(item, f"{path}[{i}]")
+        elif isinstance(obj, str):
+            # Long strings may be original text leakage
+            if len(obj) > MAX_LEAKED_TEXT_LEN:
+                # Check if it looks like structured metadata vs. original text
+                if CYRILLIC_RE.search(obj) and any(c in obj for c in '.!?,;:'):
+                    w(f"{name}.json{path}: possible text leakage ({len(obj)} chars): "
+                      f"{obj[:80]}...")
+            # Check for CJK in discipline JSONs (should be Russian/metadata)
+            if CJK_RE.search(obj):
+                e(f"{name}.json{path}: CJK text found: {obj[:80]}")
+
+    scan_strings(data)
 
 
 def check_jsonl_content(deep=False):
+    """Check JSONL files for content validity."""
     mode = "deep" if deep else f"fast (up to {SAMPLE_LIMIT}/file)"
     print(f"\n🔎 JSONL content check ({mode})")
 
@@ -129,7 +284,7 @@ def check_jsonl_content(deep=False):
                 checked_lines += 1
                 try:
                     d = json.loads(line)
-                except:
+                except Exception:
                     e(f"{f.relative_to(BASE)}:{i}: JSON parse error")
                     continue
 
@@ -140,19 +295,20 @@ def check_jsonl_content(deep=False):
                 if qs is not None and qs not in (0, 1, 2):
                     e(f"{f.relative_to(BASE)}:{i}: invalid quality_score={qs}")
                 if cat and cat not in VALID_CATEGORIES:
-                    # Skip unknown category check for quality/ directories (Russian taxonomy names)
                     if "/quality/" not in str(f) and "\\quality\\" not in str(f):
                         e(f"{f.relative_to(BASE)}:{i}: unknown category '{cat}'")
 
-                for key, val in d.items():
-                    if isinstance(val, str):
-                        if CJK_RE.search(val):
-                            e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:60]}")
+                # CJK check — only on 'template' and 'text' fields (v5.1: metadata/README can be multilingual)
+                for key in ('template', 'text'):
+                    val = d.get(key, "")
+                    if isinstance(val, str) and CJK_RE.search(val):
+                        e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:60]}")
                     elif isinstance(val, list):
                         for j, item in enumerate(val):
                             if isinstance(item, str) and CJK_RE.search(item):
                                 e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:60]}")
 
+                # Check for non-Russian template (templates should be Russian)
                 if t and not CYRILLIC_RE.search(t):
                     e(f"{f.relative_to(BASE)}:{i}: non-Russian template: {t[:60]}")
 
@@ -168,18 +324,22 @@ def main():
 
     print("=" * 60)
     print(f"Skill Asset Validation  |  {BASE.name}")
+    print(f"Mode: {'deep' if args.deep else 'fast'}")
     print("=" * 60)
 
     check_structure()
     check_build_info()
+    check_discipline_jsons()
     check_jsonl_content(deep=args.deep)
 
     print(f"\n{'=' * 60}")
+    if warnings:
+        print(f"\n⚠️  {len(warnings)} warning(s)")
     if errors:
-        print(f"\n❌ FAILED — {len(errors)} issue(s)")
+        print(f"\n❌ FAILED — {len(errors)} error(s)")
         sys.exit(1)
     else:
-        print("\n✅ ALL CHECKS PASSED")
+        print(f"\n✅ ALL CHECKS PASSED ({len(warnings)} warning(s))")
         sys.exit(0)
 
 

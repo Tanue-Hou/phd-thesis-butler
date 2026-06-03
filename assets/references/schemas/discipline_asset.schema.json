@@ -1,0 +1,223 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://phd-butler/schemas/discipline_asset_v5.1.schema.json",
+  "title": "Discipline Asset Schema v5.1",
+  "description": "博士论文写作学科资产标准格式，定义7类资产的统一结构规范。",
+  "version": "5.1",
+
+  "definitions": {
+
+    "common_rule_fields": {
+      "type": "object",
+      "description": "所有资产规则共享的通用字段",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z_]+\\.[a-z_]+(\\.[a-z0-9_]+)*$",
+          "description": "规则唯一标识符，点分层级命名"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "description": "规则的清晰描述"
+        },
+        "when_to_use": {
+          "type": "string",
+          "description": "触发条件，说明何时适用此规则"
+        },
+        "evidence_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "支撑证据总数"
+        },
+        "layer3_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Layer3证据数量（高可信度文献/案例）"
+        },
+        "layer4_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Layer4证据数量（次级/间接证据）"
+        },
+        "evidence_basis": {
+          "type": "string",
+          "description": "证据来源说明，如学科规范、经典文献、实证数据等"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "置信度评分 0-1"
+        },
+        "counterexample_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "已知反例数量"
+        },
+        "applicability_limits": {
+          "type": "string",
+          "description": "适用范围与限制条件"
+        },
+        "common_failures": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "常见失败模式列表"
+        },
+        "recommended_actions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "推荐的行动步骤"
+        },
+        "template_family_links": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "关联的模板族标识"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "when_to_use",
+        "evidence_count",
+        "layer3_count",
+        "layer4_count",
+        "evidence_basis",
+        "confidence",
+        "counterexample_count",
+        "applicability_limits",
+        "common_failures",
+        "recommended_actions",
+        "template_family_links"
+      ]
+    },
+
+    "typical_structure_quality": {
+      "type": "string",
+      "enum": ["toc_clean", "heading_clean", "noisy_or_failed"],
+      "description": "typical_structures 资产专用的质量标记。toc_clean=强证据（目录结构清晰）；heading_clean=弱证据（仅标题结构可用）；noisy_or_failed=噪声/失败样本，不纳入规则"
+    },
+
+    "chapter_count_constraint": {
+      "type": "integer",
+      "maximum": 30,
+      "description": "典型结构中章节数量上限约束，chapter_count > 30 的样本排除"
+    },
+
+    "typical_structures_rule": {
+      "allOf": [
+        { "$ref": "#/definitions/common_rule_fields" },
+        {
+          "type": "object",
+          "properties": {
+            "source_quality": {
+              "$ref": "#/definitions/typical_structure_quality"
+            },
+            "chapter_count": {
+              "$ref": "#/definitions/chapter_count_constraint"
+            }
+          },
+          "required": ["source_quality", "chapter_count"],
+          "not": {
+            "properties": {
+              "source_quality": { "const": "noisy_or_failed" }
+            },
+            "required": ["source_quality"]
+          }
+        }
+      ]
+    }
+  },
+
+  "type": "object",
+  "properties": {
+
+    "schema_version": {
+      "type": "string",
+      "const": "5.1",
+      "description": "Schema版本号"
+    },
+
+    "discipline": {
+      "type": "string",
+      "description": "学科领域名称"
+    },
+
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "资产生成时间戳"
+    },
+
+    "asset_counts": {
+      "type": "object",
+      "properties": {
+        "typical_structures":    { "type": "integer", "minimum": 0 },
+        "chapter_sequence":      { "type": "integer", "minimum": 0 },
+        "research_question_types": { "type": "integer", "minimum": 0 },
+        "methodology_routes":    { "type": "integer", "minimum": 0 },
+        "logic_chains":          { "type": "integer", "minimum": 0 },
+        "validation_patterns":   { "type": "integer", "minimum": 0 },
+        "chapter_writing_rules": { "type": "integer", "minimum": 0 }
+      },
+      "description": "各类资产数量统计"
+    },
+
+    "typical_structures": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/typical_structures_rule" },
+      "description": "典型论文结构模板（来源质量限定：toc_clean强证据，heading_clean弱证据，排除noisy_or_failed；章节数>30排除）"
+    },
+
+    "chapter_sequence": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/common_rule_fields" },
+      "description": "章节顺序规则，定义章节目录排列逻辑与约束"
+    },
+
+    "research_question_types": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/common_rule_fields" },
+      "description": "研究问题类型，分类识别研究问题的范式与模式"
+    },
+
+    "methodology_routes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/common_rule_fields" },
+      "description": "方法论路线图，定义研究设计的选择路径与推荐流程"
+    },
+
+    "logic_chains": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/common_rule_fields" },
+      "description": "逻辑链模板，论文论证中的因果/推理链条模式"
+    },
+
+    "validation_patterns": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/common_rule_fields" },
+      "description": "验证模式，结果验证与效度检验的标准方法"
+    },
+
+    "chapter_writing_rules": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/common_rule_fields" },
+      "description": "章节写作规则，每章内容组织、语言风格与结构规范"
+    }
+  },
+
+  "required": [
+    "schema_version",
+    "discipline",
+    "generated_at",
+    "typical_structures",
+    "chapter_sequence",
+    "research_question_types",
+    "methodology_routes",
+    "logic_chains",
+    "validation_patterns",
+    "chapter_writing_rules"
+  ],
+
+  "additionalProperties": false
+}

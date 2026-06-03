@@ -1,524 +1,537 @@
 {
   "cluster": "AUTOMATION_CONTROL",
   "total_papers": 148,
-  "structure": {
-    "cluster": "AUTOMATION_CONTROL",
+  "scope": {
+    "clusters_covered": [
+      "AUTOMATION_CONTROL"
+    ],
     "total_papers": 148,
-    "structure_composition": {
+    "data_sources": [
+      "heading_clean",
+      "toc_clean"
+    ],
+    "limitations": []
+  },
+  "evidence_summary": {
+    "structure_quality": {
       "heading_clean": 117,
       "toc_clean": 31
     },
-    "chapter_count_statistics": {
+    "chapter_stats": {
       "mean": 130.4,
       "median": 98,
       "min": 1,
       "max": 831,
       "count": 140
     },
-    "page_count_statistics": {
+    "page_stats": {
       "mean": 167.8,
       "median": 155,
       "min": 2,
       "max": 740,
       "count": 147
     },
-    "typical_structure": {
-      "typical_chapter_range": "1-831",
-      "median_chapters": 98,
-      "median_pages": 155
-    }
-  },
-  "methodology": {
-    "cluster": "AUTOMATION_CONTROL",
-    "total_papers": 148,
-    "top_methodology_hints": {
-      "algorithm": 62,
-      "model_based": 45,
-      "experimental": 19,
-      "simulation": 16,
-      "theoretical": 9
-    },
-    "top_experiment_types": {
-      "simulation": 69,
-      "comparison": 35,
-      "bench_test": 29,
-      "field_test": 14,
-      "real_vehicle": 9,
-      "ablation": 6,
-      "numerical_computation": 1,
-      "algorithm_benchmark": 1,
-      "numerical_modelling": 1
-    },
+    "deep_analysis_available": 148,
     "classification_confidence": {
       "high": 140,
       "medium": 5,
       "low": 3
-    },
-    "deep_analysis_available": 148,
-    "deep_methodology_routes": {
-      "model_based": 12,
-      "алгоритмический": 5,
-      "экспериментальный": 4,
-      "algorithm": 3,
-      "визуальная локализация мобильного робота на основе компьютерного зрения": 1,
-      "Аналитическое проектирование и моделирование": 1,
-      "Стохастическая идентификация с использованием проекционных аппроксимаций в базисе функций Уолша": 1,
-      "mathematical_modeling_simulation": 1,
-      "аналитико-математическое моделирование траекторий": 1,
-      "model_based (синергетический подход к управлению нелинейными системами)": 1
-    },
-    "deep_experiment_types": {
-      "simulation": 80,
-      "experiment": 32,
-      "field_test": 11,
-      "theory_only": 11,
-      "simulation|experiment": 6,
-      "simulation|experiment|field_test": 2,
-      "simulation|field_test|experiment": 1,
-      "simulation|field_test": 1
     }
   },
-  "logic_chain": {
-    "cluster": "AUTOMATION_CONTROL",
-    "total_papers": 148,
-    "top_logic_skeletons": [
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 83
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 34
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "algorithm",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 3
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "model",
-          "method",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 2
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "model",
-          "algorithm",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 2
-      },
-      {
-        "skeleton": [
-          "problem: неточность ЭГСП из-за случайных факторов",
-          "gap: недостаточная адекватность методов идентификации для нестационарных нелинейных систем",
-          "goal: разработка алгоритмов идентификации и синтеза управления с учётом стохастики",
-          "method: стохастические методы идентификации, спектральный анализ в базисе функций Уолша, метод Монте-Карло",
-          "model: математические модели нелинейных систем управления с случайными параметрами",
-          "experiment: программная реализация алгоритмов в MATLAB, численные эксперименты",
-          "result: оценка точности идентификации числовых характеристик и дисперсий",
-          "conclusion: обоснование эффективности предложенных алгоритмов для ЭГСП"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem",
-          "goal",
-          "method",
-          "model",
-          "experiment",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "method",
-          "model",
-          "simulation",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "algorithm",
-          "model",
-          "simulation",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 1
-      },
-      {
-        "skeleton": [
-          "problem",
-          "gap",
-          "goal",
-          "model",
-          "algorithm",
-          "simulation",
-          "result",
-          "conclusion"
-        ],
-        "frequency": 1
-      }
-    ],
-    "deep_logic_completeness": {
-      "mean": 0.8,
-      "median": 0.82,
-      "min": 0.05,
-      "max": 1.0,
-      "count": 144
-    },
-    "common_skeleton_elements": {
-      "has_problem": 16,
-      "has_gap": 14,
-      "has_goal": 15,
-      "has_method": 13,
-      "has_experiment": 9,
-      "has_result": 16,
-      "has_conclusion": 15
+  "limitations": [
+    {
+      "issue": "noisy structure detected: median=98, max=831",
+      "impact": "Chapter count statistics are unreliable for typical structure estimation",
+      "recommendation": "Use toc_clean papers only for structural analysis"
     }
-  },
-  "writing_patterns": {
-    "cluster": "AUTOMATION_CONTROL",
-    "total_papers": 148,
-    "top_evidence_terms": [
-      {
-        "term": "управление",
-        "frequency": 26
-      },
-      {
-        "term": "оценка состояния",
-        "frequency": 12
-      },
-      {
-        "term": "система управления",
-        "frequency": 9
-      },
-      {
-        "term": "навигация",
-        "frequency": 8
-      },
-      {
-        "term": "автоматизация",
-        "frequency": 8
-      },
-      {
-        "term": "алгоритм управления",
-        "frequency": 7
-      },
-      {
-        "term": "алгоритм",
-        "frequency": 7
-      },
-      {
-        "term": "контроль",
-        "frequency": 7
-      },
-      {
-        "term": "моделирование",
-        "frequency": 7
-      },
-      {
-        "term": "идентификация",
-        "frequency": 6
-      },
-      {
-        "term": "оптимальное управление",
-        "frequency": 6
-      },
-      {
-        "term": "имитационное моделирование",
-        "frequency": 6
-      },
-      {
-        "term": "математическая модель",
-        "frequency": 5
-      },
-      {
-        "term": "фильтр Калмана",
-        "frequency": 5
-      },
-      {
-        "term": "стабилизация",
-        "frequency": 5
-      },
-      {
-        "term": "системы управления",
-        "frequency": 5
-      },
-      {
-        "term": "устойчивость",
-        "frequency": 5
-      },
-      {
-        "term": "регулятор",
-        "frequency": 4
-      },
-      {
-        "term": "наведение",
-        "frequency": 4
-      },
-      {
-        "term": "адаптивное управление",
-        "frequency": 4
-      },
-      {
-        "term": "слежение",
-        "frequency": 4
-      },
-      {
-        "term": "оценка",
-        "frequency": 4
-      },
-      {
-        "term": "мобильные роботы",
-        "frequency": 4
-      },
-      {
-        "term": "адаптивный алгоритм",
-        "frequency": 3
-      },
-      {
-        "term": "математическое моделирование",
-        "frequency": 3
-      },
-      {
-        "term": "управление ориентацией",
-        "frequency": 3
-      },
-      {
-        "term": "диагностика",
-        "frequency": 3
-      },
-      {
-        "term": "алгоритмы",
-        "frequency": 3
-      },
-      {
-        "term": "робот",
-        "frequency": 3
-      },
-      {
-        "term": "беспилотные летательные аппараты",
-        "frequency": 3
-      },
-      {
-        "term": "динамические системы",
-        "frequency": 3
-      },
-      {
-        "term": "визуальная навигация",
-        "frequency": 2
-      },
-      {
-        "term": "локализация",
-        "frequency": 2
-      },
-      {
-        "term": "фильтр частиц",
-        "frequency": 2
-      },
-      {
-        "term": "оценка положения",
-        "frequency": 2
-      },
-      {
-        "term": "системы автоматического управления",
-        "frequency": 2
-      },
-      {
-        "term": "робототехника",
-        "frequency": 2
-      },
-      {
-        "term": "нелинейные системы управления",
-        "frequency": 2
-      },
-      {
-        "term": "робототехнические системы",
-        "frequency": 2
-      },
-      {
-        "term": "манипуляционные роботы",
-        "frequency": 2
-      },
-      {
-        "term": "экспериментальные исследования",
-        "frequency": 2
-      },
-      {
-        "term": "космический аппарат",
-        "frequency": 2
-      },
-      {
-        "term": "планирование",
-        "frequency": 2
-      },
-      {
-        "term": "SLAM",
-        "frequency": 2
-      },
-      {
-        "term": "планирование траектории",
-        "frequency": 2
-      },
-      {
-        "term": "визуальная одометрия",
-        "frequency": 2
-      },
-      {
-        "term": "математическая модель движения",
-        "frequency": 2
-      },
-      {
-        "term": "численное моделирование",
-        "frequency": 2
-      },
-      {
-        "term": "степень наблюдаемости",
-        "frequency": 2
-      },
-      {
-        "term": "принятие решений",
-        "frequency": 2
-      }
-    ],
+  ],
+  "coverage_notes": {
     "disciplines_covered": {
       "технические_науки": 103,
       "физико-математические_науки": 3,
       "экономические_науки": 1,
       "технических_наук": 1
     },
-    "deep_writing_patterns": {
-      "наличие выводов по каждой главе": 7,
-      "Каждая глава завершается выводами": 5,
-      "каждая глава завершается выводами": 4,
-      "каждая глава завершается разделом 'Выводы по главе'": 3,
-      "technical_terminology": 2,
-      "стандартная структура инженерной диссертации": 2,
-      "стандартная структура кандидатской диссертации": 2,
-      "каждая глава завершается разделом «Выводы по главе»": 2,
-      "стандартная четырёхглавная структура кандидатской диссертации": 2,
-      "наличие списка сокращений": 2,
-      "Стандартная структура автореферата": 2,
-      "structured chapters": 2,
-      "каждая глава завершается выводами (хорошая практика)": 1,
-      "структура 'метод → эксперимент → выводы' повторяется в главах 3, 5, 6": 1,
-      "глава 2 выступает как математический фундамент для последующих глав": 1,
-      "раздел 1.3 'Первый предложенный метод' необычно расположен в обзорной главе": 1,
-      "Активное использование аббревиатур и сокращений": 1,
-      "Структурированное изложение с чёткими разделами и подразделами": 1,
-      "Наличие списков сокращений и условных обозначений": 1,
-      "Ссылки на графические материалы (рисунки) в тексте": 1
-    },
-    "deep_read_priority_distribution": {
+    "deep_read_priorities": {
       "high": 122,
       "medium": 26
     }
   },
-  "common_failures": {
-    "cluster": "AUTOMATION_CONTROL",
+  "sampling_summary": {
     "total_papers": 148,
-    "structure_quality_issues": [
-      {
-        "pattern": "low_classification_confidence",
-        "frequency": 3,
-        "impact": "低置信度聚类结果不可靠，需人工验证",
-        "suggestion": "增加更多章节结构特征或全文分析"
-      }
-    ],
-    "logic_chain_gaps": [
-      {
-        "gap": "нет сравнения с существующими решениями",
-        "frequency": 2
+    "deep_analyzed": 148,
+    "classification_confidence": {
+      "high": 140,
+      "medium": 5,
+      "low": 3
+    }
+  },
+  "typical_structures": [
+    {
+      "id": "automation_control_typical_structure",
+      "description": "Typical structure pattern for AUTOMATION_CONTROL dissertations",
+      "note": "Chapter count statistics were unreliable (noisy structure). Structure based on logic chain and methodology analysis.",
+      "recommended_framework": "先介绍研究背景和现状 → 明确研究空白 → 提出研究目标 → 建立模型/设计方法 → 实验验证 → 结果讨论 → 结论与展望",
+      "evidence_basis": "Derived from deep logic analysis of Layer 4 classified papers",
+      "confidence": "medium"
+    }
+  ],
+  "chapter_sequence": [
+    {
+      "id": "automation_control_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 83,
+      "evidence_count": 83
+    },
+    {
+      "id": "automation_control_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "model",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 34,
+      "evidence_count": 34
+    },
+    {
+      "id": "automation_control_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "method",
+        "algorithm",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 3,
+      "evidence_count": 3
+    },
+    {
+      "id": "automation_control_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "model",
+        "method",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 2,
+      "evidence_count": 2
+    },
+    {
+      "id": "automation_control_seq_problem_gap_goal",
+      "sequence": [
+        "problem",
+        "gap",
+        "goal",
+        "model",
+        "algorithm",
+        "experiment",
+        "result",
+        "conclusion"
+      ],
+      "frequency": 2,
+      "evidence_count": 2
+    }
+  ],
+  "research_question_types": [
+    {
+      "id": "automation_control_rq_algorithm",
+      "type": "algorithm",
+      "frequency": 62,
+      "evidence_count": 62,
+      "when_to_use": "When research requires algorithm approach"
+    },
+    {
+      "id": "automation_control_rq_model_based",
+      "type": "model_based",
+      "frequency": 45,
+      "evidence_count": 45,
+      "when_to_use": "When research requires model_based approach"
+    },
+    {
+      "id": "automation_control_rq_experimental",
+      "type": "experimental",
+      "frequency": 19,
+      "evidence_count": 19,
+      "when_to_use": "When research requires experimental approach"
+    },
+    {
+      "id": "automation_control_rq_simulation",
+      "type": "simulation",
+      "frequency": 16,
+      "evidence_count": 16,
+      "when_to_use": "When research requires simulation approach"
+    },
+    {
+      "id": "automation_control_rq_theoretical",
+      "type": "theoretical",
+      "frequency": 9,
+      "evidence_count": 9,
+      "when_to_use": "When research requires theoretical approach"
+    }
+  ],
+  "methodology_routes": [
+    {
+      "id": "automation_control_meth_model_based",
+      "method": "model_based",
+      "frequency": 12,
+      "evidence_count": 12,
+      "layer4_count": 12,
+      "description": "基于物理/数学模型的方法：1) 建立系统动力学方程 2) 辨识/标定参数 3) 设计观测器/控制器 4) 稳定性证明 5) 仿真验证。适用于自动化控制/车辆工程/状态估计类论文。",
+      "typical_steps": [
+        "基于物理/数学模型的方法：1",
+        "建立系统动力学方程 2",
+        "辨识/标定参数 3",
+        "设计观测器/控制器 4",
+        "稳定性证明 5"
+      ]
+    },
+    {
+      "id": "automation_control_meth_алгоритмический",
+      "method": "алгоритмический",
+      "frequency": 5,
+      "evidence_count": 5,
+      "layer4_count": 5,
+      "description": "алгоритмический方法论。适用于自动化控制/车辆工程/状态估计类论文。"
+    },
+    {
+      "id": "automation_control_meth_экспериментальн",
+      "method": "экспериментальный",
+      "frequency": 4,
+      "evidence_count": 4,
+      "layer4_count": 4,
+      "description": "экспериментальный方法论。适用于自动化控制/车辆工程/状态估计类论文。"
+    },
+    {
+      "id": "automation_control_meth_algorithm",
+      "method": "algorithm",
+      "frequency": 3,
+      "evidence_count": 3,
+      "layer4_count": 3,
+      "description": "算法设计方法：1) 问题形式化 2) 算法框架设计 3) 收敛性分析 4) 复杂度评估 5) 对比实验。适用于自动化控制/车辆工程/状态估计类论文。",
+      "typical_steps": [
+        "算法设计方法：1",
+        "问题形式化 2",
+        "算法框架设计 3",
+        "收敛性分析 4",
+        "复杂度评估 5"
+      ]
+    },
+    {
+      "id": "automation_control_meth_визуальная лока",
+      "method": "визуальная локализация мобильного робота на основе компьютерного зрения",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "визуальная локализация мобильного робота на основе компьютерного зрения方法论。适用于自动化控制/车辆工程/状态估计类论文。"
+    },
+    {
+      "id": "automation_control_meth_Аналитическое п",
+      "method": "Аналитическое проектирование и моделирование",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "Аналитическое проектирование и моделирование方法论。适用于自动化控制/车辆工程/状态估计类论文。"
+    },
+    {
+      "id": "automation_control_meth_Стохастическая ",
+      "method": "Стохастическая идентификация с использованием проекционных аппроксимаций в базисе функций Уолша",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "Стохастическая идентификация с использованием проекционных аппроксимаций в базисе функций Уолша方法论。适用于自动化控制/车辆工程/状态估计类论文。"
+    },
+    {
+      "id": "automation_control_meth_mathematical_mo",
+      "method": "mathematical_modeling_simulation",
+      "frequency": 1,
+      "evidence_count": 1,
+      "layer4_count": 1,
+      "description": "mathematical_modeling_simulation方法论。适用于自动化控制/车辆工程/状态估计类论文。"
+    }
+  ],
+  "logic_chains": [
+    {
+      "id": "automation_control_logic_main",
+      "completeness_score": 0.8,
+      "element_counts": {
+        "has_problem": 16,
+        "has_gap": 14,
+        "has_goal": 15,
+        "has_method": 13,
+        "has_experiment": 9,
+        "has_result": 16,
+        "has_conclusion": 15
       },
-      {
-        "gap": "нет явной и однозначной формулировки цели исследования (цель размыта между несколькими методами)",
-        "frequency": 1
+      "evidence_count": 144,
+      "layer4_count": 144,
+      "mapping": {
+        "problem": 16,
+        "goal": 15,
+        "method": 13,
+        "experiment": 9,
+        "result": 16,
+        "conclusion": 15
       },
-      {
-        "gap": "глава 4 полностью лишена экспериментальной валидации",
-        "frequency": 1
-      },
-      {
-        "gap": "глава 6 (структурированный свет) слабо логически связана с основной темой визуальной навигации",
-        "frequency": 1
-      },
-      {
-        "gap": "нет единого интеграционного эксперимента, объединяющего все предложенные подходы",
-        "frequency": 1
-      },
-      {
-        "gap": "отсутствует чёткое сравнение предложенных методов между собой и с baseline",
-        "frequency": 1
-      },
-      {
-        "gap": "Недостаточно детализированы и количественно представлены результаты экспериментов (преимущественно качественные описания в введении)",
-        "frequency": 1
-      },
-      {
-        "gap": "Неясно, как именно полунатурное моделирование (Глава 4) связано и подтверждает результаты чисто программного моделирования (Главы 2-3)",
-        "frequency": 1
-      },
-      {
-        "gap": "Отсутствует глубокий анализ устойчивости, робастности и пределов применимости предложенных алгоритмов",
-        "frequency": 1
-      },
-      {
-        "gap": "Отсутствует валидация предложенных алгоритмов на реальных экспериментальных данных ЭГСП",
-        "frequency": 1
-      }
-    ],
-    "low_confidence_rate": 0.02
+      "chain_description": "适用于提出控制算法、估计方法或系统设计的论文。典型闭环：被控对象建模→控制器设计→仿真验证→实车/台架实验→结果分析",
+      "writing_sequence": "先介绍研究背景和现状 → 明确研究空白 → 提出研究目标 → 建立模型/设计方法 → 实验验证 → 结果讨论 → 结论与展望"
+    }
+  ],
+  "validation_patterns": [
+    {
+      "id": "automation_control_val_simulation",
+      "validation_type": "simulation",
+      "frequency": 69,
+      "evidence_count": 69
+    },
+    {
+      "id": "automation_control_val_comparison",
+      "validation_type": "comparison",
+      "frequency": 35,
+      "evidence_count": 35
+    },
+    {
+      "id": "automation_control_val_bench_test",
+      "validation_type": "bench_test",
+      "frequency": 29,
+      "evidence_count": 29
+    },
+    {
+      "id": "automation_control_val_field_test",
+      "validation_type": "field_test",
+      "frequency": 14,
+      "evidence_count": 14
+    },
+    {
+      "id": "automation_control_val_real_vehicle",
+      "validation_type": "real_vehicle",
+      "frequency": 9,
+      "evidence_count": 9
+    },
+    {
+      "id": "automation_control_val_ablation",
+      "validation_type": "ablation",
+      "frequency": 6,
+      "evidence_count": 6
+    }
+  ],
+  "chapter_writing_rules": [
+    {
+      "id": "automation_control_rule_наличие выводов",
+      "pattern": "наличие выводов по каждой главе",
+      "frequency": 7,
+      "evidence_count": 7,
+      "when_to_use": "当论文需要讨论或描述「наличие выводов по каждой главе」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "automation_control_rule_Каждая глава за",
+      "pattern": "Каждая глава завершается выводами",
+      "frequency": 5,
+      "evidence_count": 5,
+      "when_to_use": "当论文需要讨论或描述「Каждая глава завершается выводами」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "automation_control_rule_каждая глава за",
+      "pattern": "каждая глава завершается выводами",
+      "frequency": 4,
+      "evidence_count": 4,
+      "when_to_use": "当论文需要讨论或描述「каждая глава завершается выводами」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "automation_control_rule_каждая глава за",
+      "pattern": "каждая глава завершается разделом 'Выводы по главе'",
+      "frequency": 3,
+      "evidence_count": 3,
+      "when_to_use": "当论文需要讨论或描述「каждая глава завершается разделом 'Выводы по главе'」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "automation_control_rule_technical_termi",
+      "pattern": "technical_terminology",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「technical_terminology」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "automation_control_rule_стандартная стр",
+      "pattern": "стандартная структура инженерной диссертации",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「стандартная структура инженерной диссертации」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "automation_control_rule_стандартная стр",
+      "pattern": "стандартная структура кандидатской диссертации",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「стандартная структура кандидатской диссертации」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    },
+    {
+      "id": "automation_control_rule_каждая глава за",
+      "pattern": "каждая глава завершается разделом «Выводы по главе»",
+      "frequency": 2,
+      "evidence_count": 2,
+      "when_to_use": "当论文需要讨论或描述「каждая глава завершается разделом «Выводы по главе»」相关的写作内容时",
+      "template_family_links": [
+        {
+          "recommended_categories": [
+            "METHOD",
+            "EXPERIMENT",
+            "RESULT"
+          ]
+        }
+      ],
+      "recommended_actions": [
+        "明确当前部分与自动化控制/车辆工程/状态估计论文逻辑链的关系",
+        "使用该模式作为章节结构或写作风格的参考"
+      ],
+      "common_failures": [
+        "模式应用过于机械，缺乏与论文具体内容的结合",
+        "忽略该模式在本学科中的典型变体"
+      ]
+    }
+  ],
+  "_conversion": {
+    "version": "5.1",
+    "timestamp": "2026-06-03T08:45:58.521956",
+    "noise_warning": "noisy structure detected: median=98, max=831",
+    "total_fields": 6
   }
 }
