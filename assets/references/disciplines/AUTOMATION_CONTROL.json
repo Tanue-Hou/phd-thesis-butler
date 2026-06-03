@@ -1,0 +1,524 @@
+{
+  "cluster": "AUTOMATION_CONTROL",
+  "total_papers": 148,
+  "structure": {
+    "cluster": "AUTOMATION_CONTROL",
+    "total_papers": 148,
+    "structure_composition": {
+      "heading_clean": 117,
+      "toc_clean": 31
+    },
+    "chapter_count_statistics": {
+      "mean": 130.4,
+      "median": 98,
+      "min": 1,
+      "max": 831,
+      "count": 140
+    },
+    "page_count_statistics": {
+      "mean": 167.8,
+      "median": 155,
+      "min": 2,
+      "max": 740,
+      "count": 147
+    },
+    "typical_structure": {
+      "typical_chapter_range": "1-831",
+      "median_chapters": 98,
+      "median_pages": 155
+    }
+  },
+  "methodology": {
+    "cluster": "AUTOMATION_CONTROL",
+    "total_papers": 148,
+    "top_methodology_hints": {
+      "algorithm": 62,
+      "model_based": 45,
+      "experimental": 19,
+      "simulation": 16,
+      "theoretical": 9
+    },
+    "top_experiment_types": {
+      "simulation": 69,
+      "comparison": 35,
+      "bench_test": 29,
+      "field_test": 14,
+      "real_vehicle": 9,
+      "ablation": 6,
+      "numerical_computation": 1,
+      "algorithm_benchmark": 1,
+      "numerical_modelling": 1
+    },
+    "classification_confidence": {
+      "high": 140,
+      "medium": 5,
+      "low": 3
+    },
+    "deep_analysis_available": 148,
+    "deep_methodology_routes": {
+      "model_based": 12,
+      "алгоритмический": 5,
+      "экспериментальный": 4,
+      "algorithm": 3,
+      "визуальная локализация мобильного робота на основе компьютерного зрения": 1,
+      "Аналитическое проектирование и моделирование": 1,
+      "Стохастическая идентификация с использованием проекционных аппроксимаций в базисе функций Уолша": 1,
+      "mathematical_modeling_simulation": 1,
+      "аналитико-математическое моделирование траекторий": 1,
+      "model_based (синергетический подход к управлению нелинейными системами)": 1
+    },
+    "deep_experiment_types": {
+      "simulation": 80,
+      "experiment": 32,
+      "field_test": 11,
+      "theory_only": 11,
+      "simulation|experiment": 6,
+      "simulation|experiment|field_test": 2,
+      "simulation|field_test|experiment": 1,
+      "simulation|field_test": 1
+    }
+  },
+  "logic_chain": {
+    "cluster": "AUTOMATION_CONTROL",
+    "total_papers": 148,
+    "top_logic_skeletons": [
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 83
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "model",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 34
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "algorithm",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 3
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "model",
+          "method",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 2
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "model",
+          "algorithm",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 2
+      },
+      {
+        "skeleton": [
+          "problem: неточность ЭГСП из-за случайных факторов",
+          "gap: недостаточная адекватность методов идентификации для нестационарных нелинейных систем",
+          "goal: разработка алгоритмов идентификации и синтеза управления с учётом стохастики",
+          "method: стохастические методы идентификации, спектральный анализ в базисе функций Уолша, метод Монте-Карло",
+          "model: математические модели нелинейных систем управления с случайными параметрами",
+          "experiment: программная реализация алгоритмов в MATLAB, численные эксперименты",
+          "result: оценка точности идентификации числовых характеристик и дисперсий",
+          "conclusion: обоснование эффективности предложенных алгоритмов для ЭГСП"
+        ],
+        "frequency": 1
+      },
+      {
+        "skeleton": [
+          "problem",
+          "goal",
+          "method",
+          "model",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 1
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "model",
+          "simulation",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 1
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "algorithm",
+          "model",
+          "simulation",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 1
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "model",
+          "algorithm",
+          "simulation",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 1
+      }
+    ],
+    "deep_logic_completeness": {
+      "mean": 0.8,
+      "median": 0.82,
+      "min": 0.05,
+      "max": 1.0,
+      "count": 144
+    },
+    "common_skeleton_elements": {
+      "has_problem": 16,
+      "has_gap": 14,
+      "has_goal": 15,
+      "has_method": 13,
+      "has_experiment": 9,
+      "has_result": 16,
+      "has_conclusion": 15
+    }
+  },
+  "writing_patterns": {
+    "cluster": "AUTOMATION_CONTROL",
+    "total_papers": 148,
+    "top_evidence_terms": [
+      {
+        "term": "управление",
+        "frequency": 26
+      },
+      {
+        "term": "оценка состояния",
+        "frequency": 12
+      },
+      {
+        "term": "система управления",
+        "frequency": 9
+      },
+      {
+        "term": "навигация",
+        "frequency": 8
+      },
+      {
+        "term": "автоматизация",
+        "frequency": 8
+      },
+      {
+        "term": "алгоритм управления",
+        "frequency": 7
+      },
+      {
+        "term": "алгоритм",
+        "frequency": 7
+      },
+      {
+        "term": "контроль",
+        "frequency": 7
+      },
+      {
+        "term": "моделирование",
+        "frequency": 7
+      },
+      {
+        "term": "идентификация",
+        "frequency": 6
+      },
+      {
+        "term": "оптимальное управление",
+        "frequency": 6
+      },
+      {
+        "term": "имитационное моделирование",
+        "frequency": 6
+      },
+      {
+        "term": "математическая модель",
+        "frequency": 5
+      },
+      {
+        "term": "фильтр Калмана",
+        "frequency": 5
+      },
+      {
+        "term": "стабилизация",
+        "frequency": 5
+      },
+      {
+        "term": "системы управления",
+        "frequency": 5
+      },
+      {
+        "term": "устойчивость",
+        "frequency": 5
+      },
+      {
+        "term": "регулятор",
+        "frequency": 4
+      },
+      {
+        "term": "наведение",
+        "frequency": 4
+      },
+      {
+        "term": "адаптивное управление",
+        "frequency": 4
+      },
+      {
+        "term": "слежение",
+        "frequency": 4
+      },
+      {
+        "term": "оценка",
+        "frequency": 4
+      },
+      {
+        "term": "мобильные роботы",
+        "frequency": 4
+      },
+      {
+        "term": "адаптивный алгоритм",
+        "frequency": 3
+      },
+      {
+        "term": "математическое моделирование",
+        "frequency": 3
+      },
+      {
+        "term": "управление ориентацией",
+        "frequency": 3
+      },
+      {
+        "term": "диагностика",
+        "frequency": 3
+      },
+      {
+        "term": "алгоритмы",
+        "frequency": 3
+      },
+      {
+        "term": "робот",
+        "frequency": 3
+      },
+      {
+        "term": "беспилотные летательные аппараты",
+        "frequency": 3
+      },
+      {
+        "term": "динамические системы",
+        "frequency": 3
+      },
+      {
+        "term": "визуальная навигация",
+        "frequency": 2
+      },
+      {
+        "term": "локализация",
+        "frequency": 2
+      },
+      {
+        "term": "фильтр частиц",
+        "frequency": 2
+      },
+      {
+        "term": "оценка положения",
+        "frequency": 2
+      },
+      {
+        "term": "системы автоматического управления",
+        "frequency": 2
+      },
+      {
+        "term": "робототехника",
+        "frequency": 2
+      },
+      {
+        "term": "нелинейные системы управления",
+        "frequency": 2
+      },
+      {
+        "term": "робототехнические системы",
+        "frequency": 2
+      },
+      {
+        "term": "манипуляционные роботы",
+        "frequency": 2
+      },
+      {
+        "term": "экспериментальные исследования",
+        "frequency": 2
+      },
+      {
+        "term": "космический аппарат",
+        "frequency": 2
+      },
+      {
+        "term": "планирование",
+        "frequency": 2
+      },
+      {
+        "term": "SLAM",
+        "frequency": 2
+      },
+      {
+        "term": "планирование траектории",
+        "frequency": 2
+      },
+      {
+        "term": "визуальная одометрия",
+        "frequency": 2
+      },
+      {
+        "term": "математическая модель движения",
+        "frequency": 2
+      },
+      {
+        "term": "численное моделирование",
+        "frequency": 2
+      },
+      {
+        "term": "степень наблюдаемости",
+        "frequency": 2
+      },
+      {
+        "term": "принятие решений",
+        "frequency": 2
+      }
+    ],
+    "disciplines_covered": {
+      "технические_науки": 103,
+      "физико-математические_науки": 3,
+      "экономические_науки": 1,
+      "технических_наук": 1
+    },
+    "deep_writing_patterns": {
+      "наличие выводов по каждой главе": 7,
+      "Каждая глава завершается выводами": 5,
+      "каждая глава завершается выводами": 4,
+      "каждая глава завершается разделом 'Выводы по главе'": 3,
+      "technical_terminology": 2,
+      "стандартная структура инженерной диссертации": 2,
+      "стандартная структура кандидатской диссертации": 2,
+      "каждая глава завершается разделом «Выводы по главе»": 2,
+      "стандартная четырёхглавная структура кандидатской диссертации": 2,
+      "наличие списка сокращений": 2,
+      "Стандартная структура автореферата": 2,
+      "structured chapters": 2,
+      "каждая глава завершается выводами (хорошая практика)": 1,
+      "структура 'метод → эксперимент → выводы' повторяется в главах 3, 5, 6": 1,
+      "глава 2 выступает как математический фундамент для последующих глав": 1,
+      "раздел 1.3 'Первый предложенный метод' необычно расположен в обзорной главе": 1,
+      "Активное использование аббревиатур и сокращений": 1,
+      "Структурированное изложение с чёткими разделами и подразделами": 1,
+      "Наличие списков сокращений и условных обозначений": 1,
+      "Ссылки на графические материалы (рисунки) в тексте": 1
+    },
+    "deep_read_priority_distribution": {
+      "high": 122,
+      "medium": 26
+    }
+  },
+  "common_failures": {
+    "cluster": "AUTOMATION_CONTROL",
+    "total_papers": 148,
+    "structure_quality_issues": [
+      {
+        "pattern": "low_classification_confidence",
+        "frequency": 3,
+        "impact": "低置信度聚类结果不可靠，需人工验证",
+        "suggestion": "增加更多章节结构特征或全文分析"
+      }
+    ],
+    "logic_chain_gaps": [
+      {
+        "gap": "нет сравнения с существующими решениями",
+        "frequency": 2
+      },
+      {
+        "gap": "нет явной и однозначной формулировки цели исследования (цель размыта между несколькими методами)",
+        "frequency": 1
+      },
+      {
+        "gap": "глава 4 полностью лишена экспериментальной валидации",
+        "frequency": 1
+      },
+      {
+        "gap": "глава 6 (структурированный свет) слабо логически связана с основной темой визуальной навигации",
+        "frequency": 1
+      },
+      {
+        "gap": "нет единого интеграционного эксперимента, объединяющего все предложенные подходы",
+        "frequency": 1
+      },
+      {
+        "gap": "отсутствует чёткое сравнение предложенных методов между собой и с baseline",
+        "frequency": 1
+      },
+      {
+        "gap": "Недостаточно детализированы и количественно представлены результаты экспериментов (преимущественно качественные описания в введении)",
+        "frequency": 1
+      },
+      {
+        "gap": "Неясно, как именно полунатурное моделирование (Глава 4) связано и подтверждает результаты чисто программного моделирования (Главы 2-3)",
+        "frequency": 1
+      },
+      {
+        "gap": "Отсутствует глубокий анализ устойчивости, робастности и пределов применимости предложенных алгоритмов",
+        "frequency": 1
+      },
+      {
+        "gap": "Отсутствует валидация предложенных алгоритмов на реальных экспериментальных данных ЭГСП",
+        "frequency": 1
+      }
+    ],
+    "low_confidence_rate": 0.02
+  }
+}

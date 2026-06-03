@@ -1,65 +1,69 @@
 {
-  "project": "PhD Thesis Butler",
-  "version": "4.0",
-  "release_date": "2026-06-02",
-  "schema_version": "4.0",
-  "description": "Russian academic writing sentence bank — pure Russian templates, semantic retrieval, 3-layer fallback",
+  "project": "phd-thesis-butler",
+  "version": "5.0.0",
+  "release_date": "2026-06-03",
+  "schema_version": "5.0",
+  "description": "Corpus-distilled Russian dissertation writing intelligence platform. Aggregated from 2,118 Russian dissertations (3 universities), with 679 deep analyses across 5 discipline clusters.",
   "templates": {
     "total": 16722,
-    "DIS": 9855,
-    "AREF": 6564,
-    "UTILS": 303
+    "DIS": 9876,
+    "AREF": 6231,
+    "UTILS": 615
   },
   "sources": {
-    "dissertations": 1042,
-    "abstracts": 361,
-    "total_documents": 1403,
-    "universities": "Multiple Russian universities (details removed for privacy)"
+    "total_documents": 2118,
+    "universities": 3,
+    "universities_list": ["BMSTU", "MSU", "SPbSU"],
+    "deep_analyzed": 679,
+    "skipped": 148,
+    "skip_reason": "PDF corrupted or unparseable (noisy_or_failed)"
   },
   "layers": {
-    "GLOBAL": 820,
-    "TECH_LIFE": 5942,
-    "HUM_SOC": 4031,
-    "ART_SPORT": 0,
-    "DISCIPLINE_subjects": 34,
-    "DISCIPLINE_total_approx": 9933,
-    "zero_overlap": true
+    "GLOBAL": 677,
+    "TECH_LIFE": 263,
+    "HUM_SOC": 543,
+    "MATH_PHYS": 312,
+    "ART_SPORT": 96,
+    "AUTOMATION_CONTROL": 148,
+    "SCI_TECH": 771,
+    "AGRI_MED": 268,
+    "ARTS_SPORTS": 96,
+    "HUM_POL_ECON": 792,
+    "DISCIPLINE_subjects": 34
   },
   "quality": {
-    "Q2": 8986,
-    "Q1": 7694,
-    "Q0": 42,
-    "note": "Exact values from data/curated/master after v3.3.5 non-Russian purge"
+    "Q2": 4236,
+    "Q1": 10486,
+    "Q0": 2000
   },
   "categories": {
-    "DIS": 11,
-    "AREF": 14,
-    "UTILS": 3,
-    "total": 28
-  },
-  "subtype_standardization": {
-    "before_v3.2": 6866,
-    "after_v3.3": 1662,
-    "reduction_pct": 75.8,
-    "non_russian_removed": 431,
-    "standard_taxonomy": "assets/references/standard_taxonomy_v3.3.json",
-    "mapping_table": "assets/references/subtype_mapping_v3.3.json"
-  },
-  "language_purity": {
-    "chinese_templates_removed": 24,
-    "english_templates_removed": 7046,
-    "metadata_fixed": 4606,
-    "garbage_removed": 44,
-    "total_removed": 7374,
-    "status": "strict_pure_russian_cyrillic_only"
+    "INTRO": 2118,
+    "SURVEY": 1892,
+    "MODEL": 1543,
+    "METHOD": 1678,
+    "EXPERIMENT": 1421,
+    "RESULT": 1876,
+    "DISCUSSION": 1234,
+    "CONCLUSION": 2118,
+    "TRANSITION": 987
   },
   "retrieval": {
-    "strategy": "semantic_first",
-    "fallback_chain": "DISCIPLINE → CLUSTER → GLOBAL → data_fallback",
-    "k_min": 3,
-    "priority": "Q2 → Q1 → Q0"
+    "deterministic": true,
+    "index_based": true,
+    "fallback_strategy": "cluster→discipline→global",
+    "extension_compatible": false
   },
-  "entrypoint": "SKILL.md",
-  "documentation": "README.md",
-  "changelog": "CHANGELOG.md"
+  "pipeline": {
+    "layer0_ingest": 2267,
+    "layer1_fulltext": 2267,
+    "layer2_structure": 2266,
+    "layer3_classification": 2118,
+    "layer4_deep_analysis": 679,
+    "layer5_distillation": 6
+  },
+  "data_sources": {
+    "universities": ["BMSTU", "MSU", "SPbSU"],
+    "corpus_size": 2118,
+    "deep_analyzed": 679
+  }
 }

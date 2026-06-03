@@ -1,0 +1,533 @@
+{
+  "cluster": "SCI_TECH",
+  "total_papers": 771,
+  "structure": {
+    "cluster": "SCI_TECH",
+    "total_papers": 771,
+    "structure_composition": {
+      "heading_clean": 482,
+      "toc_clean": 276,
+      "partial_structure": 9,
+      "noisy_or_failed": 4
+    },
+    "chapter_count_statistics": {
+      "mean": 106.1,
+      "median": 62,
+      "min": 1,
+      "max": 952,
+      "count": 700
+    },
+    "page_count_statistics": {
+      "mean": 134.3,
+      "median": 133,
+      "min": -1,
+      "max": 765,
+      "count": 760
+    },
+    "typical_structure": {
+      "typical_chapter_range": "1-952",
+      "median_chapters": 62,
+      "median_pages": 133
+    }
+  },
+  "methodology": {
+    "cluster": "SCI_TECH",
+    "total_papers": 771,
+    "top_methodology_hints": {
+      "experimental": 421,
+      "theoretical": 185,
+      "model_based": 97,
+      "algorithm": 45,
+      "simulation": 22,
+      "comparative": 6,
+      "observational": 3
+    },
+    "top_experiment_types": {
+      "bench_test": 217,
+      "comparison": 153,
+      "simulation": 144,
+      "field_test": 56,
+      "ablation": 9,
+      "lab_test": 3,
+      "e": 2,
+      "t": 2,
+      "real_video": 1,
+      "b": 1
+    },
+    "classification_confidence": {
+      "high": 688,
+      "medium": 47,
+      "low": 36
+    },
+    "deep_analysis_available": 192,
+    "deep_methodology_routes": {
+      "экспериментальный": 12,
+      "теоретический анализ": 6,
+      "theoretical": 5,
+      "model_based": 4,
+      "experimental": 4,
+      "теоретико-экспериментальный": 3,
+      "экспериментальный с элементами численного моделирования": 2,
+      "теоретический": 2,
+      "теоретическое исследование": 2,
+      "model_based — имитационное цифровое моделирование отражательных характеристик 3D-объектов на основе фотометрических моделей и статистического моделирования": 1
+    },
+    "deep_experiment_types": {
+      "experiment": 108,
+      "simulation": 38,
+      "theory_only": 29,
+      "field_test": 8,
+      "simulation|experiment": 2,
+      "simulation + experiment": 1,
+      "simulation+experiment": 1,
+      "simulation|experiment|field_test": 1,
+      "simulation|theory_only": 1,
+      "experiment|simulation": 1
+    }
+  },
+  "logic_chain": {
+    "cluster": "SCI_TECH",
+    "total_papers": 771,
+    "top_logic_skeletons": [
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 543
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "model",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 73
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 13
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "model",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 11
+      },
+      {
+        "skeleton": [
+          "problem",
+          "goal",
+          "method",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 8
+      },
+      {
+        "skeleton": [
+          "problem",
+          "method",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 8
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "model",
+          "method",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 6
+      },
+      {
+        "skeleton": [
+          "problem",
+          "goal",
+          "method",
+          "model",
+          "experiment",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 4
+      },
+      {
+        "skeleton": [
+          "problem",
+          "method",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 4
+      },
+      {
+        "skeleton": [
+          "problem",
+          "gap",
+          "goal",
+          "method",
+          "model",
+          "simulation",
+          "result",
+          "conclusion"
+        ],
+        "frequency": 3
+      }
+    ],
+    "deep_logic_completeness": {
+      "mean": 0.8,
+      "median": 0.85,
+      "min": 0.05,
+      "max": 1.0,
+      "count": 190
+    },
+    "common_skeleton_elements": {
+      "has_problem": 35,
+      "has_gap": 23,
+      "has_goal": 28,
+      "has_method": 27,
+      "has_experiment": 17,
+      "has_result": 32,
+      "has_conclusion": 33
+    }
+  },
+  "writing_patterns": {
+    "cluster": "SCI_TECH",
+    "total_papers": 771,
+    "top_evidence_terms": [
+      {
+        "term": "синтез",
+        "frequency": 42
+      },
+      {
+        "term": "физико-математические науки",
+        "frequency": 23
+      },
+      {
+        "term": "моделирование",
+        "frequency": 16
+      },
+      {
+        "term": "численное моделирование",
+        "frequency": 15
+      },
+      {
+        "term": "математическое моделирование",
+        "frequency": 13
+      },
+      {
+        "term": "математическая модель",
+        "frequency": 13
+      },
+      {
+        "term": "автореферат",
+        "frequency": 12
+      },
+      {
+        "term": "химические науки",
+        "frequency": 10
+      },
+      {
+        "term": "численные методы",
+        "frequency": 9
+      },
+      {
+        "term": "биологические науки",
+        "frequency": 9
+      },
+      {
+        "term": "географические науки",
+        "frequency": 9
+      },
+      {
+        "term": "геолого-минералогические науки",
+        "frequency": 9
+      },
+      {
+        "term": "лиганды",
+        "frequency": 9
+      },
+      {
+        "term": "прочность",
+        "frequency": 8
+      },
+      {
+        "term": "напряженно-деформированное состояние",
+        "frequency": 8
+      },
+      {
+        "term": "алгоритм",
+        "frequency": 8
+      },
+      {
+        "term": "кристаллическая структура",
+        "frequency": 8
+      },
+      {
+        "term": "геологическое строение",
+        "frequency": 8
+      },
+      {
+        "term": "ЯМР",
+        "frequency": 8
+      },
+      {
+        "term": "оптимизация",
+        "frequency": 7
+      },
+      {
+        "term": "спектроскопия",
+        "frequency": 7
+      },
+      {
+        "term": "морфология",
+        "frequency": 7
+      },
+      {
+        "term": "катализаторы",
+        "frequency": 7
+      },
+      {
+        "term": "катализатор",
+        "frequency": 7
+      },
+      {
+        "term": "неорганическая химия",
+        "frequency": 7
+      },
+      {
+        "term": "физико-химические свойства",
+        "frequency": 7
+      },
+      {
+        "term": "механические свойства",
+        "frequency": 6
+      },
+      {
+        "term": "машиностроение",
+        "frequency": 6
+      },
+      {
+        "term": "метод конечных элементов",
+        "frequency": 6
+      },
+      {
+        "term": "экспериментальное исследование",
+        "frequency": 6
+      },
+      {
+        "term": "плазма",
+        "frequency": 6
+      },
+      {
+        "term": "биологические_науки",
+        "frequency": 6
+      },
+      {
+        "term": "биоинформатика",
+        "frequency": 6
+      },
+      {
+        "term": "биофизика",
+        "frequency": 6
+      },
+      {
+        "term": "геохимия",
+        "frequency": 6
+      },
+      {
+        "term": "магнитные свойства",
+        "frequency": 6
+      },
+      {
+        "term": "водород",
+        "frequency": 6
+      },
+      {
+        "term": "гетероциклы",
+        "frequency": 6
+      },
+      {
+        "term": "нейронные сети",
+        "frequency": 5
+      },
+      {
+        "term": "программный комплекс",
+        "frequency": 5
+      },
+      {
+        "term": "алгоритмы",
+        "frequency": 5
+      },
+      {
+        "term": "устойчивость",
+        "frequency": 5
+      },
+      {
+        "term": "фазовые переходы",
+        "frequency": 5
+      },
+      {
+        "term": "экология",
+        "frequency": 5
+      },
+      {
+        "term": "минералогия",
+        "frequency": 5
+      },
+      {
+        "term": "рентгеноструктурный анализ",
+        "frequency": 5
+      },
+      {
+        "term": "растворимость",
+        "frequency": 5
+      },
+      {
+        "term": "кристаллические структуры",
+        "frequency": 5
+      },
+      {
+        "term": "машинное обучение",
+        "frequency": 5
+      },
+      {
+        "term": "космический аппарат",
+        "frequency": 4
+      }
+    ],
+    "disciplines_covered": {
+      "технические_науки": 125,
+      "физико-математические_науки": 16,
+      "химические_науки": 4,
+      "геолого-минералогические_науки": 3,
+      "другие_науки": 2
+    },
+    "deep_writing_patterns": {
+      "наличие выводов по каждой главе": 4,
+      "каждая глава завершается выводами": 4,
+      "Стандартная структура биологической диссертации": 3,
+      "Стандартная структура автореферата": 3,
+      "стандартная структура автореферата": 3,
+      "structured_sections": 3,
+      "стандартная структура российской кандидатской диссертации": 2,
+      "Каждая глава завершается выводами": 2,
+      "детальное описание методологии": 2,
+      "минимальная детализация": 2,
+      "подробное описание методологии": 2,
+      "четкая структурированность": 2,
+      "чёткая структура по главам": 2,
+      "mathematical_formulations": 2,
+      "положения выносятся на защиту": 2,
+      "терминологическая точность": 2,
+      "академический стиль": 2,
+      "последовательное наращивание масштаба эксперимента от образцов к полноразмерной модели": 1,
+      "четкое разделение на численный и экспериментальный блоки в главе 3": 1,
+      "дублирование оценки эффективности АСТР в главах 3 и 4 на разных масштабах": 1
+    },
+    "deep_read_priority_distribution": {
+      "medium": 447,
+      "high": 172,
+      "low": 152
+    }
+  },
+  "common_failures": {
+    "cluster": "SCI_TECH",
+    "total_papers": 771,
+    "structure_quality_issues": [
+      {
+        "pattern": "low_classification_confidence",
+        "frequency": 36,
+        "impact": "低置信度聚类结果不可靠，需人工验证",
+        "suggestion": "增加更多章节结构特征或全文分析"
+      },
+      {
+        "pattern": "noisy_or_failed_structure",
+        "frequency": 4,
+        "impact": "PDF结构解析失败，无法提取章节信息",
+        "suggestion": "尝试OCR处理或手动标注章节结构"
+      },
+      {
+        "pattern": "partial_structure_only",
+        "frequency": 9,
+        "impact": "仅部分章节结构可识别",
+        "suggestion": "补充关键词信号增强检测"
+      }
+    ],
+    "logic_chain_gaps": [
+      {
+        "gap": "Отсутствие экспериментальных данных",
+        "frequency": 2
+      },
+      {
+        "gap": "не указана явно сравнительная оценка с существующими решениями в виде квантифицированных метрик",
+        "frequency": 1
+      },
+      {
+        "gap": "отсутствие количественного сравнения предложенных моделей с существующими базовыми подходами",
+        "frequency": 1
+      },
+      {
+        "gap": "нет явного обоснования выбора конкретных параметров регуляризации",
+        "frequency": 1
+      },
+      {
+        "gap": "слабая связь между гониоспектрофотометрическими измерениями и итоговыми моделями — неясно, насколько обширна экспериментальная база данных",
+        "frequency": 1
+      },
+      {
+        "gap": "отсутствие дискуссии о границах применимости предложенных моделей",
+        "frequency": 1
+      },
+      {
+        "gap": "слабая связь между аналитическими методиками (Глава 2) и задачей определения орбит (Глава 4) — переход неочевиден",
+        "frequency": 1
+      },
+      {
+        "gap": "отсутствие количественного сравнения предложенных показателей эффективности с альтернативными метриками из литературы",
+        "frequency": 1
+      },
+      {
+        "gap": "неполная верификация результатов — только одна модель атмосферы, ограниченный набор сценариев",
+        "frequency": 1
+      },
+      {
+        "gap": "нет анализа чувствительности результатов к исходным допущениям (например, баллистический коэффициент)",
+        "frequency": 1
+      }
+    ],
+    "low_confidence_rate": 0.047
+  }
+}

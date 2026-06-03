@@ -1,0 +1,32 @@
+{
+  "version": "5.0",
+  "corpus_summary": {
+    "total_papers": 2118,
+    "total_deep_analyzed": 679,
+    "clusters": 5,
+    "sources": {
+      "universities": 3,
+      "total_papers_by_source": {
+        "BMSTU": 321,
+        "MSU": 1076,
+        "SPbSU": 721
+      }
+    },
+    "coverage": "93.5% of 2266 source papers successfully classified",
+    "skipped": 148,
+    "skip_reason": "noisy_or_failed (PDF corrupted or unparseable)"
+  },
+  "distillation_metadata": {
+    "method": "statistical_aggregation",
+    "layer3_input": "2118 papers with cluster/methodology/logic/evidence annotations",
+    "layer4_input": "679 papers with deep structure/methodology/experiment/writing analysis",
+    "output_clusters": [
+      "AUTOMATION_CONTROL",
+      "SCI_TECH",
+      "AGRI_MED",
+      "ARTS_SPORTS",
+      "HUM_POL_ECON"
+    ],
+    "timestamp": "2026-06-03T05:10:24.215024"
+  }
+}

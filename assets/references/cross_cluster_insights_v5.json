@@ -1,0 +1,234 @@
+{
+  "cluster_comparison": {
+    "SCI_TECH": {
+      "count": 771,
+      "avg_chapters": 106.1,
+      "avg_pages": 134.3,
+      "top_methodology": {
+        "experimental": 421,
+        "theoretical": 185,
+        "model_based": 97
+      },
+      "top_disciplines": {
+        "технические_науки": 125,
+        "физико-математические_науки": 16,
+        "химические_науки": 4,
+        "геолого-минералогические_науки": 3,
+        "другие_науки": 2
+      },
+      "deep_logic_mean": 0.8,
+      "deep_count": 192
+    },
+    "UNKNOWN": {
+      "count": 43,
+      "avg_chapters": 160.1,
+      "avg_pages": 200.1,
+      "top_methodology": {
+        "mixed methods with theoretical analysis and empirical research": 1
+      },
+      "top_disciplines": {
+        "технические_науки": 28,
+        "экономические_науки": 4,
+        "философские_науки": 3,
+        "физико-математические_науки": 3
+      },
+      "deep_logic_mean": 0.4,
+      "deep_count": 1
+    },
+    "AUTOMATION_CONTROL": {
+      "count": 148,
+      "avg_chapters": 130.4,
+      "avg_pages": 167.8,
+      "top_methodology": {
+        "algorithm": 62,
+        "model_based": 45,
+        "experimental": 19
+      },
+      "top_disciplines": {
+        "технические_науки": 103,
+        "физико-математические_науки": 3,
+        "экономические_науки": 1,
+        "технических_наук": 1
+      },
+      "deep_logic_mean": 0.78,
+      "deep_count": 148
+    },
+    "HUM_POL_ECON": {
+      "count": 792,
+      "avg_chapters": 205.1,
+      "avg_pages": 220.5,
+      "top_methodology": {
+        "theoretical": 534,
+        "comparative": 169,
+        "experimental": 47
+      },
+      "top_disciplines": {
+        "философские_науки": 24,
+        "экономические_науки": 9,
+        "филологические_науки": 2,
+        "политических_наук": 2,
+        "географические_науки": 1
+      },
+      "deep_logic_mean": 0.7,
+      "deep_count": 118
+    },
+    "AGRI_MED": {
+      "count": 268,
+      "avg_chapters": 199.1,
+      "avg_pages": 190.9,
+      "top_methodology": {
+        "experimental": 223,
+        "comparative": 20,
+        "model_based": 10
+      },
+      "top_disciplines": {
+        "технические_науки": 6,
+        "медицинских_наук": 4,
+        "физико-математические_науки": 1,
+        "биологические_науки": 1,
+        "химические_науки": 1
+      },
+      "deep_logic_mean": 0.81,
+      "deep_count": 187
+    },
+    "ARTS_SPORTS": {
+      "count": 96,
+      "avg_chapters": 159.5,
+      "avg_pages": 207.9,
+      "top_methodology": {
+        "theoretical": 68,
+        "comparative": 18,
+        "experimental": 10
+      },
+      "top_disciplines": {
+        "искусствоведение": 1,
+        "другие_науки": 1
+      },
+      "deep_logic_mean": 0.71,
+      "deep_count": 33
+    }
+  },
+  "cluster_ranking_by_volume": [
+    {
+      "rank": 1,
+      "cluster": "HUM_POL_ECON",
+      "count": 792,
+      "avg_chapters": 205.1,
+      "avg_pages": 220.5,
+      "top_methodology": {
+        "theoretical": 534,
+        "comparative": 169,
+        "experimental": 47
+      },
+      "top_disciplines": {
+        "философские_науки": 24,
+        "экономические_науки": 9,
+        "филологические_науки": 2,
+        "политических_наук": 2,
+        "географические_науки": 1
+      },
+      "deep_logic_mean": 0.7,
+      "deep_count": 118
+    },
+    {
+      "rank": 2,
+      "cluster": "SCI_TECH",
+      "count": 771,
+      "avg_chapters": 106.1,
+      "avg_pages": 134.3,
+      "top_methodology": {
+        "experimental": 421,
+        "theoretical": 185,
+        "model_based": 97
+      },
+      "top_disciplines": {
+        "технические_науки": 125,
+        "физико-математические_науки": 16,
+        "химические_науки": 4,
+        "геолого-минералогические_науки": 3,
+        "другие_науки": 2
+      },
+      "deep_logic_mean": 0.8,
+      "deep_count": 192
+    },
+    {
+      "rank": 3,
+      "cluster": "AGRI_MED",
+      "count": 268,
+      "avg_chapters": 199.1,
+      "avg_pages": 190.9,
+      "top_methodology": {
+        "experimental": 223,
+        "comparative": 20,
+        "model_based": 10
+      },
+      "top_disciplines": {
+        "технические_науки": 6,
+        "медицинских_наук": 4,
+        "физико-математические_науки": 1,
+        "биологические_науки": 1,
+        "химические_науки": 1
+      },
+      "deep_logic_mean": 0.81,
+      "deep_count": 187
+    },
+    {
+      "rank": 4,
+      "cluster": "AUTOMATION_CONTROL",
+      "count": 148,
+      "avg_chapters": 130.4,
+      "avg_pages": 167.8,
+      "top_methodology": {
+        "algorithm": 62,
+        "model_based": 45,
+        "experimental": 19
+      },
+      "top_disciplines": {
+        "технические_науки": 103,
+        "физико-математические_науки": 3,
+        "экономические_науки": 1,
+        "технических_наук": 1
+      },
+      "deep_logic_mean": 0.78,
+      "deep_count": 148
+    },
+    {
+      "rank": 5,
+      "cluster": "ARTS_SPORTS",
+      "count": 96,
+      "avg_chapters": 159.5,
+      "avg_pages": 207.9,
+      "top_methodology": {
+        "theoretical": 68,
+        "comparative": 18,
+        "experimental": 10
+      },
+      "top_disciplines": {
+        "искусствоведение": 1,
+        "другие_науки": 1
+      },
+      "deep_logic_mean": 0.71,
+      "deep_count": 33
+    },
+    {
+      "rank": 6,
+      "cluster": "UNKNOWN",
+      "count": 43,
+      "avg_chapters": 160.1,
+      "avg_pages": 200.1,
+      "top_methodology": {
+        "mixed methods with theoretical analysis and empirical research": 1
+      },
+      "top_disciplines": {
+        "технические_науки": 28,
+        "экономические_науки": 4,
+        "философские_науки": 3,
+        "физико-математические_науки": 3
+      },
+      "deep_logic_mean": 0.4,
+      "deep_count": 1
+    }
+  ],
+  "total_corpus_papers": 2118,
+  "total_deep_analyzed": 679
+}
