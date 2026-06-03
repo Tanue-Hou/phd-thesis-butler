@@ -50,3 +50,4 @@ logs/
 PROJECT*.md
 project_config.yaml
 .github/
+ssh_config_temp
