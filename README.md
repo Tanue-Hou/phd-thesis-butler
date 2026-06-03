@@ -39,7 +39,7 @@
 **核心策略：不重训练，只做结构增强、资产标准化和验证闭环。**
 
 | 模块 | 更新内容 |
-|:----|:---------|
+|:---------------------|:--------------------------------------------------------------------------------|
 | **架构标准化** | 7类标准资产格式（typical_structures / chapter_sequence / research_question_types / methodology_routes / logic_chains / validation_patterns / chapter_writing_rules），统一JSON Schema校验 |
 | **学科资产重排** | 5个discipline JSON全部转换为v5.1标准格式，统计聚合数据保留，噪声结构（chapter_count>30）降权排除 |
 | **写作规则增强** | 每条规则增加 when_to_use、recommended_actions、common_failures、template_family_links，方法论路线增加 description 和 typical_steps，逻辑链增加 chain_description 和 writing_sequence |
