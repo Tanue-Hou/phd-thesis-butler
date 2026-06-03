@@ -1,5 +1,41 @@
 # Changelog
 
+## v5.1.3 (2026-06-03)
+
+### Runtime Validation and Release Cleanup
+
+- Unified public release metadata to `5.1.3`.
+- Strengthened validation so CJK punctuation in runtime-visible template fields and discipline JSON assets is treated as a failure, not a warning.
+- Updated retrieval to hide `v5_lang=mixed` entries during normal runtime use unless `--include-mixed` is explicitly requested for audit/debug work.
+- Hid cleanup placeholders such as manual-translation notes from user-facing retrieval output.
+- Cleaned discipline assets to remove CJK punctuation and obvious spacing artifacts.
+- Replaced stale public documentation commands that referenced nonexistent `tests/` with the actual public validation commands.
+- Clarified the boundary between public runtime assets and private corpus distillation infrastructure.
+
+## v5.1.2 (2026-06-03)
+
+### Semantic-Level Cleanup
+
+- Removed remaining CJK text leakage from runtime-visible metadata fields.
+- Added deep validation coverage for discipline assets and template metadata.
+- Fixed retrieval behavior so non-Russian/CJK-contaminated entries are not surfaced as normal templates.
+
+## v5.1.1 (2026-06-03)
+
+### Discipline Asset Standardization
+
+- Converted five discipline profile JSON files into the v5.1 seven-section asset format.
+- Added evidence fields to discipline writing rules.
+- Added schema-backed validation for discipline profiles.
+
+## v5.1.0 (2026-06-03)
+
+### No-Retrain Structure Upgrade
+
+- Added v5-style structure, methodology, logic-chain, validation-pattern, and chapter-writing-rule assets.
+- Added public runtime routing between planning assets and sentence-template retrieval.
+- Preserved the existing sentence bank while improving the surrounding skill architecture.
+
 ## v4.0 (2026-06-02)
 
 ### Corpus Distillation Layer — 语料库蒸馏层

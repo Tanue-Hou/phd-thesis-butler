@@ -1,415 +1,406 @@
-# PhD Thesis Butler v5.1 — Dissertation Writing Intelligence Platform
+# PhD Thesis Butler v5.1.3
 
-[中](#zh) · [Рус](#ru) · [EN](#en)
+Russian dissertation writing skill for AI assistants.
 
----
-
-## ⚠️ 重要免责声明 / IMPORTANT DISCLAIMER / ВАЖНОЕ ПРЕДУПРЕЖДЕНИЕ
-
-**使用本工具即表示您同意以下条款：**
-
-1. **禁止自动生成本科/硕士/博士学位论文全文**。本工具仅作为学术写作辅助，提供句子模板、结构参考和修辞建议。**任何使用本工具生成的句子、段落或结构必须经过作者本人的实质性修改、批判性审核和学术性整合**。
-
-2. **学术诚信第一**。本工具提供的所有模板和案例来源于已公开的俄罗斯学位论文数据库。使用者不得将模板内容直接复制到自己的论文中而不进行实质性改写和引用标注。任何抄袭行为由使用者自行承担全部责任。
-
-3. **不构成完整的论文写作方案**。本工具输出的内容只是写作辅助参考，不构成、不替代、也不应被视为完整的论文写作解决方案。最终的论文内容、学术质量、逻辑完整性、数据准确性和法律合规性由使用者全权负责。
-
-4. **学科局限性**。本技能的训练语料以俄罗斯技术科学（технические науки）和人文社会科学为主。在医学、农业、艺术等领域的覆盖不完整，使用者需自行评估适用性。
-
-5. **无保证**。本技能按"原样"提供，不提供任何明示或暗示的保证，包括但不限于适销性、特定用途适用性和不侵权保证。
-
-**By using this tool, you agree to:**
-1. NOT auto-generate full dissertations/theses. This is an **assistive writing aid**, not a paper generator.
-2. All output must be **substantially modified, critically reviewed, and academically integrated** by the author.
-3. Plagiarism is strictly prohibited. Users bear full responsibility for academic misconduct.
-4. The tool does NOT constitute a complete dissertation-writing solution.
-5. Provided "as is" without warranty of any kind.
-
-**Используя данный инструмент, Вы соглашаетесь:**
-1. НЕ использовать для автоматической генерации полного текста диссертации. Это **вспомогательный инструмент** для академического письма.
-2. Все выходные данные должны быть **существенно изменены, критически проверены** автором.
-3. Плагиат строго запрещен. Пользователь несет полную ответственность за нарушение академической этики.
-4. Инструмент НЕ является полным решением для написания диссертации.
-5. Предоставляется «как есть» без каких-либо гарантий.
+[中文](#中文) · [Русский](#русский) · [English](#english)
 
 ---
-
-## v5.1 更新说明 / What's New in v5.1 / Что нового в v5.1
-
-**核心策略：不重训练，只做结构增强、资产标准化和验证闭环。**
-
-- **架构标准化**：7类标准资产格式（typical_structures / chapter_sequence / research_question_types / methodology_routes / logic_chains / validation_patterns / chapter_writing_rules），统一JSON Schema校验
-
-- **学科资产重排**：5个discipline JSON全部转换为v5.1标准格式，统计聚合数据保留，噪声结构（chapter_count>30）降权排除
-
-- **写作规则增强**：每条规则增加 when_to_use、recommended_actions、common_failures、template_family_links，方法论路线增加 description 和 typical_steps，逻辑链增加 chain_description 和 writing_sequence
-
-- **模板标注**：40,997个句式模板全部标注 v5_cluster（AUTOMATION_CONTROL / SCI_TECH / AGRI_MED / ARTS_SPORTS / HUM_POL_ECON / GLOBAL），91.3%标记为纯俄语
-
-- **润色规则**：从679篇深度分析数据中提炼学科专用润色规则（DO / DON'T / 常见错误），存入 polishing_rules_v5.json
-
-- **验证闭环**：smoke_test 7项测试全通过（含版本一致性、schema校验、目录完整性）；validate_skill_assets / validate_planning_assets 双验证器通过；无本地绝对路径硬编码
-
-- **数据清理**：CJK字符污染清理完毕（40,997条metadata字段清洗），非俄语模板标记为 mixed
-
-- **文档修复**：README口径与公开仓库一致，不再宣称不存在的目录；版本统一为 5.1.0
-
-
----
-
-<a id="zh"></a>
 
 ## 中文
 
-### 1. 项目简介
+### 这是什么
 
-**PhD Thesis Butler v5.1** 是一个面向俄罗斯副博士（кандидат наук）学位论文写作的智能辅助平台。它的核心使命是：**让AI助手在不需要重读千篇论文的前提下，获得编写俄罗斯学位论文的专业能力**。
+PhD Thesis Butler 是一个面向俄罗斯 кандидат наук / 博士论文写作的 Codex/Hermes skill。它不是论文自动生成器，而是让智能体在写作辅助时能够调用：
 
-**核心理念：** 源语料 → 蒸馏写作知识 → 验证模板/结构/评估标准 → 运行时检索与规划 → 可选私有扩展
+- 俄语学术句式模板；
+- 论文结构规划规则；
+- 学科方法论路线；
+- 问题-目标-方法-实验-结论的逻辑闭环规则；
+- 学科常见错误和润色规则。
 
-#### v5.0 核心数据
+v5.1.3 的核心目标是：**不要求用户重新读取原始论文，也不要求重新训练模型，就能让智能体获得可检索、可验证、可路由的俄罗斯论文写作范式资产。**
 
-| 指标 | 数值 |
-|------|------|
-| 分类论文 | 2,118 篇（来自3所俄罗斯高校，覆盖34个学科） |
-| 深度分析 | 679 篇（mimo-v2.5-pro 全章节分析） |
-| 写作模板 | 16,722 个纯俄语句式模板 |
-| 学科聚类 | 5 大类（自动控制/理工/农林医/文体艺术/人文社科） |
-| 质量分布 | Q2: 4,236 / Q1: 10,486 / Q0: 2,000 |
-| 管线覆盖 | Layer 0-6 全管线自动化（入库→全文→结构→分类→深读→蒸馏→发布） |
+### 数据与资产
 
-### 2. 技能架构
+公开 skill 包含的是蒸馏后的写作资产，不包含原始 PDF、全文、作者可追溯信息或私有构建缓存。
 
-```
-PhD Thesis Butler v5.1
-│
-├── 📦 核心组件
-│   ├── SKILL.md          — 智能体运行时指令（agent-facing）
-│   ├── BUILD_INFO.json   — 版本和构建元数据
-│   ├── planning_layer/   — 论文规划指南（6个学科聚类）
-│   └── scripts/          — 检索、验证、用户扩展脚本
-│
-├── 📝 句式模板库 (assets/ — 独立资产，管线重新训练不影响)
-│   ├── global/            — 跨学科通用模板 (~7,030个)
-│   ├── cluster/           — 按旧聚类归类 (~23,922个)
-│   │   ├── HUM_SOC/       — 人文社科类 (~9,003个)
-│   │   └── TECH_LIFE/     — 理工技术类 (~14,358个)
-│   └── discipline/        — 34个学科专用文件
-│
-├── 📚 语料库蒸馏资产 (assets/references/ — 管线输出，可重建)
-│   ├── disciplines/      — 5大学科写作范式
-│   │   ├── AUTOMATION_CONTROL.json  — 自动控制/车辆工程 (148篇)
-│   │   ├── SCI_TECH.json           — 理工科 (771篇)
-│   │   ├── AGRI_MED.json           — 农林医 (268篇)
-│   │   ├── ARTS_SPORTS.json        — 文体艺术 (96篇)
-│   │   └── HUM_POL_ECON.json       — 人文社科 (792篇)
-│   ├── corpus_summary_v5.json      — 语料库摘要
-│   └── cross_cluster_insights_v5.json — 跨聚类对比分析
-│
-├── 🔬 数据管线 (scripts/pipeline/ — 构建使用，公开仓库不含)
-│   ├── layer0_ingest.py    — PDF入库
-│   ├── layer1_fulltext.py  — 全文抽取
-│   ├── layer2_structure.py — 章节结构解析
-│   ├── layer3_lite.py      — 轻量语义分类 (mimo-v2.5 / deepseek)
-│   ├── layer4_deep.py      — 深度语义分析 (mimo-v2.5-pro)
-│   ├── layer5_distill.py   — 范式蒸馏（统计聚合）
-│   └── layer6_publish.py   — 公开资产构建
-│
-├── 🧪 验证体系 (构建使用，公开仓库不含)
-│   ├── validate_skill_assets.py   — 资产完整性检查
-│   └── validate_planning_assets.py— 规划层验证
-│
-├── 🔌 扩展层（v5.0预留）
-│   ├── extension_layer/    — 用户私有论文扩展包
-│   └── reading_layer/      — 个人文献阅读缓存
-│
-└── 📖 文档
-    ├── README.md           — 三语文档（本文件）
-    ├── corpus_layer/WORKFLOW.md   — 语料蒸馏说明
-    └── CHANGELOG.md        — 版本历史
-```
+| 项目 | 数量 / 状态 |
+|---|---:|
+| 句式模板 | 16,722 |
+| 分类论文来源 | 2,118 篇公开俄罗斯学位论文 |
+| 深度分析样本 | 679 篇 |
+| 学科大类资产 | 5 个 |
+| 规划层聚类 | 6 个 |
+| 模板质量分布 | Q2: 4,236 / Q1: 10,486 / Q0: 2,000 |
 
-### 3. 数据管线（Layer 0–6）
+五大学科大类资产位于 `assets/references/disciplines/`：
 
-每一层都设计为独立运行、断点续跑、可验证：
+- `AUTOMATION_CONTROL`：自动化、控制、车辆控制方向，深度增强；
+- `SCI_TECH`：理工类；
+- `AGRI_MED`：农医类；
+- `ARTS_SPORTS`：艺术体育类；
+- `HUM_POL_ECON`：人文、政治、经济类。
 
-```
-Layer 0 [入库]      → 2,267 篇 PDF 元数据入库
-Layer 1 [全文]      → 2,267 篇全文抽取（含OCR备选）
-Layer 2 [结构]      → 2,266 篇章节结构解析（TOC优先，回退正文检测）
-Layer 3 [分类]      → 2,118 篇轻量语义分类（5个聚类，93.5%覆盖率）
-Layer 4 [深度分析]  → 679 篇深度结构/方法/实验/逻辑分析（mimo-v2.5-pro）
-Layer 5 [蒸馏]      → 5大学科写作范式 + 跨聚类洞见（统计聚合）
-Layer 6 [发布]      → 公开资产构建、版本标记、文档同步
-```
+规划层位于 `planning_layer/`，用于论文结构、章节任务、实验方案和逻辑链设计。
 
-**数据脱敏声明：** 所有公开资产中的原始论文标识（作者名、高校名、具体学科名）均已被抽象化处理。公共仓库不包含任何原始PDF全文或可追溯到具体作者的元数据。学科聚类仅保留大类标签（如"AUTOMATION_CONTROL"），不暴露具体研究机构名称。
+### 能做什么
 
-### 4. 迭代历史
+适合的任务：
 
-| 版本 | 主题 | 关键进展 |
-|:----:|:----:|:---------|
-| v1.0 | 初始版本 | 手动整理的 ~500 个俄语学术句式 |
-| v2.0 | 模板扩展 | 从1,042篇论文中提取16,722个模板，按DIS/AREF双通道分拣 |
-| v3.0 | 质量体系 | 引入Q0/Q1/Q2三级质量评分、学科聚类、三层检索 |
-| v3.3.5 | 稳定基线 | 34个学科全覆盖，validate/planning层就绪 |
-| v4.0 | 语料蒸馏 | 50篇测试管线验证通过，corpus_layer设计完成 |
-| **v5.0** | **全量管线** | **2,118篇全量分类+679篇深度分析，5大学科范式蒸馏，自动化Pipeline** |
+- 规划俄语博士论文整体结构；
+- 设计章节顺序和每章写作功能；
+- 为方法、模型、实验、结果、结论等章节检索俄语句式；
+- 检查论文是否形成问题-目标-方法-验证-结论闭环；
+- 根据学科大类调用对应写作范式；
+- 给出常见错误和修复建议；
+- 支持用户未来用自己的论文做私有扩展包。
 
-### 5. 使用场景
+不适合的任务：
 
-| 场景 | 说明 | 示例 |
-|:----:|:----|:-----|
-| 🎓 论文规划 | 加载技能后，AI帮你规划章节结构和逻辑流 | "帮我规划一篇车辆工程博士论文的章节" |
-| ✍️ 段落写作 | 根据当前学科和章节获取俄语句式模板 | "帮我写论文的MODEL部分" |
-| 🔍 方法选择 | 获取所属学科的典型方法论路线 | "控制类论文用什么实验方法比较常见？" |
-| ✅ 逻辑检查 | 评估论文的逻辑闭环完整性 | "检查我的论文逻辑链是否完整" |
-| 📚 文献扩展 | 通过私有扩展包集成自己的论文语料 | "把我之前发表的3篇论文加入知识库" |
-| ⚠️ 常见错误 | 获取本学科常见写作问题和修复策略 | "工程学科论文有哪些常见错误？" |
-| 🏗️ 工程深化 | 面向车辆控制/状态估计等领域的专门写作指南 | "我需要写状态估计方法的实验部分" |
+- 一键生成整篇论文；
+- 绕过作者本人的学术判断；
+- 把模板原样复制进论文；
+- 替代导师、同行评审或学术规范审查。
 
-### 6. 真实使用案例
+### 运行逻辑
 
-**案例：自动化控制方向的论文引言写作**
+当用户提出“规划、结构、方法论、实验设计、逻辑闭环”等需求时，智能体优先使用 `planning_layer/` 和 `assets/references/disciplines/`。
 
-用户需求：我是车辆工程专业博士生，需要写俄语论文的引言（Введение）部分，展示研究问题的重要性。
+当用户提出“给我俄语句式、写某段、润色某节”等需求时，智能体使用 `scripts/retrieve_templates.py` 检索模板。普通检索默认只返回俄语安全条目；标记为 `v5_lang=mixed` 的条目保留用于审计，但不会默认展示给用户。
 
-**AI助手响应流程：**
-
-1. **场景检测** → 检测到用户在写车辆控制类论文，自动定位到 AUTOMATION_CONTROL 聚类
-2. **结构提取** → 从该聚类资产中提取典型引言结构：
-   - 研究背景（актуальность）
-   - 现有方法局限性（обзор литературы）
-   - 研究空白（пробел）
-   - 研究目标（цель）
-   - 论文结构预览（структура работы）
-3. **模板检索** → 返回该学科最常用的引言句式：
-   ```
-   [высокая актуальность]
-   "В последние годы проблема [тема] привлекает всё большее внимание исследователей в связи с [причина]."
-   
-   [обоснование пробела]
-   "Однако существующие методы [метод] не позволяют в полной мере учесть [ограничение], что приводит к [недостаток]."
-   
-   [формулировка цели]
-   "Целью настоящей работы является разработка и верификация [предлагаемый метод] для [применение]."
-   ```
-4. **常见错误提醒** → 提示避免：目标设定过宽、背景与目标脱节、研究空白论证不充分
-5. **逻辑链检查** → 确保问题→空白→目标→方法→实验→结果→结论的闭环完整
-
-### 7. 快速开始
+### 快速使用
 
 ```bash
-# 加载技能（Hermes Agent 环境）
-hermes skill load phd-thesis-butler
-
-# 或手动加载 SKILL.md
-hermes skill install /path/to/phd-thesis-butler/SKILL.md
-
-# 检索模板
+# 检索自动化/控制方向的引言句式
 python3 scripts/retrieve_templates.py \
   --category INTRO \
   --cluster AUTOMATION_CONTROL \
-  --query "цель исследования" \
+  --query "цель исследования актуальность" \
   --limit 5
-
-# 运行验证
-python3 scripts/validate_skill_assets.py
-python3 -m pytest tests/ -q
 ```
 
----
+常见请求示例：
 
-<a id="ru"></a>
+```text
+帮我规划一篇车辆控制方向俄语博士论文的章节结构。
+控制类论文的实验验证部分一般怎么写？
+给我 METHOD 部分的俄语表达模板。
+检查我的问题-目标-方法-实验-结论链条是否闭环。
+```
+
+### 验证
+
+公开仓库可直接运行以下检查：
+
+```bash
+python3 scripts/validate_skill_assets.py --deep
+python3 scripts/validate_planning_assets.py
+bash scripts/smoke_test.sh
+```
+
+这些检查覆盖：
+
+- 版本一致性；
+- 资产目录完整性；
+- discipline JSON schema；
+- planning layer 结构；
+- CJK 字符和中文标点污染；
+- 检索脚本基本可用性；
+- 本地绝对路径泄漏。
+
+### 公开包与私有管线边界
+
+公开 skill 包只保留用户运行所需的资产和脚本。以下内容属于本地/私有构建管线，不要求用户安装，也不应在公开包中假定存在：
+
+- 原始论文 PDF；
+- `.phd_build/`；
+- Layer 0-6 全量处理脚本；
+- 私有 LLM 调用记录；
+- 作者、学校、具体论文级追溯信息；
+- 私有测试或抽样审计目录。
+
+如果要继续训练或蒸馏新的论文，应在本地私有管线中完成，再把脱敏后的聚合资产发布到 `assets/references/`。
+
+### 仓库结构
+
+```text
+phd-thesis-butler/
+├── SKILL.md
+├── BUILD_INFO.json
+├── README.md
+├── CHANGELOG.md
+├── assets/
+│   ├── cluster/
+│   ├── global/
+│   └── references/
+│       ├── disciplines/
+│       ├── schemas/
+│       ├── corpus_summary_v5.json
+│       ├── cross_cluster_insights_v5.json
+│       └── polishing_rules_v5.json
+├── planning_layer/
+├── scripts/
+│   ├── retrieve_templates.py
+│   ├── validate_skill_assets.py
+│   ├── validate_planning_assets.py
+│   └── smoke_test.sh
+└── extension_layer/
+```
+
+### 学术诚信
+
+本 skill 只能作为写作辅助工具。任何输出都必须由作者本人进行实质性修改、事实核验、逻辑整合和学术责任承担。禁止将本工具用于自动生成完整学位论文或规避学术审查。
+
+---
 
 ## Русский
 
-### 1. Обзор
+### Что это такое
 
-**PhD Thesis Butler v5.1** — это интеллектуальная платформа-помощник для написания кандидатских диссертаций на русском языке. Основная миссия: дать AI-ассистенту возможность профессионально помогать с диссертацией без необходимости перечитывать тысячи исходных работ.
+PhD Thesis Butler — это skill для Codex/Hermes, предназначенный для помощи в написании российских диссертаций уровня кандидат наук / PhD. Это не генератор готовых диссертаций. Skill предоставляет AI-ассистенту проверяемые активы для:
 
-**Основной принцип:** Исходный корпус → дистиллированное знание о письме → проверенные шаблоны/структуры/критерии → поиск и планирование во время работы → опциональные частные расширения.
+- поиска русскоязычных академических шаблонов;
+- планирования структуры диссертации;
+- выбора типичных методологических маршрутов;
+- проверки логической цепочки проблема-цель-метод-эксперимент-вывод;
+- выявления типичных ошибок по дисциплинам;
+- дисциплинарного редактирования и полировки текста.
 
-#### Ключевые показатели v5.0
+Цель v5.1.3: **дать ассистенту доступ к дистиллированным знаниям о письме без повторного чтения исходных PDF и без дообучения модели.**
 
-| Показатель | Значение |
-|------------|----------|
-| Классифицировано работ | 2 118 (из 3 российских вузов, 34 дисциплины) |
-| Глубокий анализ | 679 работ (mimo-v2.5-pro, полный анализ глав) |
-| Шаблонов | 16 722 чистых русскоязычных шаблона |
-| Кластеров | 5 (AUTOMATION_CONTROL / SCI_TECH / AGRI_MED / ARTS_SPORTS / HUM_POL_ECON) |
-| Распределение качества | Q2: 4 236 / Q1: 10 486 / Q0: 2 000 |
-| Pipeline | Layer 0–6: полная автоматизация |
+### Данные и активы
 
-### 2. Архитектура навыка
+Публичный skill содержит только дистиллированные активы. Он не содержит исходные PDF, полные тексты, имена авторов, трассируемые метаданные или приватные build-кэши.
 
-Структура проекта аналогична китайской секции выше. Основные компоненты:
+| Компонент | Значение |
+|---|---:|
+| Шаблонов | 16 722 |
+| Источник классификации | 2 118 публичных российских диссертаций |
+| Глубоко проанализировано | 679 работ |
+| Дисциплинарных профилей | 5 |
+| Планировочных кластеров | 6 |
+| Качество шаблонов | Q2: 4 236 / Q1: 10 486 / Q0: 2 000 |
 
-- `SKILL.md` — инструкции для AI-агента
-- `assets/references/disciplines/` — профили по 5 кластерам
-- `scripts/pipeline/` — полный конвейер обработки (Layer 0–6, не входит в публичный репозиторий)
-- `tests/` — 23 теста pytest (не входит в публичный репозиторий)
+Пять дисциплинарных профилей находятся в `assets/references/disciplines/`:
 
-### 3. Конвейер данных (Layer 0–6)
+- `AUTOMATION_CONTROL`: автоматизация, управление, транспортные системы; усиленный профиль;
+- `SCI_TECH`: инженерные и естественно-научные направления;
+- `AGRI_MED`: аграрные и медицинские направления;
+- `ARTS_SPORTS`: искусство, культура, спорт;
+- `HUM_POL_ECON`: гуманитарные, политические и экономические направления.
 
-| Слой | Действие | Результат |
-|:----:|:---------|:----------|
-| Layer 0 | Загрузка PDF | 2 267 записей |
-| Layer 1 | Извлечение текста | 2 267 полных текстов |
-| Layer 2 | Парсинг структуры | 2 266 структур глав |
-| Layer 3 | Легкая классификация | 2 118 работ, 5 кластеров (93.5%) |
-| Layer 4 | Глубокий анализ | 679 работ (структура, методология, эксперименты) |
-| Layer 5 | Дистилляция | 5 профилей кластеров + межкластерный анализ |
-| Layer 6 | Публикация | Сборка открытых активов, тегирование |
+Планировочные материалы находятся в `planning_layer/`.
 
-**Анонимизация данных:** Все идентификаторы исходных работ (имена авторов, названия вузов, конкретные дисциплины) удалены из публичных активов. Публичный репозиторий не содержит ни одного полного PDF-текста или метаданных, позволяющих идентифицировать конкретного автора.
+### Что skill умеет
 
-### 4. История версий
+Подходит для задач:
 
-| Версия | Тема | Ключевые изменения |
-|:------:|:----:|:-------------------|
-| v1.0 | Начальная | ~500 вручную собранных фраз |
-| v2.0 | Расширение | 16 722 шаблона из 1 042 работ |
-| v3.0 | Качество | Q0/Q1/Q2, кластеризация, трехуровневый поиск |
-| v3.3.5 | Базовый уровень | 34 дисциплины, валидация |
-| v4.0 | Дистилляция | Пилотный pipeline 50 работ |
-| **v5.0** | **Полный конвейер** | **2 118 классификаций + 679 глубоких анализов** |
+- спланировать структуру диссертации;
+- определить функции глав и последовательность разделов;
+- подобрать русские шаблоны для введения, метода, модели, эксперимента, результатов и заключения;
+- проверить логическую замкнутость диссертации;
+- выбрать типичный методологический маршрут для дисциплины;
+- показать частые ошибки и способы исправления;
+- подготовить основу для приватного расширения на собственном корпусе пользователя.
 
-### 5. Сценарии использования
+Не подходит для:
 
-- Планирование структуры диссертации по дисциплине
-- Получение русскоязычных шаблонов для нужного раздела
-- Выбор методологии на основе анализа корпуса
-- Проверка логической целостности работы
-- Расширение корпуса своими публикациями
-- Выявление типичных ошибок по дисциплине
+- автоматического написания полной диссертации;
+- замены автора, научного руководителя или рецензента;
+- копирования шаблонов без переработки;
+- обхода академической этики.
 
-### 6. Пример использования
+### Логика работы
 
-**Сценарий:** Аспирант пишет введение к диссертации по управлению транспортными средствами.
+Запросы о планировании, структуре, методологии, эксперименте и логической цепочке маршрутизируются к `planning_layer/` и `assets/references/disciplines/`.
 
-AI-ассистент автоматически определяет кластер AUTOMATION_CONTROL, извлекает типичную структуру введения (актуальность → обзор → пробел → цель → задачи), предлагает наиболее частотные шаблоны для каждого элемента и предупреждает о типичных ошибках (слишком широкая цель, отрыв актуальности от конкретной задачи).
+Запросы о фразах, абзацах, формулировках и полировке используют `scripts/retrieve_templates.py`. В обычном режиме поиск показывает только русскоязычно безопасные записи. Записи с `v5_lang=mixed` сохраняются для аудита, но не выдаются пользователю по умолчанию.
 
-### 7. Быстрый старт
+### Быстрый старт
 
 ```bash
-hermes skill load phd-thesis-butler
-python3 scripts/retrieve_templates.py --category INTRO --cluster AUTOMATION_CONTROL --query "цель" --limit 5
-python3 -m pytest tests/ -q
+python3 scripts/retrieve_templates.py \
+  --category INTRO \
+  --cluster AUTOMATION_CONTROL \
+  --query "цель исследования актуальность" \
+  --limit 5
 ```
 
----
+Примеры запросов:
 
-<a id="en"></a>
+```text
+Помоги спланировать структуру диссертации по управлению транспортным средством.
+Как обычно пишется экспериментальная часть в диссертациях по управлению?
+Дай русские шаблоны для раздела METHOD.
+Проверь, замкнута ли логика проблема-цель-метод-эксперимент-вывод.
+```
+
+### Проверка
+
+```bash
+python3 scripts/validate_skill_assets.py --deep
+python3 scripts/validate_planning_assets.py
+bash scripts/smoke_test.sh
+```
+
+Проверки охватывают версии, структуру активов, discipline schema, planning layer, CJK-загрязнение, работу retrieval-скрипта и утечки локальных абсолютных путей.
+
+### Граница публичного пакета
+
+Публичный пакет не включает:
+
+- исходные PDF;
+- `.phd_build/`;
+- приватные Layer 0-6 pipeline-скрипты;
+- журналы LLM-вызовов;
+- авторские или университетские идентификаторы;
+- приватные тесты и аудиторские выборки.
+
+Новые корпуса следует обрабатывать локально, затем публиковать только обезличенные агрегированные активы.
+
+### Академическая этика
+
+Skill является инструментом помощи. Все результаты должны быть существенно переработаны, проверены и интегрированы автором. Использование для автоматической генерации полной диссертации запрещено.
+
+---
 
 ## English
 
-### 1. Overview
+### What This Is
 
-**PhD Thesis Butler v5.1** is a dissertation writing intelligence platform for Russian PhD (кандидат наук) theses. Its core mission: **give an AI assistant professional dissertation-writing capability without re-reading thousands of source papers**.
+PhD Thesis Butler is a Codex/Hermes skill for assisting with Russian кандидат наук / PhD dissertation writing. It is not a dissertation generator. It gives an AI assistant structured, auditable assets for:
 
-**Core principle:** Source corpus → distilled writing knowledge → validated templates/structures/rubrics → runtime retrieval & planning → optional private extension packs.
+- retrieving Russian academic sentence patterns;
+- planning dissertation structure;
+- selecting discipline-specific methodology routes;
+- checking problem-goal-method-experiment-conclusion logic closure;
+- identifying common dissertation writing failures;
+- applying discipline-aware polishing guidance.
 
-#### v5.0 Key Metrics
+The goal of v5.1.3 is: **provide distilled dissertation-writing knowledge without requiring users to reread source PDFs or retrain a model.**
 
-| Metric | Value |
-|:-------|:------|
-| Papers classified | 2,118 (3 Russian universities, 34 disciplines) |
-| Deep-analyzed | 679 (mimo-v2.5-pro full chapter analysis) |
-| Writing templates | 16,722 pure Russian sentence patterns |
-| Discipline clusters | 5 (AUTOMATION_CONTROL / SCI_TECH / AGRI_MED / ARTS_SPORTS / HUM_POL_ECON) |
-| Quality | Q2: 4,236 / Q1: 10,486 / Q0: 2,000 |
-| Pipeline | Layer 0–6 fully automated (ingest → publish) |
+### Data and Assets
 
-### 2. Skill Architecture
+The public skill contains distilled writing assets only. It does not include raw PDFs, full source texts, author-traceable metadata, or private build caches.
 
-Same structure as the Chinese section. Key components:
+| Component | Value |
+|---|---:|
+| Sentence templates | 16,722 |
+| Classified source papers | 2,118 public Russian dissertations |
+| Deep-analyzed papers | 679 |
+| Discipline profiles | 5 |
+| Planning clusters | 6 |
+| Template quality | Q2: 4,236 / Q1: 10,486 / Q0: 2,000 |
 
-- `SKILL.md` — agent-facing runtime instructions
-- `assets/references/disciplines/` — 5 discipline writing profiles
-- `scripts/pipeline/` — full processing pipeline (Layer 0–6, not in public repo)
-- `tests/` — 23 pytest test suite (not in public repo)
+The five discipline profiles live in `assets/references/disciplines/`:
 
-### 3. Data Pipeline (Layer 0–6)
+- `AUTOMATION_CONTROL`: automation, control, vehicle control; enhanced profile;
+- `SCI_TECH`: science and engineering;
+- `AGRI_MED`: agriculture and medicine;
+- `ARTS_SPORTS`: arts, culture, and sports;
+- `HUM_POL_ECON`: humanities, politics, and economics.
 
-| Layer | Action | Result |
-|:-----:|:-------|:-------|
-| Layer 0 | PDF ingest | 2,267 paper records |
-| Layer 1 | Full text extraction | 2,267 full texts |
-| Layer 2 | Structure parsing | 2,266 chapter structures |
-| Layer 3 | Lightweight classification | 2,118 papers, 5 clusters (93.5%) |
-| Layer 4 | Deep analysis | 679 papers (structure/methodology/experiment/logic) |
-| Layer 5 | Paradigm distillation | 5 cluster profiles + cross-cluster insights |
-| Layer 6 | Release assembly | Public asset build, tagging, doc sync |
+Planning assets live in `planning_layer/`.
 
-**Data Anonymization:** All public assets have author names, university names, and specific discipline identifiers removed. The public repository contains NO raw PDF text or author-traceable metadata. Discipline clusters use only broad category labels.
+### What It Can Do
 
-### 4. Version History
+Good use cases:
 
-| Version | Theme | Key Changes |
-|:-------:|:-----:|:-----------|
-| v1.0 | Initial | ~500 manually curated Russian phrases |
-| v2.0 | Template expansion | 16,722 templates from 1,042 papers |
-| v3.0 | Quality system | Q0/Q1/Q2 scoring, clustering, 3-level retrieval |
-| v3.3.5 | Stable baseline | 34 disciplines, validate/planning layers |
-| v4.0 | Corpus distillation | 50-paper pilot pipeline |
-| **v5.0** | **Full pipeline** | **2,118 classified + 679 deep-analyzed** |
+- plan a Russian dissertation structure;
+- define chapter sequence and chapter functions;
+- retrieve Russian templates for introduction, method, model, experiment, results, and conclusion sections;
+- check whether the dissertation logic closes from problem to conclusion;
+- choose discipline-appropriate methodology routes;
+- surface common failures and repair actions;
+- support private user-extension packs built from the user's own papers.
 
-### 5. Use Cases
+Out of scope:
 
-- Plan dissertation chapter structure by discipline
-- Retrieve Russian sentence templates for any section
-- Identify typical methodology routes for your field
-- Check logic chain completeness
-- Extend corpus with your own publications (via extension packs)
-- Get discipline-specific writing mistake warnings
+- one-click full dissertation generation;
+- replacing author judgment, supervision, or review;
+- copying templates unchanged into a thesis;
+- bypassing academic integrity requirements.
 
-### 6. Real Usage Example
+### Runtime Logic
 
-**Scenario:** A vehicle engineering PhD student needs to write the Introduction (Введение) section of their Russian dissertation.
+Planning, structure, methodology, experiment design, and logic-chain requests route to `planning_layer/` and `assets/references/disciplines/`.
 
-The AI assistant automatically detects the AUTOMATION_CONTROL cluster, extracts the typical introduction structure (background → literature gap → research gap → goal → tasks), retrieves the most frequent Russian sentence patterns for each element, and warns about common mistakes (overly broad goal, disconnected motivation).
+Sentence, paragraph, and polishing requests use `scripts/retrieve_templates.py`. Normal retrieval returns Russian-safe entries only. Entries tagged `v5_lang=mixed` are retained for audit/debug use but hidden from normal user-facing retrieval.
 
-### 7. Quick Start
+### Quick Start
 
 ```bash
-hermes skill load phd-thesis-butler
-python3 scripts/retrieve_templates.py --category INTRO --cluster AUTOMATION_CONTROL --query "goal" --limit 5
-python3 -m pytest tests/ -q
+python3 scripts/retrieve_templates.py \
+  --category INTRO \
+  --cluster AUTOMATION_CONTROL \
+  --query "цель исследования актуальность" \
+  --limit 5
 ```
+
+Example prompts:
+
+```text
+Plan a Russian dissertation structure for a vehicle control topic.
+How should the experiment chapter be written in control dissertations?
+Give me Russian templates for the METHOD section.
+Check whether my problem-goal-method-experiment-conclusion chain is closed.
+```
+
+### Validation
+
+```bash
+python3 scripts/validate_skill_assets.py --deep
+python3 scripts/validate_planning_assets.py
+bash scripts/smoke_test.sh
+```
+
+These checks cover release metadata, asset structure, discipline schema, planning layer integrity, CJK contamination, retrieval smoke tests, and local absolute-path leakage.
+
+### Public Package Boundary
+
+The public package does not include:
+
+- raw PDFs;
+- `.phd_build/`;
+- private Layer 0-6 pipeline scripts;
+- LLM call logs;
+- author or university identifiers;
+- private tests or audit samples.
+
+New corpora should be processed locally. Only anonymized aggregate assets should be published into `assets/references/`.
+
+### Repository Structure
+
+```text
+phd-thesis-butler/
+├── SKILL.md
+├── BUILD_INFO.json
+├── README.md
+├── CHANGELOG.md
+├── assets/
+│   ├── cluster/
+│   ├── global/
+│   └── references/
+│       ├── disciplines/
+│       ├── schemas/
+│       ├── corpus_summary_v5.json
+│       ├── cross_cluster_insights_v5.json
+│       └── polishing_rules_v5.json
+├── planning_layer/
+├── scripts/
+│   ├── retrieve_templates.py
+│   ├── validate_skill_assets.py
+│   ├── validate_planning_assets.py
+│   └── smoke_test.sh
+└── extension_layer/
+```
+
+### Academic Integrity
+
+This skill is an assistive tool. All outputs must be substantially revised, fact-checked, logically integrated, and academically owned by the author. It must not be used to auto-generate a complete dissertation or evade academic review.
 
 ---
 
-## License
-
-This project is provided for **academic research and writing assistance purposes only**. See Disclaimer at the top of this file for usage restrictions.
-
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for full version history.
-
-## Repository Structure
-
-```
-phd-thesis-butler/
-├── SKILL.md                    # Agent runtime instructions (v5.0)
-├── BUILD_INFO.json             # Build metadata & pipeline stats
-├── README.md                   # This file (ZH/RU/EN)
-├── CHANGELOG.md                # Version history
-├── assets/
-│   └── references/
-│       ├── disciplines/        # 5 cluster writing profiles
-│       ├── corpus_summary_v5.json
-│       └── cross_cluster_insights_v5.json
-├── planning_layer/             # Dissertation planning guides
-├── scripts/
-│   ├── pipeline/               # Layer 0–6 pipeline scripts
-│   ├── retrieve_templates.py   # Template retrieval CLI
-│   └── validate_*.py           # Validation scripts
-├── corpus_layer/               # Corpus distillation design (not in public repo)
-│   └── schemas/                # JSON schemas (not in public repo)
-├── extension_layer/            # User extension pack design
-├── reading_layer/              # Document reading cache
-├── tests/                      # 23 pytest tests (not in public repo)
-├── data/                       # Source PDFs (private, gitignored)
-```
+See [CHANGELOG.md](CHANGELOG.md).

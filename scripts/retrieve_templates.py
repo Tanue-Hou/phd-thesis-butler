@@ -46,7 +46,7 @@ def has_cjk_punctuation(text):
 
 def entry_has_cjk(entry):
     """Check if an entry has CJK or Chinese punctuation in visible text fields."""
-    for field in ['template', 'text', 'when_to_use', 'function']:
+    for field in ['template', 'text', 'subtype', 'when_to_use', 'function', 'slots']:
         if has_cjk(entry.get(field, '')) or has_cjk_punctuation(entry.get(field, '')):
             return True
     cm = entry.get('common_mistakes', [])
@@ -61,8 +61,27 @@ def has_russian_template(entry):
     t = entry.get("template", "") or entry.get("text", "")
     return bool(CYRILLIC_RE.search(t))
 
-def load_quality_jsonl(path):
-    """Load a JSONL file, return list of dicts, filtering CJK-only entries."""
+PLACEHOLDER_MARKERS = (
+    "требуется ручной перевод",
+    "китайском языке удалено",
+    "Описание требует уточнения",
+)
+
+def clean_visible_metadata(value):
+    """Hide cleanup placeholders from user-facing retrieval output."""
+    if isinstance(value, str):
+        if any(marker in value for marker in PLACEHOLDER_MARKERS):
+            return ""
+        return value
+    if isinstance(value, list):
+        return [
+            item for item in (clean_visible_metadata(v) for v in value)
+            if item
+        ]
+    return value
+
+def load_quality_jsonl(path, include_mixed=False):
+    """Load a JSONL file, returning only runtime-safe entries by default."""
     if not path.exists():
         return []
     result = []
@@ -73,12 +92,14 @@ def load_quality_jsonl(path):
                 continue
             try:
                 e = json.loads(line)
-                # Allow v5_lang=mixed templates through (acknowledged multilingual)
-                # Filter out only entries with CJK that are NOT tagged as mixed
+                # Normal retrieval is Russian-first. Mixed/non-Russian templates
+                # are retained in the assets for auditability, but hidden unless
+                # the caller explicitly opts in.
                 v5_lang = e.get('v5_lang', 'ru')
-                if v5_lang != 'mixed':
-                    if entry_has_cjk(e) or not has_russian_template(e):
-                        continue
+                if v5_lang == 'mixed' and not include_mixed:
+                    continue
+                if entry_has_cjk(e) or not has_russian_template(e):
+                    continue
                 result.append(e)
             except json.JSONDecodeError:
                 continue
@@ -107,6 +128,7 @@ def retrieve(args):
     cluster = args.get("cluster", "TECH_LIFE").upper()
     query = args.get("query", "")
     limit = args.get("limit", 5)
+    include_mixed = args.get("include_mixed", False)
 
     query_words = query.split() if query else []
     results = []  # list of (semantic_score, layer_name, entry)
@@ -132,21 +154,21 @@ def retrieve(args):
     # --- Semantic search across ALL layers ---
     # DISCIPLINE layer
     discipline_path = BASE / "assets/discipline" / f"{disc_file}.jsonl"
-    disc_entries = load_quality_jsonl(discipline_path)
+    disc_entries = load_quality_jsonl(discipline_path, include_mixed=include_mixed)
     try_add(disc_entries, "DISCIPLINE")
     
     # CLUSTER layer
     cluster_path = BASE / f"assets/cluster/{cluster}/quality/QUALITY2_{category}.jsonl"
     if not cluster_path.exists():
         cluster_path = BASE / f"assets/cluster/{cluster}/quality/QUALITY2_ALL.jsonl"
-    cluster_entries = load_quality_jsonl(cluster_path)
+    cluster_entries = load_quality_jsonl(cluster_path, include_mixed=include_mixed)
     try_add(cluster_entries, "CLUSTER")
     
     # GLOBAL layer
     global_path = BASE / f"assets/global/quality/QUALITY2_{category}.jsonl"
     if not global_path.exists():
         global_path = BASE / "assets/global/quality/QUALITY2_ALL.jsonl"
-    global_entries = load_quality_jsonl(global_path)
+    global_entries = load_quality_jsonl(global_path, include_mixed=include_mixed)
     try_add(global_entries, "GLOBAL")
     
     # Globally sort by: semantic_score desc, quality_score desc, layer_priority
@@ -159,12 +181,12 @@ def retrieve(args):
     final = []
     for score, layer_name, entry in results:
         t = entry.get("template", entry.get("text", ""))
-        if entry_has_cjk(entry) and entry.get('v5_lang') != 'mixed':
+        if entry_has_cjk(entry):
             continue
         
         # Calculate effective score
         lang_boost = 0
-        if not query_has_cyrillic and layer_name == "GLOBAL" and entry.get('v5_lang') == 'mixed':
+        if include_mixed and not query_has_cyrillic and layer_name == "GLOBAL" and entry.get('v5_lang') == 'mixed':
             lang_boost = 5  # Boost English templates for English queries
         
         effective_score = score + lang_boost
@@ -185,8 +207,8 @@ def retrieve(args):
             "template": t,
             "category": entry.get("category", ""),
             "subtype": entry.get("subtype", ""),
-            "when_to_use": entry.get("when_to_use", ""),
-            "common_mistakes": entry.get("common_mistakes", []),
+            "when_to_use": clean_visible_metadata(entry.get("when_to_use", "")),
+            "common_mistakes": clean_visible_metadata(entry.get("common_mistakes", [])),
             "quality_score": entry.get("quality_score", 0),
             "hit_layer": layer_name,
         })
@@ -203,6 +225,7 @@ if __name__ == "__main__":
     parser.add_argument("--cluster", "-k", default="TECH_LIFE", help="Cluster name")
     parser.add_argument("--query", "-q", default="", help="Semantic query text")
     parser.add_argument("--limit", "-l", type=int, default=5, help="Max results")
+    parser.add_argument("--include-mixed", action="store_true", help="Include mixed/non-Russian templates for audit/debug use")
     args = parser.parse_args()
 
     params = {
@@ -211,6 +234,7 @@ if __name__ == "__main__":
         "cluster": args.cluster,
         "query": args.query,
         "limit": args.limit,
+        "include_mixed": args.include_mixed,
     }
 
     results = retrieve(params)

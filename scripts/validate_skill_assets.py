@@ -259,9 +259,12 @@ def _check_text_leakage(name, data):
                 if CYRILLIC_RE.search(obj) and any(c in obj for c in '.!?,;:'):
                     w(f"{name}.json{path}: possible text leakage ({len(obj)} chars): "
                       f"{obj[:80]}...")
-            # Check for CJK in discipline JSONs (should be Russian/metadata)
-            if CJK_RE.search(obj):
-                e(f"{name}.json{path}: CJK text found: {obj[:80]}")
+            # Check for CJK text or CJK punctuation in discipline JSONs.
+            # The discipline assets are runtime-facing Russian/neutral metadata;
+            # full-width CJK punctuation usually means a machine translation
+            # cleanup pass was incomplete.
+            if CJK_RE.search(obj) or CJK_PUNCT_RE.search(obj):
+                e(f"{name}.json{path}: CJK text/punctuation found: {obj[:80]}")
 
     scan_strings(data)
 
@@ -306,14 +309,14 @@ def check_jsonl_content(deep=False):
                 # CJK check — skip if entry is tagged as mixed
                 v5_lang = d.get('v5_lang', 'ru')
                 if v5_lang != 'mixed':
-                    for key in ('template', 'text'):
+                    for key in ('template', 'text', 'subtype', 'when_to_use', 'function', 'slots'):
                         val = d.get(key, "")
-                        if isinstance(val, str) and CJK_RE.search(val):
-                            e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}': {val[:60]}")
+                        if isinstance(val, str) and (CJK_RE.search(val) or CJK_PUNCT_RE.search(val)):
+                            e(f"{f.relative_to(BASE)}:{i}: CJK text/punctuation in '{key}': {val[:60]}")
                         elif isinstance(val, list):
                             for j, item in enumerate(val):
-                                if isinstance(item, str) and CJK_RE.search(item):
-                                    e(f"{f.relative_to(BASE)}:{i}: CJK in '{key}[{j}]': {item[:60]}")
+                                if isinstance(item, str) and (CJK_RE.search(item) or CJK_PUNCT_RE.search(item)):
+                                    e(f"{f.relative_to(BASE)}:{i}: CJK text/punctuation in '{key}[{j}]': {item[:60]}")
                 
                 # Check for non-Russian template — skip if tagged as mixed
                 if t and not CYRILLIC_RE.search(t) and v5_lang != 'mixed':

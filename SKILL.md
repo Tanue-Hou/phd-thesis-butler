@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
-description: "Russian academic writing sentence bank — 16,722 pure Russian templates. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "5.1"
+description: "Russian academic writing sentence bank — 16,722 Russian-first templates plus dissertation planning assets. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
+version: "5.1.3"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -10,7 +10,7 @@ version: "5.1"
 
 You are a **Russian academic writing assistant**. When loaded, automatically detect what section of a dissertation the user is writing and proactively offer relevant sentence templates. Do not wait for the user to ask — scan, detect, and serve.
 
-**Data**: 16,722 pure Russian templates from 2,118 dissertations/abstracts (3 Russian universities), classified into 5 discipline clusters (AUTOMATION_CONTROL, SCI_TECH, AGRI_MED, ARTS_SPORTS, HUM_POL_ECON). 679 papers deep-analyzed. Quality-scored 0–2 across DIS (structural) + AREF (summative) channels. All non-Russian content removed — validated and tagged with v5_lang field (91.3% pure Russian, 8.7% mixed tagged).
+**Data**: 16,722 Russian-first templates from 2,118 dissertations/abstracts (3 Russian universities), classified into 5 discipline clusters (AUTOMATION_CONTROL, SCI_TECH, AGRI_MED, ARTS_SPORTS, HUM_POL_ECON). 679 papers deep-analyzed. Quality-scored 0–2 across DIS (structural) + AREF (summative) channels. Entries are tagged with `v5_lang`; normal retrieval serves Russian-safe entries and hides mixed/non-Russian entries unless explicitly requested for audit/debug use.
 
 ---
 
@@ -295,7 +295,7 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 | File | Contents | Purpose |
 |---|---|---|
-| `assets/references/subtype_mapping_v3.3.json` | Standardized subtype mapping (1,662 pure Russian names) | Maps old/alternate subtype names to canonical standardized Russian names |
+| `assets/references/subtype_mapping_v3.3.json` | Standardized subtype mapping (1,662 Russian names) | Maps old/alternate subtype names to canonical standardized Russian names |
 | `assets/references/standard_taxonomy_v3.3.json` | Canonical taxonomy (25 categories, 1,448 standard names) | Defines the complete hierarchical taxonomy for semantic matching |
 
 ### Flat curated files (secondary — fallback)
@@ -332,7 +332,7 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 ## Language Purity Rules (strict)
 
-This skill contains **only pure Russian academic templates**. No Chinese, English, or other languages.
+Runtime template output is **Russian-first**. Mixed or non-Russian asset entries may exist for auditability, but normal retrieval filters them out.
 
 ### Language Strategy
 
@@ -350,6 +350,7 @@ When serving templates:
 - **when_to_use, function descriptions** — Russian preferred, but can be in user's control language if explicitly requested
 - **Never translate a Russian template to English or Chinese** — the user is writing a Russian thesis
 - All slot names should be in Russian where possible (e.g. `[метод]` instead of `[method]`)
+- Do not surface entries tagged `v5_lang=mixed` during normal template retrieval.
 
 **Default discipline** when not explicitly specified: `технические науки` / `TECH_LIFE` (suitable for vehicle engineering, mechanical engineering, control systems).
 
@@ -377,12 +378,17 @@ Violation of these rules is a critical bug.
 phd-thesis-butler/
 ├── SKILL.md                     ← This file (assistant-facing runtime role)
 ├── README.md                    ← Public methodology documentation
-├── .gitignore
-├── BUILD_INFO.json                    ← Build metadata
-├── references/
-│   ├── FULL_CLASSIFICATION.yaml ← Full classification taxonomy
-│   ├── CROSS_CATEGORY_MAP.md    ← Cross-category mapping rules
-│   └── INDEX_GUIDE.md           ← Layer/cluster/discipline index
+├── CHANGELOG.md                 ← Release history
+├── BUILD_INFO.json              ← Build metadata
+├── assets/
+│   ├── cluster/                 ← Cluster-level JSONL sentence banks
+│   ├── global/                  ← Cross-discipline JSONL sentence banks
+│   └── references/
+│       ├── disciplines/         ← 5 discipline writing profiles
+│       ├── schemas/             ← Public asset schemas
+│       ├── corpus_summary_v5.json
+│       ├── cross_cluster_insights_v5.json
+│       └── polishing_rules_v5.json
 ├── planning_layer/              ← Thesis planning mode (standalone, not merged)
 │   ├── clusters/                ← 6 discipline clusters + evidence_count
 │   ├── patterns/                ← 6 structure patterns with evidence_count
@@ -392,40 +398,13 @@ phd-thesis-butler/
 │   ├── METHODOLOGY_GUIDE.md
 │   ├── LOGIC_FLOW_GUIDE.md
 │   └── EXPERIMENT_DESIGN_GUIDE.md
-├── corpus_layer/                ← Corpus distillation layer (v4.0+)
-│   ├── WORKFLOW.md              ← 4-stage: SOURCE→EXTRACT→DISTILL→PUBLISH
-│   └── schemas/                 ← 5 schemas + SCHEMA_CONVENTION
 ├── scripts/
 │   ├── retrieve_templates.py          ← Deterministic 3-layer retrieval
 │   ├── validate_skill_assets.py       ← Fast/deep asset validation
 │   ├── validate_planning_assets.py    ← 22 planning layer checks
-│   └── validate_corpus_layer.py       ← Corpus layer validation
-├── evals/
-│   └── evals.json                     ← Minimal test suite (10 cases)
-├── reports/
-│   ├── corpus_analysis_report.md      ← Full corpus analysis (xiaomi mimo)
-│   └── drafts/                        ← Pre-schema draft assets
-├── schemas/
-│   └── sentencebank_entry.schema.v2_1.json
-├── sub_skills/
-│   ├── dis_intro/               ← INTRO templates (MODULE.md)
-│   ├── dis_survey/              ← SURVEY templates
-│   ├── dis_model/               ← MODEL templates
-│   ├── dis_method/              ← METHOD templates
-│   ├── dis_experiment/          ← EXPERIMENT templates
-│   ├── dis_result/              ← RESULT templates
-│   ├── dis_discussion/          ← DISCUSSION templates
-│   ├── dis_conclusion/          ← CONCLUSION templates
-│   ├── dis_transition/          ← TRANSITION templates
-│   ├── dis_formal_defs/         ← FORMAL_DEFS templates
-│   ├── dis_engineering/         ← ENGINEERING templates
-│   ├── aref_core/               ← AREF (all 14 modules)
-│   └── utils_core/              ← UTILS (all use MODULE.md, not SKILL.md)
-└── data/
-    └── curated/
-        ├── master/              ← Full corpus (16,722 entries)
-        ├── quality/             ← Quality=2 selections (10,611 entries)
-        └── gaps/                ← Coverage gap analysis
+│   └── smoke_test.sh                  ← Runtime smoke checks
+└── extension_layer/
+    └── README.md                ← Private user extension design
 ```
 
 ## Build Pipeline Reference
@@ -433,60 +412,17 @@ phd-thesis-butler/
 The extraction pipeline and asset-building process are documented in the project's internal repository (not part of this skill distribution). For methodology details, see:
 
 - `CHANGELOG.md` — full version history with phase-by-phase build records
-- `assets/references/v3.3_validation_report.md` — validation report for current release
 
 ### Language Purity
 
-- `assets/references/v3.3_validation_report.md` — validation report confirming zero EN/CN contamination, zero JSON parse errors, and full subtype standardization. Re-run before any release.
-- `BUILD_INFO.json` — build metadata including language purity stats.
+- `BUILD_INFO.json` — build metadata and release statistics.
+- `scripts/validate_skill_assets.py --deep` — validates runtime-visible text fields, schema compliance, and CJK/CJK-punctuation leakage.
 
-## Corpus Layer (v4.0+)
+## Corpus Distillation Boundary
 
-The `corpus_layer/` directory implements a 4-stage distillation pipeline:
-**SOURCE → EXTRACT → DISTILL → PUBLISH**
+The full PDF ingestion, corpus extraction, and LLM distillation pipeline is private build infrastructure and is not part of this public skill distribution. Public runtime assets are the distilled JSON/JSONL files under `assets/`, the planning guides under `planning_layer/`, and the executable helper scripts under `scripts/`.
 
-### Schemas (5 total)
-
-| File | Purpose |
-|------|---------|
-| `corpus_layer/schemas/SCHEMA_CONVENTION.md` | Shared conventions: ID naming, category/cluster enums, evidence_count format |
-| `corpus_layer/schemas/paper_record.schema.json` | Per-paper metadata + category coverage + quality distribution |
-| `corpus_layer/schemas/structure_record.schema.json` | Section sequence, pattern type, boolean has_* flags |
-| `corpus_layer/schemas/methodology_record.schema.json` | Research approach type, requires_model/experiment/dataset, typical sections |
-| `corpus_layer/schemas/logic_chain.schema.json` | Stage-by-stage chain with required subtypes, transitions, completeness score |
-| `corpus_layer/schemas/rhetorical_move.schema.json` | Rhetorical function, typical triggers, related moves, quality distribution |
-
-### Draft Assets (pre-schema)
-
-Draft reference assets live in `reports/drafts/` until schema-validated and moved to `assets/references/`:
-
-| File | Contents |
-|------|----------|
-| `reports/drafts/rhetorical_moves_v4_draft.json` | 38 rhetorical moves covering all DIS + AREF categories |
-| `reports/drafts/methodology_routes_v4_draft.json` | 6 methodology routes (engineering, experimental, theoretical, etc.) |
-| `reports/drafts/logic_chains_v4_draft.json` | 3 logic chains (engineering/STEM/social science) |
-| `reports/drafts/common_dissertation_failures_v4_draft.json` | 15 failure patterns, vehicle control as lead case |
-
-### Corpus Analysis
-
-`reports/corpus_analysis_report.md` — full analysis of the 16,722-template corpus using xiaomi mimo model. Key findings:
-
-- **`_layer` metadata bug**: All discipline entries show `_layer: ART_SPORT` regardless of actual cluster
-- **Critical gaps**: EXPERIMENT (50), MODEL (84) severely under-supplied
-- **Over-represented**: INTRO (3,440) — 20x more than EXPERIMENT
-- **HUM_SOC EXPERIMENT**: only 2 templates
-- All STRUCTURE_PATTERNS evidence_counts set to pending — need real counting
-
-### Scripts (planned for v4.0 corpus distillation)
-
-| Script | Function |
-|--------|----------|
-| `scripts/build_corpus_inventory.py` | Scan assets/ → generate paper_record entries |
-| `scripts/extract_structure_records.py` | Analyze structure patterns from discipline files |
-| `scripts/extract_methodology_records.py` | Extract methodology routes |
-| `scripts/extract_logic_chains.py` | Map INTRO→CONCLUSION coverage per discipline |
-| `scripts/extract_rhetorical_moves.py` | Mine rhetorical functions from quality=2 templates |
-| `scripts/validate_corpus_layer.py` | Verify corpus layer completeness |
+For runtime use, do not assume `corpus_layer/`, `tests/`, raw PDFs, or `.phd_build/` exist in the installed skill.
 
 ### Document Consistency
 

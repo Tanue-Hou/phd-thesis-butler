@@ -1,4 +1,4 @@
-# PhD Thesis Butler v5.1 — 架构
+# PhD Thesis Butler v5.1.3 — 架构
 
 ## 整体结构
 
@@ -7,7 +7,7 @@
 │                    PUBLIC (GitHub)                        │
 │                                                          │
 │  SKILL.md → 智能体行为定义                                │
-│  assets/   → 16,722 个纯俄语模板                          │
+│  assets/   → 16,722 个俄语优先模板 + 蒸馏范式资产            │
 │  planning_layer/ → 论文规划指南                            │
 │  scripts/retrieve_templates.py → 三层检索                   │
 └─────────────────────────────────────────────────────────┘
@@ -18,7 +18,7 @@
 │  corpus_layer/     → Schema + 蒸馏管线                     │
 │  scripts/build_*   → 语料库构建脚本                        │
 │  scripts/extract_* → 结构/方法/逻辑/修辞 提取               │
-│  tests/            → pytest 验证                          │
+│  evals/            → 私有回归评估与抽样审计                  │
 │  .phd_build/       → 构建输出（gitignore）                  │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -53,14 +53,13 @@
 
 ```
 assets/
-├── discipline/          ← 34 个 .jsonl（学科级）
 ├── cluster/             ← TECH_LIFE(5,942) + HUM_SOC(4,031)
 │   ├── TECH_LIFE/
 │   │   ├── master/     ← 全量语料
 │   │   └── quality/    ← Q2 精选
 │   └── HUM_SOC/
 ├── global/              ← GLOBAL(820) 跨学科
-└── references/          ← 分类映射表
+└── references/          ← 分类映射表、5大学科范式、schema、润色规则
 
 planning_layer/
 ├── clusters/            ← 6 个学科聚类
@@ -97,10 +96,9 @@ assets/ （公共蒸馏资产）
 
 ```bash
 # 验证命令（本地）
-validate_skill_assets.py     # 资产完整性
-validate_planning_assets.py  # 规划层完整性
-validate_corpus_layer.py     # 蒸馏层完整性
-pytest -q                    # 单元测试
+python3 scripts/validate_skill_assets.py --deep
+python3 scripts/validate_planning_assets.py
+bash scripts/smoke_test.sh
 ```
 
 ## 技术栈
@@ -114,8 +112,8 @@ pytest -q                    # 单元测试
 ## 版本演进
 
 ```
-v2.0 ─→ v3.0 ─→ v3.3.5 ─→ v5.1
+v2.0 ─→ v3.0 ─→ v3.3.5 ─→ v5.1.3
 管线搭建    三层资产   数据清洗   语料蒸馏层
-           planning  纯俄语     schema + 脚本
+           planning  俄语优先   schema + 脚本
            mode                + evidence_count
 ```
