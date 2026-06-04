@@ -130,7 +130,7 @@ research_layer/
 To invoke a workflow, use natural language:
 
 - **Planning:** "Составь поисковый стратегию по теме: [topic]"
-- **Intake:** "Обработай这批文献: [paste JSON/table]"
+- **Intake:** "Обработай эту подборку литературы: [paste JSON/table]"
 - **Review:** "Сгенерируй обзор литературы из имеющегося датасета"
 
 The agent will automatically select the right template and follow the workflow.
