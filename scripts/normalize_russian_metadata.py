@@ -146,7 +146,7 @@ def log(msg):
 def detect_record_type(record):
     """Determine if a record is a literature or dissertation type."""
     # DisserCat/RSL with dissertation-specific fields
-    platform = _norm_platform(record.get("platform", record.get("source_platform", "")))
+    platform = _norm_platform(record.get("platform", record.get("source_platform", record.get("source", ""))))
     if platform in ("dissercat", "rsl"):
         return "dissertation"
     if record.get("degree") or record.get("degree_type"):
@@ -214,7 +214,7 @@ def _map_specialty_to_cluster(code, keywords=None):
 
 def _generate_id(record, record_type):
     """Generate a unique ID for the record."""
-    platform = _norm_platform(record.get("platform", record.get("source_platform", "")))
+    platform = _norm_platform(record.get("platform", record.get("source_platform", record.get("source", ""))))
     # Try existing identifiers
     if record.get("elibrary_article_id"):
         return f"elibrary_{record['elibrary_article_id']}"
@@ -245,7 +245,7 @@ def _title_similarity(t1, t2):
 
 def normalize_literature(record):
     """Normalize a raw record to russian_literature_record format."""
-    platform = _norm_platform(record.get("platform", record.get("source_platform", "")))
+    platform = _norm_platform(record.get("platform", record.get("source_platform", record.get("source", ""))))
     authors = _norm_authors(record.get("author_list", record.get("authors", [])))
     year = record.get("publication_year", record.get("year"))
     if year:
@@ -284,7 +284,7 @@ def normalize_literature(record):
 
 def normalize_dissertation(record):
     """Normalize a raw record to russian_dissertation_record format."""
-    platform = _norm_platform(record.get("platform", record.get("source_platform", "")))
+    platform = _norm_platform(record.get("platform", record.get("source_platform", record.get("source", ""))))
     year = record.get("year")
     if year:
         year = int(year)

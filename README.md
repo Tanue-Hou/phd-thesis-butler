@@ -17,7 +17,7 @@ PhD Thesis Butler 是一个面向俄罗斯 кандидат наук / 博士论
 - **从想法到规划**：用户只有研究方向、初步题目、方法设想或导师要求时，帮助规划论文结构、章节逻辑、研究问题、方法路线和实验验证方案。
 - **从成稿到优化**：用户已经有论文、章节、段落或俄语草稿时，帮助进行学术润色、逻辑检查、表达替换、章节一致性检查和基于思路的重组建议。
 
-v5.1.3 的核心目标是：**不要求用户重新阅读原始论文，也不要求重新训练模型，就能让智能体获得俄罗斯博士论文写作的结构化辅助能力。**
+v5.2 的核心目标是：**从"会写俄语论文"升级为"会调研俄罗斯文献、会规划论文结构、会引用证据、会润色成稿"的俄罗斯博士论文智能体。**
 
 ### 作用边界
 
@@ -80,6 +80,8 @@ v5.1.3 的核心目标是：**不要求用户重新阅读原始论文，也不�
 | v5.1.1 | 学科资产标准化 | 五大学科 JSON 统一为七类资产格式，并加入 evidence 字段。 |
 | v5.1.2 | 语义级清理 | 修复中文污染、混合语言条目和检索暴露问题。 |
 | v5.1.3 | 运行时可靠性 | 强化验证器、隐藏 mixed 条目、重写 README、明确公开包边界。 |
+| v5.2.0 | Russian Research Layer | 新增调研层：8个数据源profile、2个元数据schema、文献标准化与综述生成脚本。 |
+| v5.2.1 | 一致性修复 | 版本统一、CJK深层清理、normalize字段兼容、build_literature_review_brief.py入库。 |
 | v5.2.0 | Russian Research Layer | 新增调研层：8个数据源profile、2个元数据schema、文献标准化与综述生成脚本。 |
 | v5.2.1 | 一致性修复 | 版本统一、CJK清理、normalize字段兼容、SKILL.md集成调研层。 |
 
@@ -308,6 +310,8 @@ Skill не заменяет автора, научного руководите�
 | v5.1.1 | Стандартизация профилей | Пять discipline JSON приведены к единому формату. |
 | v5.1.2 | Семантическая чистка | Исправлены mixed/CJK записи и runtime-фильтрация. |
 | v5.1.3 | Надежность runtime | Усилен validator, hidden mixed entries, уточнены README и границы пакета. |
+| v5.2.0 | Russian Research Layer | Добавлен исследовательский слой: 8 профилей, 2 схемы метаданных, скрипты нормализации и обзора. |
+| v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
 | v5.2.0 | Russian Research Layer | Добавлен исследовательский слой: 8 профилей источников, 2 схемы метаданных, скрипты нормализации и обзора литературы. |
 | v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
 
@@ -468,6 +472,8 @@ Planning assets live in `planning_layer/`.
 | v5.1.1 | Profile standardization | Five discipline JSON files standardized. |
 | v5.1.2 | Semantic cleanup | Mixed/CJK entries and retrieval exposure fixed. |
 | v5.1.3 | Runtime reliability | Stronger validation, hidden mixed entries, clearer README and boundaries. |
+| v5.2.0 | Russian Research Layer | New research layer: 8 source profiles, 2 metadata schemas, literature normalization and review scripts. |
+| v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize compat, build script tracked. |
 | v5.2.0 | Russian Research Layer | New research layer: 8 source profiles, 2 metadata schemas, literature normalization and review scripts. |
 | v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize field compatibility, SKILL.md Research Layer integration. |
 

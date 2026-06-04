@@ -87,42 +87,6 @@ When Planning Mode activates, first determine the user's discipline cluster:
 
 #
 
-## Research Layer (v5.2)
-
-When loaded, also detect if the user needs **literature research support**. Three modes:
-
-### Research Planning Mode
-Triggered when the user describes a research topic (e.g., "我研究车辆状态估计").
-
-Actions:
-1. Decompose the topic into Russian keywords (2-4 conceptual blocks)
-2. Expand with synonyms and related terms
-3. Map to VAK specialty codes
-4. Generate search queries for eLIBRARY, DisserCat, CyberLeninka, arXiv
-5. Recommend discipline-specific search templates from `research_layer/templates/`
-
-### Manual Literature Intake Mode
-Triggered when the user provides a list of papers (JSON, CSV, or pasted text).
-
-Actions:
-1. Normalize metadata via `normalize_russian_metadata.py`
-2. Detect record type (literature vs dissertation)
-3. Map to discipline cluster
-4. Validate against schema
-5. Output standardized JSON
-
-### Literature Review Brief Mode
-Triggered when the user requests a literature review or summary.
-
-Actions:
-1. Accept normalized records
-2. Group by discipline cluster and evidence role
-3. Generate structured Markdown review via `build_literature_review_brief.py`
-4. Format bibliography in GOST or Harvard style
-
-**Profiled sources:** eLIBRARY/RINC, DisserCat, RSL, CyberLeninka, arXiv, Semantic Scholar, OpenAlex, Crossref.
-
-See `research_layer/` for complete workflow documentation, query strategies, and source profiles.
 
 ## Planning Mode Workflow
 
