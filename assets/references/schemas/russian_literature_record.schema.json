@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "phd_butler_v5/russian_literature_record",
+  "title": "Russian Literature Record — v5.2",
+  "description": "Normalised metadata record for a Russian academic journal paper, conference paper, or monograph, sourced from eLIBRARY/RINC, CyberLeninka, Crossref, OpenAlex, or manual entry.",
+  "version": "5.2",
+  "type": "object",
+  "required": [
+    "id", "title_ru", "authors", "year", "source_platform", "publication_type"
+  ],
+  "properties": {
+    "id": { "type": "string", "description": "Unique record ID (e.g. elibrary_12345678)", "examples": ["elibrary_12345678", "cyberleninka_article_9876"] },
+    "title_ru": { "type": "string", "description": "Russian title of the work", "examples": ["Методы оптимизации управления сложными техническими системами"] },
+    "title_en": { "type": "string", "description": "English title if available" },
+    "authors": { "type": "array", "items": { "type": "string" }, "description": "Author list in Russian (surname first)", "examples": [["Иванов И.И.", "Петров П.П."]] },
+    "year": { "type": "integer", "minimum": 1990, "maximum": 2030 },
+    "source_platform": { "type": "string", "enum": ["elibrary", "cyberleninka", "crossref", "openalex", "manual"], "description": "Where the record was obtained" },
+    "publication_type": { "type": "string", "enum": ["journal_article", "conference_paper", "monograph", "preprint", "other"] },
+    "journal": { "type": "string", "description": "Journal or venue name (Russian)" },
+    "doi": { "type": "string", "description": "DOI if available" },
+    "elibrary_id": { "type": "string", "description": "eLIBRARY article ID (e.g. 12345678)" },
+    "rinc_citation_count": { "type": ["integer", "null"], "description": "РИНЦ citation count if available" },
+    "keywords_ru": { "type": "array", "items": { "type": "string" }, "description": "Russian keywords" },
+    "abstract_ru": { "type": "string", "description": "Russian abstract" },
+    "full_text_status": { "type": "string", "enum": ["open", "preview_only", "needs_payment", "needs_institution", "unknown"], "default": "unknown" },
+    "url": { "type": "string", "description": "URL to the source page" },
+    "discipline_cluster": { "type": "string", "enum": ["AUTOMATION_CONTROL", "SCI_TECH", "AGRI_MED", "ARTS_SPORTS", "HUM_POL_ECON", "UNCLASSIFIED"], "description": "Mapped to PhD Thesis Butler discipline cluster" },
+    "evidence_role": { "type": "array", "items": { "type": "string", "enum": ["background", "gap", "method", "validation", "comparison", "definition", "result"] }, "description": "How this paper can support dissertation writing" },
+    "notes_for_writer": { "type": "string", "description": "Free-text notes on how to use this paper in writing" }
+  },
+  "additionalProperties": false
+}

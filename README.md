@@ -1,4 +1,4 @@
-# PhD Thesis Butler v5.1.3
+# PhD Thesis Butler v5.2.3
 
 Russian dissertation writing and polishing skill for AI assistants.
 

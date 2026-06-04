@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "phd_butler_v5/russian_dissertation_record",
+  "title": "Russian Dissertation Record — v5.2",
+  "description": "Normalised metadata record for a Russian candidate or doctoral dissertation or avtoreferat, sourced from DisserCat, RSL, or manual entry.",
+  "version": "5.2",
+  "type": "object",
+  "required": [
+    "id", "title_ru", "author", "year", "degree_type", "specialty_code", "source_platform"
+  ],
+  "properties": {
+    "id": { "type": "string", "description": "Unique record ID (e.g. dissercat_123456)", "examples": ["dissercat_123456", "rsl_diss_000001"] },
+    "title_ru": { "type": "string", "description": "Full Russian title of the dissertation" },
+    "author": { "type": "string", "description": "Author full name (Russian)", "examples": ["Иванов Иван Иванович"] },
+    "year": { "type": "integer", "minimum": 1990, "maximum": 2030 },
+    "degree_type": { "type": "string", "enum": ["candidate", "doctoral", "abstract", "unknown"], "description": "candidate=кандидат наук, doctoral=доктор наук, abstract=автореферат" },
+    "specialty_code": { "type": "string", "description": "Russian VAK specialty code (e.g. 05.13.01)", "examples": ["05.13.01", "01.02.01", "05.05.03"] },
+    "specialty_name": { "type": "string", "description": "Specialty name in Russian" },
+    "institution": { "type": "string", "description": "Institution where defended (full name, Russian)" },
+    "source_platform": { "type": "string", "enum": ["dissercat", "rsl", "manual"] },
+    "dissercat_url": { "type": "string", "description": "DisserCat page URL" },
+    "rsl_id": { "type": "string", "description": "RSL catalogue ID" },
+    "toc_available": { "type": "boolean", "default": false },
+    "intro_available": { "type": "boolean", "default": false },
+    "bibliography_available": { "type": "boolean", "default": false },
+    "chapter_count": { "type": ["integer", "null"], "description": "Number of chapters if known" },
+    "page_count": { "type": ["integer", "null"] },
+    "keywords_ru": { "type": "array", "items": { "type": "string" } },
+    "abstract_ru": { "type": "string", "description": "Avtoreferat abstract text" },
+    "full_text_status": { "type": "string", "enum": ["open", "preview_only", "needs_payment", "needs_institution", "unknown"], "default": "unknown" },
+    "discipline_cluster": { "type": "string", "enum": ["AUTOMATION_CONTROL", "SCI_TECH", "AGRI_MED", "ARTS_SPORTS", "HUM_POL_ECON", "UNCLASSIFIED"], "description": "Mapped to PhD Thesis Butler discipline cluster" },
+    "evidence_role": { "type": "array", "items": { "type": "string", "enum": ["structure_reference", "method_reference", "literature_pool", "comparison_case", "citation_example"] } },
+    "related_papers": { "type": "array", "items": { "type": "string" }, "description": "IDs of related literature records" },
+    "notes_for_writer": { "type": "string" }
+  },
+  "additionalProperties": false
+}

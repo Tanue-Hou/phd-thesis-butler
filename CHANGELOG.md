@@ -1,117 +1,27 @@
 # Changelog
 
-## v5.1.3 (2026-06-03)
+## v5.2.0 — Russian Research Layer (2026-06-04)
 
-### Runtime Validation and Release Cleanup
+### Added
+- `research_layer/` — complete research workflow infrastructure
+  - `WORKFLOW.md` — 3 research modes (Planning, Intake, Review)
+  - `QUERY_STRATEGY.md` — keyword decomposition, synonym expansion, VAK code matching
+  - `sources/` — 8 data source profiles (4 Russian + 4 international)
+  - `templates/` — 5 discipline-specific search strategy templates
+  - `examples/` — 3 sample files for end-to-end validation
+- `assets/references/schemas/russian_literature_record.schema.json`
+- `assets/references/schemas/russian_dissertation_record.schema.json`
+- `scripts/normalize_russian_metadata.py` — metadata standardization
+- `scripts/build_literature_review_brief.py` — GOST/Harvard literature review generator
+- `scripts/validate_research_layer.py` — 17-item validation gate
 
-- Unified public release metadata to `5.1.3`.
-- Strengthened validation so CJK punctuation in runtime-visible template fields and discipline JSON assets is treated as a failure, not a warning.
-- Updated retrieval to hide `v5_lang=mixed` entries during normal runtime use unless `--include-mixed` is explicitly requested for audit/debug work.
-- Hid cleanup placeholders such as manual-translation notes from user-facing retrieval output.
-- Cleaned discipline assets to remove CJK punctuation and obvious spacing artifacts.
-- Replaced stale public documentation commands that referenced nonexistent `tests/` with the actual public validation commands.
-- Clarified the boundary between public runtime assets and private corpus distillation infrastructure.
+### Changed
+- SKILL.md: added Research Layer section with 3 modes
+- README.md: version bump to 5.2
+- BUILD_INFO.json: version/schema to 5.2
 
-## v5.1.2 (2026-06-03)
-
-### Semantic-Level Cleanup
-
-- Removed remaining CJK text leakage from runtime-visible metadata fields.
-- Added deep validation coverage for discipline assets and template metadata.
-- Fixed retrieval behavior so non-Russian/CJK-contaminated entries are not surfaced as normal templates.
-
-## v5.1.1 (2026-06-03)
-
-### Discipline Asset Standardization
-
-- Converted five discipline profile JSON files into the v5.1 seven-section asset format.
-- Added evidence fields to discipline writing rules.
-- Added schema-backed validation for discipline profiles.
-
-## v5.1.0 (2026-06-03)
-
-### No-Retrain Structure Upgrade
-
-- Added v5-style structure, methodology, logic-chain, validation-pattern, and chapter-writing-rule assets.
-- Added public runtime routing between planning assets and sentence-template retrieval.
-- Preserved the existing sentence bank while improving the surrounding skill architecture.
-
-## v4.0 (2026-06-02)
-
-### Corpus Distillation Layer — 语料库蒸馏层
-
-**New: corpus_layer/**
-- `WORKFLOW.md` — 4-stage pipeline: SOURCE → EXTRACT → DISTILL → PUBLISH
-- 5 JSON Schema: `paper_record`, `structure_record`, `methodology_record`, `logic_chain`, `rhetorical_move`
-- `SCHEMA_CONVENTION.md` — shared ID naming, category/cluster enums, evidence_count format
-
-**New: extraction scripts**
-- `build_corpus_inventory.py` — full corpus scan, per-discipline stats
-- `extract_structure_records.py` — structure patterns → `.phd_build/structure_records.jsonl`
-- `extract_methodology_records.py` — methodology routes → `.phd_build/methodology_records.jsonl`
-- `extract_logic_chains.py` — logic chain analysis → `.phd_build/logic_chains.jsonl`
-- `extract_rhetorical_moves.py` — rhetorical move extraction → `.phd_build/rhetorical_moves.jsonl`
-- `validate_corpus_layer.py` — corpus layer integrity validation
-
-**New: planning_layer/**
-- 22 files: 6 clusters, 6 patterns, 4 templates, 2 schemas, 4 guides
-- All patterns include `evidence_count` with corpus-derived numbers
-
-**Infrastructure**
-- `validate_skill_assets.py`: fixed timeout, no hardcoded paths, `--deep` mode
-- `validate_planning_assets.py`: new validator (22/22 checks)
-- `tests/`: 23 pytest tests, all passing in <1s
-- `.phd_build/`: gitignored build output directory
-- `reports/drafts/`: 4 draft reference assets (rhetorical moves, methodology routes, logic chains, common failures)
-- `corpus_analysis_report.md`: full corpus analysis with coverage gaps
-
-## v3.3.5 (2026-05-30)
-
-### Asset Layer Fix — 归层修复 + 占位符迁移 + PII 脱敏
-
-**修复**
-- HUM_SOC/ART_SPORT master 空文件填充
-- GLOBAL/TECH_LIFE quality 文件 100% 重叠消除
-- UTILS 占位符 ___ → [...] 全局迁移（1,234 处）
-- HUM_SOC quality 子目录生成
-- PII 脱敏检查通过（无泄漏）
-
-**资产结构**
-- GLOBAL (L0): 188 条 / TECH_LIFE (L1): 5,802 条 / HUM_SOC (L1): 4,055 条
-- Zero overlap across all layers
-
-## v3.1.0 (2026-05-30)
-
-### Phase 2 Complete — DIS + AREF Dual-Channel Pipeline
-
-**新增**
-- Phase 2 双通道全量抽取管线：DIS（论文 1,316 篇）+ AREF（摘要 587 篇）
-- `agents/aref_worker.py` — автореферат 专用抽取 Worker（含 429 指数退避）
-- `agents/run_aref.py` — AREF 并行执行器
-- `agents/run_dis_retry.py` — DIS 死信恢复执行器
-- `agents/g3_merge.py` — 归并门控（去重 + category 分组 + G3 门控）
-- `agents/g4_classify.py` — 归层分配（HUM_SOC / ART_SPORT + zero overlap 检查）
-- `agents/g5_smoke_test.py` — 上线烟雾测试（模板数 + Q2% + K=3 + gap 趋势）
-- `assets/` — 分层产出目录结构
-
-**Pipeline 架构**
-- Master/Worker 文件队列并行（独立 todo/doing/done/dead_letter 目录）
-- 原子写：tmp → rename 确保不破坏输出
-- 5 级门控：G1 抽取完整性 → G2 QA → G3 归并 → G4 归层 → G5 上线
-- 10,045 条去重模板，23 categories，34 学科
-
-**结果**
-- DIS 论文：1,042 ✅ / 274 ❌（扫描PDF）
-- AREF 摘要：361 ✅ / 226 ❌（扫描PDF）
-- 分层：HUM_SOC 5,150 / ART_SPORT 4,895，Zero Overlap = 0
-- G1–G5 全部通过
-
-## v3.0.0 (2026-05-29)
-
-### 5-Agent 润色管线 + BMSTU 基线冻结
-
-- 5 Agent 润色管线：Router → Retriever → Polisher → Consistency → Safety
-- 基线数据：9,602 条（DIS 5,621 + AREF 3,573 + UTILS 408）
-- 13 个子 skill 按需加载架构
-- 分层隔离：公开 README + 私有 _private_notes.md
-- 第一批 327 篇 BMSTU 论文全量抽取
+### Validation
+- validate_skill_assets.py: ✅ 0 errors
+- validate_planning_assets.py: ✅ PASS
+- validate_research_layer.py: ✅ 17/17 PASS
+- smoke_test: ✅ 7/7 PASS
