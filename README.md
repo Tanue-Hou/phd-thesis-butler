@@ -80,6 +80,8 @@ v5.1.3 的核心目标是：**不要求用户重新阅读原始论文，也不�
 | v5.1.1 | 学科资产标准化 | 五大学科 JSON 统一为七类资产格式，并加入 evidence 字段。 |
 | v5.1.2 | 语义级清理 | 修复中文污染、混合语言条目和检索暴露问题。 |
 | v5.1.3 | 运行时可靠性 | 强化验证器、隐藏 mixed 条目、重写 README、明确公开包边界。 |
+| v5.2.0 | Russian Research Layer | 新增调研层：8个数据源profile、2个元数据schema、文献标准化与综述生成脚本。 |
+| v5.2.1 | 一致性修复 | 版本统一、CJK清理、normalize字段兼容、SKILL.md集成调研层。 |
 
 ### 能做什么
 
@@ -306,6 +308,8 @@ Skill не заменяет автора, научного руководите�
 | v5.1.1 | Стандартизация профилей | Пять discipline JSON приведены к единому формату. |
 | v5.1.2 | Семантическая чистка | Исправлены mixed/CJK записи и runtime-фильтрация. |
 | v5.1.3 | Надежность runtime | Усилен validator, hidden mixed entries, уточнены README и границы пакета. |
+| v5.2.0 | Russian Research Layer | Добавлен исследовательский слой: 8 профилей источников, 2 схемы метаданных, скрипты нормализации и обзора литературы. |
+| v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
 
 ### Что можно делать
 
@@ -464,6 +468,8 @@ Planning assets live in `planning_layer/`.
 | v5.1.1 | Profile standardization | Five discipline JSON files standardized. |
 | v5.1.2 | Semantic cleanup | Mixed/CJK entries and retrieval exposure fixed. |
 | v5.1.3 | Runtime reliability | Stronger validation, hidden mixed entries, clearer README and boundaries. |
+| v5.2.0 | Russian Research Layer | New research layer: 8 source profiles, 2 metadata schemas, literature normalization and review scripts. |
+| v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize field compatibility, SKILL.md Research Layer integration. |
 
 ### What It Can Do
 
