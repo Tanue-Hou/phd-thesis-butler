@@ -19,19 +19,19 @@
       "механическая передача",
       "транспортные средства"
     ],
-    "abstract_ru": "Рассмотрены современные методы диагностирования механических передач...",
+    "abstract_ru": "Рассмотрены современные методы диагностирования механических передач.",
     "full_text_status": "open",
     "discipline_cluster": "AUTOMATION_CONTROL",
     "evidence_role": [
       "background_context",
       "research_gap"
     ],
-    "notes_for_writer": "Good overview of diagnostic methods for актуальность section"
+    "notes_for_writer": "Good overview for актуальность section"
   },
   {
     "id": "lit_002",
     "title_ru": "Алгоритмы оценки состояния силовых передач на основе вейвлет-анализа",
-    "title_en": "Algorithms for state assessment of power transmissions based on wavelet analysis",
+    "title_en": "Algorithms for state assessment of power transmissions",
     "authors": [
       "Сидоров С.С."
     ],
@@ -46,14 +46,14 @@
       "силовая передача",
       "оценка состояния"
     ],
-    "abstract_ru": "Разработаны алгоритмы оценки состояния силовых передач...",
+    "abstract_ru": "Разработаны алгоритмы оценки состояния силовых передач.",
     "full_text_status": "open",
     "discipline_cluster": "AUTOMATION_CONTROL",
     "evidence_role": [
       "method_basis",
       "definition"
     ],
-    "notes_for_writer": "Detailed algorithm description for METHOD chapter"
+    "notes_for_writer": "Algorithm description for METHOD chapter"
   },
   {
     "id": "diss_001",
@@ -61,7 +61,6 @@
     "author": "Кузнецов К.К.",
     "year": 2021,
     "source_platform": "dissercat",
-    "publication_type": "dissertation",
     "degree_type": "candidate",
     "specialty_code": "05.05.03",
     "specialty_name": "Колёсные и гусеничные машины",

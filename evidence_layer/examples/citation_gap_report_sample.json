@@ -6,18 +6,18 @@
     {
       "claim_id": "c001",
       "claim_text": "Existing methods for transmission diagnostics lack robustness under varying load conditions.",
-      "claim_type": "research_gap_claim",
-      "citation_need": true,
+      "claim_type": "gap_claim",
+      "citation_need": "required",
       "gap_status": "missing",
       "recommended_evidence_role": "research_gap",
       "risk_level": "high",
-      "recommended_action": "Search DisserCat for vehicle diagnostics dissertations (05.05.03)"
+      "recommended_action": "Search DisserCat for vehicle diagnostics dissertations"
     },
     {
       "claim_id": "c002",
       "claim_text": "The proposed algorithm achieves 95% accuracy in fault detection.",
-      "claim_type": "result_claim",
-      "citation_need": true,
+      "claim_type": "evaluative_claim",
+      "citation_need": "recommended",
       "gap_status": "partial",
       "recommended_evidence_role": "method_comparison",
       "risk_level": "medium",
@@ -26,8 +26,8 @@
     {
       "claim_id": "c003",
       "claim_text": "Vibration analysis is widely used for rotating machinery diagnostics.",
-      "claim_type": "background_claim",
-      "citation_need": false,
+      "claim_type": "common_knowledge",
+      "citation_need": "optional",
       "gap_status": "covered",
       "recommended_evidence_role": "background_context",
       "risk_level": "low",

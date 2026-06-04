@@ -4,12 +4,17 @@
   "title": "Chapter Evidence Map",
   "description": "Aggregated evidence bindings and gap analysis for a single thesis chapter. Version 1.0.",
   "type": "object",
-  "required": ["chapter_id", "chapter_name", "bound_records", "gap_analysis"],
+  "required": [
+    "chapter_id",
+    "chapter_name",
+    "bound_records",
+    "gap_analysis"
+  ],
   "properties": {
     "chapter_id": {
       "type": "string",
       "description": "Unique chapter identifier, e.g. 'CH1', 'CH2'",
-      "pattern": "^CH[1-8]$"
+      "pattern": "^(INTRO|SURVEY|THEORY|MODEL|METHOD|EXPERIMENT|RESULT|DISCUSSION|CONCLUSION|CH[1-9]+)$"
     },
     "chapter_name": {
       "type": "string",
@@ -19,7 +24,14 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["binding_id", "claim_type", "evidence_roles"],
+        "required": [
+          "binding_id",
+          "source_id",
+          "evidence_role",
+          "evidence_strength",
+          "gap_status",
+          "recommended_action"
+        ],
         "properties": {
           "binding_id": {
             "type": "string",
@@ -60,20 +72,50 @@
           },
           "evidence_strength": {
             "type": "string",
-            "enum": ["strong", "medium", "weak", "none"]
+            "enum": [
+              "strong",
+              "medium",
+              "weak",
+              "none"
+            ]
           },
           "gap_status": {
             "type": "string",
-            "enum": ["covered", "partial", "missing", "not_needed"]
+            "enum": [
+              "covered",
+              "partial",
+              "missing",
+              "not_needed"
+            ]
+          },
+          "evidence_role": {
+            "type": "string",
+            "description": "Single evidence role (canonical role name)"
+          },
+          "source_id": {
+            "type": "string"
+          },
+          "recommended_action": {
+            "type": "string"
+          },
+          "claim_text": {
+            "type": "string",
+            "description": "Optional claim text"
           }
-        },
-        "additionalProperties": false
+        }
       },
       "description": "All binding records associated with this chapter"
     },
     "gap_analysis": {
       "type": "object",
-      "required": ["total_claims", "covered", "partial", "missing", "not_needed", "coverage_ratio", "unresolved_gaps"],
+      "required": [
+        "total_bound",
+        "covered",
+        "partial",
+        "missing",
+        "coverage_ratio",
+        "unresolved_gaps"
+      ],
       "properties": {
         "total_claims": {
           "type": "integer",
@@ -97,8 +139,7 @@
         },
         "not_needed": {
           "type": "integer",
-          "minimum": 0,
-          "description": "Number of claims with gap_status = not_needed"
+          "description": "Optional"
         },
         "coverage_ratio": {
           "type": "number",
@@ -110,7 +151,10 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["binding_id", "claim_text", "missing_roles", "risk_level"],
+            "required": [
+              "evidence_role",
+              "status"
+            ],
             "properties": {
               "binding_id": {
                 "type": "string"
@@ -128,16 +172,38 @@
               },
               "risk_level": {
                 "type": "string",
-                "enum": ["critical", "high", "medium", "low"]
+                "enum": [
+                  "critical",
+                  "high",
+                  "medium",
+                  "low"
+                ]
               },
               "recommended_query": {
                 "type": "string",
                 "description": "Suggested search query to find a source. Example (RU): 'верификация цитат RAG системы исследование'"
+              },
+              "evidence_role": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "covered",
+                  "partial",
+                  "missing",
+                  "not_needed"
+                ]
+              },
+              "recommended_source_type": {
+                "type": "string"
               }
-            },
-            "additionalProperties": false
+            }
           },
           "description": "List of gaps that need resolution"
+        },
+        "total_bound": {
+          "type": "integer"
         }
       },
       "additionalProperties": false
@@ -147,7 +213,11 @@
       "description": "Map of required roles for this chapter to their presence status",
       "additionalProperties": {
         "type": "string",
-        "enum": ["present", "missing", "partial"]
+        "enum": [
+          "present",
+          "missing",
+          "partial"
+        ]
       }
     },
     "generated_at": {

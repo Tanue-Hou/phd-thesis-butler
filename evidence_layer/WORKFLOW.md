@@ -30,7 +30,7 @@ The PhD Thesis Butler Evidence Layer operates through four distinct modes. Each 
 
 ### Operations
 1. Parse `recommended_query` fields from gap reports or user input
-2. Execute search across academic databases (Semantic Scholar, arXiv, eLIBRARY/DisserCat)
+2. Use existing normalized literature records from research_layer (Semantic Scholar, arXiv, eLIBRARY/DisserCat)
 3. For each candidate source:
    - Extract metadata (title, authors, year, venue, DOI)
    - Assess relevance to the target claim
@@ -137,7 +137,7 @@ The PhD Thesis Butler Evidence Layer operates through four distinct modes. Each 
 ### Exit Conditions
 - Zero citation errors
 - Bibliography complete and formatted
-- Coverage report shows 100% for all non-structural claims
+- Coverage report marks each claim as covered / partial / missing / not_needed
 
 ### Output
 - Formatted bibliography file

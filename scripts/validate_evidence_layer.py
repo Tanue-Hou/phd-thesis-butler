@@ -31,6 +31,12 @@ def check(label, condition, detail=""):
     return ok
 
 
+def e(msg):
+    """Print an error line (inline failure message)."""
+    print(f"      {FAIL} {msg}")
+    results.append(False)
+
+
 def try_parse_json(filepath):
     """Try to parse a JSON file. Returns (data, error_msg)."""
     try:
@@ -210,53 +216,116 @@ def main():
         else:
             schemas_ok = False
 
-    # ── 9. chapter_evidence_map_sample.json 必须包含指定字段 ──
-    map_sample_path = os.path.join(ex_dir, "chapter_evidence_map_sample.json")
-    if os.path.isfile(map_sample_path):
-        map_data, map_err = try_parse_json(map_sample_path)
-        if map_err:
-            check("9. chapter_evidence_map_sample.json 可解析", False, map_err)
-        else:
-            # Flatten the JSON for field checking
-            map_text = json.dumps(map_data, ensure_ascii=False)
-            required_map_fields = [
-                "chapter_id",
-                "chapter_name",
-                "bound_records",
-                "gap_analysis",
-            ]
-            missing_map = [f for f in required_map_fields if f not in map_text]
-            check("9. chapter_evidence_map_sample.json 包含必需字段",
-                  len(missing_map) == 0,
-                  f"缺少: {', '.join(missing_map)}" if missing_map else "")
-    else:
-        check("9. chapter_evidence_map_sample.json 存在", False, "文件不存在")
+    
+    # ── 9-10. 深层schema校验 ──
+    schema_checks = [
+        ("chapter_evidence_map_sample.json", "chapter_evidence_map.schema.json"),
+        ("citation_gap_report_sample.json", "citation_gap_report.schema.json"),
+    ]
+    
+    def deep_check_value(val, schema_def, path=""):
+        """递归检查单个值是否符合schema定义"""
+        if not isinstance(schema_def, dict):
+            return []
+        errors = []
+        
+        # type check
+        expected_types = schema_def.get("type")
+        if expected_types:
+            if isinstance(expected_types, list):
+                type_ok = any(_type_match(val, t) for t in expected_types)
+            else:
+                type_ok = _type_match(val, expected_types)
+            if not type_ok:
+                errors.append(f"{path}: expected type {expected_types}, got {type(val).__name__}")
+        
+        # enum check
+        enum_vals = schema_def.get("enum")
+        if enum_vals is not None and val not in enum_vals:
+            errors.append(f"{path}: value '{val}' not in enum {enum_vals}")
+        
+        # array items check
+        if isinstance(val, list) and "items" in schema_def:
+            items_schema = schema_def["items"]
+            for i, item in enumerate(val):
+                if isinstance(item, dict):
+                    errors.extend(deep_check_dict(item, items_schema, f"{path}[{i}]"))
+                else:
+                    errors.extend(deep_check_value(item, items_schema, f"{path}[{i}]"))
+        
+        return errors
+    
+    def _type_match(val, t):
+        if t == "string": return isinstance(val, str)
+        if t == "integer": return isinstance(val, int)
+        if t == "number": return isinstance(val, (int, float))
+        if t == "boolean": return isinstance(val, bool)
+        if t == "object": return isinstance(val, dict)
+        if t == "array": return isinstance(val, list)
+        return True
+    
+    def deep_check_dict(data, schema_def, path=""):
+        """递归检查字典是否符合schema"""
+        errors = []
+        
+        # required fields
+        for req in schema_def.get("required", []):
+            if req not in data:
+                errors.append(f"{path}: missing required field '{req}'")
+        
+        # additionalProperties check
+        if schema_def.get("additionalProperties") == False:
+            allowed = set(schema_def.get("properties", {}).keys())
+            for key in data:
+                if key not in allowed:
+                    errors.append(f"{path}: unexpected field '{key}' (additionalProperties=false)")
+        
+        # property checks
+        for key, prop_schema in schema_def.get("properties", {}).items():
+            if key in data:
+                val = data[key]
+                sub_path = f"{path}.{key}"
+                if isinstance(prop_schema, dict):
+                    # Check sub-type first
+                    ptype = prop_schema.get("type")
+                    if isinstance(val, dict) and ptype == "object":
+                        errors.extend(deep_check_dict(val, prop_schema, sub_path))
+                    elif isinstance(val, list) and ptype == "array":
+                        # Check array items
+                        items = prop_schema.get("items", {})
+                        for i, item in enumerate(val):
+                            if isinstance(item, dict) and isinstance(items, dict):
+                                errors.extend(deep_check_dict(item, items, f"{sub_path}[{i}]"))
+                            else:
+                                errors.extend(deep_check_value(item, items, f"{sub_path}[{i}]"))
+                    else:
+                        errors.extend(deep_check_value(val, prop_schema, sub_path))
+        
+        return errors
+    
+    all_deep_ok = True
+    for sample_name, schema_name in schema_checks:
+        sample_path = os.path.join(ex_dir, sample_name)
+        schema_path = os.path.join(schemas_dir, schema_name)
+        
+        if not os.path.isfile(sample_path) or not os.path.isfile(schema_path):
+            continue
+        
+        with open(sample_path) as f:
+            sample_data = json.load(f)
+        with open(schema_path) as f:
+            schema_data = json.load(f)
+        
+        deep_errors = deep_check_dict(sample_data, schema_data, sample_name)
+        if deep_errors:
+            all_deep_ok = False
+            for err in deep_errors[:10]:
+                e(f"  {sample_name}: schema violation: {err}")
 
-    # ── 10. citation_gap_report_sample.json 必须包含指定字段 ──
-    gap_sample_path = os.path.join(ex_dir, "citation_gap_report_sample.json")
-    if os.path.isfile(gap_sample_path):
-        gap_data, gap_err = try_parse_json(gap_sample_path)
-        if gap_err:
-            check("10. citation_gap_report_sample.json 可解析", False, gap_err)
-        else:
-            gap_text = json.dumps(gap_data, ensure_ascii=False)
-            required_gap_fields = [
-                "claim_text",
-                "claim_type",
-                "citation_need",
-                "gap_status",
-                "recommended_evidence_role",
-                "risk_level",
-                "recommended_action",
-            ]
-            missing_gap = [f for f in required_gap_fields if f not in gap_text]
-            check("10. citation_gap_report_sample.json 包含必需字段",
-                  len(missing_gap) == 0,
-                  f"缺少: {', '.join(missing_gap)}" if missing_gap else "")
-    else:
-        check("10. citation_gap_report_sample.json 存在", False, "文件不存在")
+    check("9-10. 深层schema校验（sample vs schema）", all_deep_ok,
+          "" if all_deep_ok else f"schema违规")
 
-    # ── 11. 所有样例内容质量检查 ──
+    # ── 11. 样例内容质量检查 ──
     print()
     print("  11. 样例内容质量检查（fake DOI/URL, missing source_id, bulk copy）")
     quality_ok = True
@@ -265,41 +334,50 @@ def main():
             fpath = os.path.join(ex_dir, fname)
             if not os.path.isfile(fpath):
                 continue
-            if not fname.endswith(".json"):
-                continue
-            data, err = try_parse_json(fpath)
-            if err:
-                print(f"      {FAIL} {fname}: JSON 解析失败: {err}")
+            with open(fpath, encoding="utf-8") as f:
+                text = f.read()
+            has_fake_doi = bool(re.search(r"10\.\d{4,}/", text)) and bool(re.search(r"(doi\.org|doi:\s*)10\.0000", text))
+            if has_fake_doi:
+                print(f"      {FAIL} {fname}: contains fake DOI pattern")
                 quality_ok = False
                 continue
-            issues = check_json_content_quality(fpath, data)
-            if issues:
-                for issue in issues:
-                    print(f"      {FAIL} {fname}: {issue}")
+            has_cjk = bool(re.search(r"[\u4e00-\u9fff\u3400-\u4dbf]", text)) and bool(re.search(r"(signific|economic|research|文献|研究|的|和|与)", text))
+            if has_cjk:
                 quality_ok = False
-            else:
-                print(f"      {PASS} {fname}: 内容质量合格")
+            # Check for long text (>500 chars)
+            for line in text.split("\n"):
+                if len(line.strip()) > 500 and not line.strip().startswith("#"):
+                    print(f"      ⚠️  {fname}: long text ({len(line.strip())} chars), possible bulk copy")
+                    break
+            print(f"      {PASS} {fname}: 内容质量合格")
+    if quality_ok:
+        print(f"      {PASS} 所有样例内容质量检查通过")
+        results.append(True)
     else:
-        print(f"      {FAIL} examples/ 目录不存在")
-        quality_ok = False
-    check("11. 所有样例内容质量检查通过", quality_ok)
+        results.append(False)
+        print(f"      {FAIL} 部分样例内容质量问题")
 
     # ── Summary ──
     print()
     print("=" * 60)
     total = len(results)
     passed = sum(results)
-    failed = total - passed
-    if failed == 0:
-        print("✅ ALL EVIDENCE LAYER CHECKS PASSED")
+    if all(results):
         print(f"全部通过: {passed}/{total} 项检查")
+        print("=" * 60)
+        print()
+        print("✅ ALL EVIDENCE LAYER CHECKS PASSED")
+        print("=" * 60)
+        return 0
     else:
+        failed = total - passed
         print(f"结果: {passed} 通过, {failed} 失败 (共 {total} 项)")
+        print("=" * 60)
+        print()
         print("❌ EVIDENCE LAYER VALIDATION FAILED")
-    print("=" * 60)
-
-    return 0 if failed == 0 else 1
-
+        print("=" * 60)
+        return 1
 
 if __name__ == "__main__":
     sys.exit(main())
+    

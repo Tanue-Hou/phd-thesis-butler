@@ -4,7 +4,11 @@
   "title": "Citation Gap Report",
   "description": "Sentence-by-sentence analysis of citation coverage for a thesis chapter. Version 1.0.",
   "type": "object",
-  "required": ["report_id", "chapter", "claims"],
+  "required": [
+    "report_id",
+    "chapter",
+    "claims"
+  ],
   "properties": {
     "report_id": {
       "type": "string",
@@ -24,6 +28,7 @@
       "items": {
         "type": "object",
         "required": [
+          "claim_id",
           "claim_text",
           "claim_type",
           "citation_need",
@@ -46,18 +51,35 @@
               "contribution_claim",
               "theoretical_claim",
               "descriptive_claim",
-              "common_knowledge"
-            ],
-            "description": "Classified type of the claim"
+              "common_knowledge",
+              "research_gap_claim",
+              "result_claim",
+              "background_claim"
+            ]
           },
           "citation_need": {
-            "type": "string",
-            "enum": ["required", "recommended", "optional", "not_needed"],
-            "description": "Whether a citation is required, recommended, optional, or not needed for this claim"
+            "type": [
+              "string",
+              "boolean"
+            ],
+            "enum": [
+              "required",
+              "recommended",
+              "optional",
+              "not_needed",
+              true,
+              false
+            ],
+            "description": "Whether citation is needed. Can be string enum or boolean."
           },
           "gap_status": {
             "type": "string",
-            "enum": ["covered", "partial", "missing", "not_needed"],
+            "enum": [
+              "covered",
+              "partial",
+              "missing",
+              "not_needed"
+            ],
             "description": "Current coverage status of this claim"
           },
           "recommended_evidence_role": {
@@ -80,28 +102,42 @@
           },
           "risk_level": {
             "type": "string",
-            "enum": ["critical", "high", "medium", "low"],
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ],
             "description": "Risk level if this gap is not resolved"
           },
           "matched_source_id": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Source ID if a match exists, null otherwise"
           },
           "evidence_strength": {
             "type": "string",
-            "enum": ["strong", "medium", "weak", "none"],
+            "enum": [
+              "strong",
+              "medium",
+              "weak",
+              "none"
+            ],
             "description": "Strength of current evidence binding"
           },
           "recommended_action": {
-            "type": "string",
-            "description": "Actionable next step, e.g. 'Найти peer-reviewed источник, подтверждающий эффективность chain-of-thought prompting'"
+            "type": "string"
           },
           "recommended_query": {
             "type": "string",
             "description": "Search query for finding a source. Example: 'chain-of-thought prompting effectiveness LLM reasoning'"
+          },
+          "claim_id": {
+            "type": "string"
           }
-        },
-        "additionalProperties": false
+        }
       },
       "description": "Per-sentence citation analysis"
     },
@@ -115,20 +151,44 @@
         "by_gap_status": {
           "type": "object",
           "properties": {
-            "covered": { "type": "integer", "minimum": 0 },
-            "partial": { "type": "integer", "minimum": 0 },
-            "missing": { "type": "integer", "minimum": 0 },
-            "not_needed": { "type": "integer", "minimum": 0 }
+            "covered": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "partial": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missing": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "not_needed": {
+              "type": "integer",
+              "minimum": 0
+            }
           },
           "additionalProperties": false
         },
         "by_risk_level": {
           "type": "object",
           "properties": {
-            "critical": { "type": "integer", "minimum": 0 },
-            "high": { "type": "integer", "minimum": 0 },
-            "medium": { "type": "integer", "minimum": 0 },
-            "low": { "type": "integer", "minimum": 0 }
+            "critical": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "high": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "medium": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "low": {
+              "type": "integer",
+              "minimum": 0
+            }
           },
           "additionalProperties": false
         },
@@ -137,9 +197,27 @@
           "minimum": 0,
           "maximum": 1,
           "description": "Proportion of claims that are covered or not_needed"
+        },
+        "needs_citation": {
+          "type": "integer"
+        },
+        "covered": {
+          "type": "integer"
+        },
+        "partial": {
+          "type": "integer"
+        },
+        "missing": {
+          "type": "integer"
         }
       },
-      "additionalProperties": false
+      "required": [
+        "total_claims",
+        "needs_citation",
+        "covered",
+        "partial",
+        "missing"
+      ]
     }
   },
   "additionalProperties": false
