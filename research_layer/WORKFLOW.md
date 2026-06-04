@@ -81,7 +81,7 @@ the process of literature discovery, intake, and synthesis for PhD-level work.
 
 ---
 
-## 3. Literature Review Brief Mode
+## 3. Annotated Bibliography Mode
 
 **Purpose:** Generate a structured literature review from the standardized dataset.
 

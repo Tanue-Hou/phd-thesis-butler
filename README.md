@@ -50,7 +50,7 @@ v5.2 受开源项目 [academic-search](https://github.com/ustc-ai4science/academ
 - 8 个数据源各配独立 profile（搜索方法、字段映射、限制说明）
 - 5 个学科各有专用检索模板（关键词、ВАК代码、典型检索式）
 - 输出统一为 `russian_literature_record` / `russian_dissertation_record` 两种 schema
-- 综述生成支持 ГОСТ Р 7.0.5-2008 和 Harvard 两种引用格式
+- 参考文献列表支持 ГОСТ Р 7.0.5-2008 和 Harvard 两种引用格式
 
 
 ### 作用边界
@@ -472,7 +472,7 @@ It supports two major workflows:
 - **From idea to plan**: when the user has a topic, hypothesis, method idea, or supervisor requirement, the skill helps build dissertation structure, research questions, methodology, experiments, and logic flow.
 - **From finished draft to polished text**: when the user already has an article, chapter, section, or Russian draft, the skill helps polish academic expression, improve paragraph logic, preserve the author's meaning, and align the text with Russian dissertation style.
 
-The goal of v5.2 is: **give assistants the ability to not only write dissertations, but also research Russian academic literature, plan structure, find sources, and generate reviews.**
+The goal of v5.2 is: **give assistants the ability to not only write dissertations, but also research Russian academic literature, plan structure, find sources, and generate bibliographies.**
 
 ### Role and Boundaries
 

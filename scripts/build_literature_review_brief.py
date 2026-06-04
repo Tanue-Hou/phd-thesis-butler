@@ -523,12 +523,12 @@ def build_markdown(records, topic=None, style="gost"):
         lines.append("---\n")
 
     # Bibliography
-    lines.append("## Список литературы\n")
+    lines.append("## Библиографический список (ГОСТ Р 7.0.5-2008)\n")
     for i, rec in enumerate(reference_list, 1):
         lines.append(f"{i}. {format_entry(i, rec)}")
     lines.append("")
     lines.append("---\n")
-    lines.append(f"*Всего в брифе: {len(reference_list)} источников*\n")
+    lines.append(f"*Всего в списке: {len(reference_list)} источников*\n")
 
     return "\n".join(lines)
 
@@ -540,7 +540,7 @@ def build_markdown(records, topic=None, style="gost"):
 def print_dry_run_stats(records):
     """Print statistics without generating output."""
     log("=" * 60)
-    log("DRY-RUN: Статистика входных данных")
+    log("DRY-RUN: Статистика аннотированного списка")
     log("=" * 60)
 
     total = len(records)

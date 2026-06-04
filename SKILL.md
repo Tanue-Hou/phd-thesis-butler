@@ -40,7 +40,7 @@ Actions:
 4. Validate against schema
 5. Output standardized JSON
 
-### Literature Review Brief Mode
+### Annotated Bibliography Mode
 Triggered when the user requests a literature review or summary.
 
 Actions:
