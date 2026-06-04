@@ -19,6 +19,40 @@ PhD Thesis Butler 是一个面向俄罗斯 кандидат наук / 博士论
 
 v5.2 的核心目标是：**从"会写俄语论文"升级为"会调研俄罗斯文献、会规划论文结构、会引用证据、会润色成稿"的俄罗斯博士论文智能体。**
 
+
+### 文献检索与调研能力
+
+v5.2 受开源项目 [academic-search](https://github.com/ustc-ai4science/academic-search) 启发，在其多平台检索架构基础上，针对俄罗斯学术生态做了深度适配和功能扩展。
+
+**俄语检索（特色强化）**
+
+| 数据源 | 特色能力 |
+|:-------|:---------|
+| **eLIBRARY / РИНЦ** | 俄罗斯最大科学引文数据库。可检索期刊论文、会议论文、专著；获取РИНЦ引用数、ВАК专业代码、作者机构信息。适合支撑文献综述、актуальность论证、研究空白定位和引用依据。 |
+| **DisserCat** | 俄罗斯学位论文目录。可检索相近 кандидат/доктор 论文；查看学科代码、章节结构预览、参考文献池。适合支撑论文结构范式参照、章节安排参考、相近选题对比、专业代码匹配。 |
+| **РГБ / НЭБ** | 俄罗斯国家图书馆电子馆藏，作为 DisserCat 的官方补充验证源。 |
+| **CyberLeninka** | 开放获取俄语论文平台，CC协议，全文可读。适合补充开放获取文献。 |
+
+**英文/国际检索（academic-search 融合）**
+
+| 数据源 | 特色能力 |
+|:-------|:---------|
+| **arXiv** | 预印本，适合最新方法追踪，OAI-PMH API |
+| **Semantic Scholar** | 语义搜索+引用图，适合高引论文定位和引用分析 |
+| **OpenAlex** | 开放学术图谱，250M+作品，免费API，适合文献计量 |
+| **Crossref** | DOI元数据+引用关系，适合补全引用格式 |
+
+**融合方式**
+
+不是将 academic-search 的代码直接复制，而是借鉴其**平台路由 + 统一元数据 schema + 两遍检索 + 去重合并**的架构思路，重新针对俄罗斯论文写作场景设计：
+
+- 新增 `research_layer/` 完整调研工作流（检索策略生成 → 文献接收 → 元数据标准化 → 综述生成）
+- 8 个数据源各配独立 profile（搜索方法、字段映射、限制说明）
+- 5 个学科各有专用检索模板（关键词、ВАК代码、典型检索式）
+- 输出统一为 `russian_literature_record` / `russian_dissertation_record` 两种 schema
+- 综述生成支持 ГОСТ Р 7.0.5-2008 和 Harvard 两种引用格式
+
+
 ### 作用边界
 
 这个 skill 能帮助智能体更像一位“论文写作助手”和“结构审稿助手”：
@@ -312,6 +346,30 @@ Skill не заменяет автора, научного руководите�
 | v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
 
 ### Что можно делать
+### Возможности поиска литературы
+
+v5.2 вдохновлён открытым проектом [academic-search](https://github.com/ustc-ai4science/academic-search). На его многоплатформенной архитектуре поиска выполнена глубокая адаптация под российскую академическую экосистему.
+
+**Поиск на русском языке**
+
+| Источник | Возможности |
+|:---------|:------------|
+| **eLIBRARY / РИНЦ** | Крупнейшая база научных статей России. Поиск журнальных статей, конференций, монографий; получение числа цитирований РИНЦ, кодов ВАК, информации об авторах и организациях. |
+| **DisserCat** | Каталог диссертаций. Поиск кандидатских и докторских диссертаций по специальности; просмотр структуры глав, списка литературы. |
+| **РГБ / НЭБ** | Официальное дополнение к DisserCat, электронный фонд РГБ. |
+| **CyberLeninka** | Открытые статьи на русском языке, лицензия CC, полный текст доступен. |
+
+**Поиск на английском языке**
+
+| Источник | Возможности |
+|:---------|:------------|
+| **arXiv** | Препринты, OAI-PMH API, категорийный поиск |
+| **Semantic Scholar** | Семантический поиск, граф цитирований |
+| **OpenAlex** | Открытая академическая карта, 250M+ работ |
+| **Crossref** | DOI-метаданные, связи цитирований |
+
+
+
 
 #### Планирование по идее
 
@@ -470,6 +528,30 @@ Planning assets live in `planning_layer/`.
 | v5.1.3 | Runtime reliability | Stronger validation, hidden mixed entries, clearer README and boundaries. |
 | v5.2.0 | Russian Research Layer | New research layer: 8 source profiles, 2 metadata schemas, literature normalization and review scripts. |
 | v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize compat, build script tracked. |
+### Literature Search Capabilities
+
+v5.2 is inspired by the open-source [academic-search](https://github.com/ustc-ai4science/academic-search) project. Built on its multi-platform search architecture, we deeply adapt it for the Russian academic ecosystem.
+
+**Russian-language search**
+
+| Source | Capabilities |
+|:-------|:-------------|
+| **eLIBRARY / RINC** | Russia's largest scientific citation database. Search journal articles, conference papers, monographs; retrieve RINC citation counts, VAK specialty codes, author/institution info. |
+| **DisserCat** | Russian dissertation catalog. Search candidate/doctoral theses by specialty code; preview chapter structure and bibliography. |
+| **RSL / NEB** | Russian State Library electronic collection, official supplement to DisserCat. |
+| **CyberLeninka** | Open-access Russian papers, CC license, full text available. |
+
+**English-language search**
+
+| Source | Capabilities |
+|:-------|:-------------|
+| **arXiv** | Preprints, OAI-PMH API, category-based search |
+| **Semantic Scholar** | Semantic search, citation graph, influential citations |
+| **OpenAlex** | Open scholarly graph, 250M+ works, free API |
+| **Crossref** | DOI metadata, citation relationships |
+
+
+
 
 ### What It Can Do
 
