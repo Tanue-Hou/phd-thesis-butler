@@ -167,3 +167,59 @@ Each mode transition is logged with:
 - Trigger reason
 - Affected chapter(s)
 - Gap count at transition
+
+---
+
+## Schema Mapping: evidence_binding_record ↔ chapter_evidence_map
+
+v5.3.0 defines two schemas for evidence binding at different granularity:
+
+### `evidence_binding_record` (fine-grained)
+- Stores one **claim-level binding** per record
+- Fields: `binding_id`, `chapter`, `claim_type`, `required_evidence_roles[]`, `matched_source_ids[]`
+- Use case: full audit trail of what evidence supports which claim
+
+### `chapter_evidence_map.bound_records[]` (summary view)
+- Stores a **chapter-level summary** of all bindings
+- Fields: `binding_id` (↔ evidence_binding_record), `source_id` (= matched_source_ids[0]), `evidence_role` (= primary from required_evidence_roles), `evidence_strength`, `gap_status`
+- Use case: quick overview of chapter evidence coverage
+
+### Field Mapping
+
+| chapter_evidence_map field | evidence_binding_record field | Rule |
+|:--------------------------|:------------------------------|:-----|
+| `binding_id` | `binding_id` | Direct reference (must match) |
+| `source_id` | `matched_source_ids[0]` | First matched source ID |
+| `evidence_role` | `required_evidence_roles[0]` | Primary evidence role |
+| `evidence_strength` | `evidence_strength` | Direct pass-through |
+| `gap_status` | `gap_status` | Direct pass-through |
+
+v5.3.1 Chapter Evidence Binding will produce both: full evidence_binding_records for traceability, and a chapter_evidence_map summary for quick overview.
+
+---
+
+## Schema Mapping: evidence_binding_record ↔ chapter_evidence_map
+
+v5.3.0 defines two schemas for evidence binding at different granularity:
+
+### `evidence_binding_record` (fine-grained)
+- Stores one **claim-level binding** per record
+- Fields: `binding_id`, `chapter`, `claim_type`, `required_evidence_roles[]`, `matched_source_ids[]`
+- Use case: full audit trail of what evidence supports which claim
+
+### `chapter_evidence_map.bound_records[]` (summary view)
+- Stores a **chapter-level summary** of all bindings
+- Fields: `binding_id` (↔ evidence_binding_record), `source_id` (= matched_source_ids[0]), `evidence_role` (= primary from required_evidence_roles), `evidence_strength`, `gap_status`
+- Use case: quick overview of chapter evidence coverage
+
+### Field Mapping
+
+| chapter_evidence_map field | evidence_binding_record field | Rule |
+|:--------------------------|:------------------------------|:-----|
+| `binding_id` | `binding_id` | Direct reference (must match) |
+| `source_id` | `matched_source_ids[0]` | First matched source ID |
+| `evidence_role` | `required_evidence_roles[0]` | Primary evidence role |
+| `evidence_strength` | `evidence_strength` | Direct pass-through |
+| `gap_status` | `gap_status` | Direct pass-through |
+
+v5.3.1 Chapter Evidence Binding will produce both: full evidence_binding_records for traceability, and a chapter_evidence_map summary for quick overview.
