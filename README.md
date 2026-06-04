@@ -117,6 +117,7 @@ v5.2 受开源项目 [academic-search](https://github.com/ustc-ai4science/academ
 | v5.2.0 | Russian Research Layer | 新增调研层：8个数据源profile、2个元数据schema、文献标准化与综述生成脚本。 |
 | v5.2.1 | 一致性修复 | 版本统一、CJK深层清理、normalize字段兼容、build_literature_review_brief.py入库。 |
 | v5.2.2 | 最终收尾 | 版本统一到5.2.2、检索能力说明、学科映射增强、brief去重、目录树补全。 |
+| v5.3.0 | Evidence-Aware Writing | 新增证据层：12种证据角色、3个绑定schema、引用缺口检测规则、16/16验证门禁。 |
 
 ### 能做什么
 
@@ -228,6 +229,16 @@ phd-thesis-butler/
 │       ├── corpus_summary_v5.json
 │       ├── cross_cluster_insights_v5.json
 │       └── polishing_rules_v5.json
+├── research_layer/
+│   ├── sources/ (8 data sources)
+│   ├── templates/ (5 discipline strategies)
+│   └── examples/
+├── evidence_layer/
+│   ├── EVIDENCE_ROLE_TAXONOMY.md
+│   ├── CHAPTER_EVIDENCE_BINDING.md
+│   ├── CITATION_GAP_DETECTION.md
+│   ├── templates/
+│   └── examples/
 ├── planning_layer/
 │   ├── clusters/
 │   ├── patterns/
@@ -239,9 +250,15 @@ phd-thesis-butler/
 │   └── EXPERIMENT_DESIGN_GUIDE.md
 ├── scripts/
 │   ├── retrieve_templates.py
+│   ├── normalize_russian_metadata.py
+│   ├── build_literature_review_brief.py
 │   ├── validate_skill_assets.py
 │   ├── validate_planning_assets.py
+│   ├── validate_research_layer.py
+│   ├── validate_evidence_layer.py
 │   └── smoke_test.sh
+├── research_layer/
+├── evidence_layer/
 └── extension_layer/
 ```
 
@@ -346,6 +363,7 @@ Skill не заменяет автора, научного руководите�
 | v5.2.0 | Russian Research Layer | Добавлен исследовательский слой: 8 профилей, 2 схемы метаданных, скрипты нормализации и обзора. |
 | v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
 | v5.2.2 | Финальное закрытие | Унификация версии до 5.2.2, описание поисковых возможностей, усиление маппинга дисциплин. |
+| v5.3.0 | Evidence-Aware Writing | Добавлен слой Evidence Layer: 12 ролей свидетельств, 3 схемы привязки, правила обнаружения пробелов в цитировании. |
 
 ### Что можно делать
 ### Возможности поиска литературы
@@ -441,9 +459,15 @@ phd-thesis-butler/
 ├── planning_layer/
 ├── scripts/
 │   ├── retrieve_templates.py
+│   ├── normalize_russian_metadata.py
+│   ├── build_literature_review_brief.py
 │   ├── validate_skill_assets.py
 │   ├── validate_planning_assets.py
+│   ├── validate_research_layer.py
+│   ├── validate_evidence_layer.py
 │   └── smoke_test.sh
+├── research_layer/
+├── evidence_layer/
 └── extension_layer/
 ```
 
@@ -531,6 +555,7 @@ Planning assets live in `planning_layer/`.
 | v5.2.0 | Russian Research Layer | New research layer: 8 source profiles, 2 metadata schemas, literature normalization and review scripts. |
 | v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize compat, build script tracked. |
 | v5.2.2 | Final closure | Version unified to 5.2.2, search capability docs, discipline mapping enhancement, brief dedup. |
+| v5.3.0 | Evidence-Aware Writing | New evidence layer: 12 evidence roles, 3 binding schemas, citation gap rules, 16/16 validation gate. |
 ### Literature Search Capabilities
 
 v5.2 is inspired by the open-source [academic-search](https://github.com/ustc-ai4science/academic-search) project. Built on its multi-platform search architecture, we deeply adapt it for the Russian academic ecosystem.
@@ -626,9 +651,15 @@ phd-thesis-butler/
 ├── planning_layer/
 ├── scripts/
 │   ├── retrieve_templates.py
+│   ├── normalize_russian_metadata.py
+│   ├── build_literature_review_brief.py
 │   ├── validate_skill_assets.py
 │   ├── validate_planning_assets.py
+│   ├── validate_research_layer.py
+│   ├── validate_evidence_layer.py
 │   └── smoke_test.sh
+├── research_layer/
+├── evidence_layer/
 └── extension_layer/
 ```
 
