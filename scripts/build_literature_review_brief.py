@@ -455,11 +455,19 @@ def build_markdown(records, topic=None, style="gost"):
     lines.append("| Кластер | Кол-во источников |")
     lines.append("|---------|-------------------|")
     total_items = 0
+    seen_counts = set()
     for cluster, roles in grouped.items():
-        count = sum(len(recs) for recs in roles.values())
+        cluster_ids = set()
+        for recs in roles.values():
+            for rec in recs:
+                rid = rec.get("id", "")
+                if rid:
+                    cluster_ids.add(rid)
+                    seen_counts.add(rid)
+        count = len(cluster_ids)
         total_items += count
         lines.append(f"| {CLUSTER_DISPLAY.get(cluster, cluster)} | {count} |")
-    lines.append(f"| **Итого** | **{total_items}** |")
+    lines.append(f"| **Итого** | **{len(seen_counts)}** |")
     lines.append("")
     lines.append("---\n")
 
@@ -507,8 +515,10 @@ def build_markdown(records, topic=None, style="gost"):
                     lines.append(f"- Заметки: {notes}")
                 lines.append("")
 
-                # Collect for bibliography
-                reference_list.append(rec)
+                # Collect for bibliography (dedup by id)
+                rid = rec.get("id", "")
+                if rid and rid not in [r.get("id", "") for r in reference_list]:
+                    reference_list.append(rec)
 
         lines.append("---\n")
 

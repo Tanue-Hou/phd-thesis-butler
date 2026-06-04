@@ -91,6 +91,7 @@ SPECIALTY_TO_CLUSTER = {
     "05.13": "AUTOMATION_CONTROL",
     "05.11": "AUTOMATION_CONTROL",
     "05.12": "AUTOMATION_CONTROL",
+    "05.05": "AUTOMATION_CONTROL",
     "05.02": "SCI_TECH",
     "05.13.11": "SCI_TECH",
     "05.13.15": "SCI_TECH",
@@ -112,6 +113,12 @@ SPECIALTY_TO_CLUSTER = {
 KEYWORD_TO_CLUSTER = {
     "автоматическ": "AUTOMATION_CONTROL",
     "управлени": "AUTOMATION_CONTROL",
+    "транспортн": "AUTOMATION_CONTROL",
+    "диагности": "AUTOMATION_CONTROL",
+    "вибро": "AUTOMATION_CONTROL",
+    "алгоритм": "AUTOMATION_CONTROL",
+    "силовая передач": "AUTOMATION_CONTROL",
+    "фрикцион": "AUTOMATION_CONTROL",
     "системы управления": "AUTOMATION_CONTROL",
     "адаптивн": "AUTOMATION_CONTROL",
     "устойчивость": "AUTOMATION_CONTROL",
@@ -455,7 +462,7 @@ def main():
     for i, raw in enumerate(raw_records):
         rec_type = detect_record_type(raw)
         type_counts[rec_type] += 1
-        platform_counts[_norm_platform(raw.get("platform", raw.get("source_platform", "")))] += 1
+        platform_counts[_norm_platform(raw.get("platform", raw.get("source_platform", raw.get("source", ""))))] += 1
 
         try:
             if rec_type == "dissertation":
