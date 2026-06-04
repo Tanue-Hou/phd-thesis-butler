@@ -1,60 +1,79 @@
 [
   {
-    "id": "VIB_DIAG_001",
-    "type": "literature",
-    "title": "Vibration-based diagnostics of gear transmission systems: A review",
-    "authors": ["Ivanov A.P.", "Petrov S.V."],
-    "year": 2019,
-    "source_type": "journal_article",
-    "journal": "Journal of Machinery Manufacture and Reliability",
-    "volume": "48",
-    "issue": "3",
-    "pages": "215-228",
-    "language": "en",
+    "id": "lit_001",
+    "title_ru": "Методы диагностирования механических передач транспортных средств",
+    "title_en": "Diagnostic methods for mechanical transmissions of vehicles",
+    "authors": [
+      "Петров П.П.",
+      "Иванов И.И."
+    ],
+    "year": 2022,
+    "source_platform": "elibrary",
+    "publication_type": "journal_article",
+    "journal": "Вестник машиностроения",
+    "elibrary_id": "12345678",
     "doi": null,
-    "url": null,
-    "abstract": "Review of vibration analysis methods for gear transmission diagnostics including time-domain, frequency-domain, and time-frequency approaches.",
-    "keywords": ["vibration diagnostics", "gear transmission", "signal processing", "fault detection"],
-    "evidence_role": "foundational",
-    "relevance_tags": ["drivetrain_diagnostics", "vibration_analysis", "gear_fault"],
-    "quality_score": 0.85,
-    "notes": "Comprehensive Russian-authored review in English; covers classical and modern approaches. No DOI available — citation via journal metadata."
+    "rinc_citation_count": 15,
+    "keywords_ru": [
+      "диагностика",
+      "механическая передача",
+      "транспортные средства"
+    ],
+    "abstract_ru": "Рассмотрены современные методы диагностирования механических передач...",
+    "full_text_status": "open",
+    "discipline_cluster": "AUTOMATION_CONTROL",
+    "evidence_role": [
+      "background_context",
+      "research_gap"
+    ],
+    "notes_for_writer": "Good overview of diagnostic methods for актуальность section"
   },
   {
-    "id": "EKF_STATE_001",
-    "type": "literature",
-    "title": "Application of extended Kalman filter for real-time estimation of mechanical system parameters",
-    "authors": ["Sokolov D.I.", "Kuznetsov V.M.", "Orlova N.A."],
+    "id": "lit_002",
+    "title_ru": "Алгоритмы оценки состояния силовых передач на основе вейвлет-анализа",
+    "title_en": "Algorithms for state assessment of power transmissions based on wavelet analysis",
+    "authors": [
+      "Сидоров С.С."
+    ],
+    "year": 2023,
+    "source_platform": "cyberleninka",
+    "publication_type": "journal_article",
+    "journal": "Известия вузов. Машиностроение",
+    "doi": null,
+    "elibrary_id": "87654321",
+    "keywords_ru": [
+      "вейвлет-анализ",
+      "силовая передача",
+      "оценка состояния"
+    ],
+    "abstract_ru": "Разработаны алгоритмы оценки состояния силовых передач...",
+    "full_text_status": "open",
+    "discipline_cluster": "AUTOMATION_CONTROL",
+    "evidence_role": [
+      "method_basis",
+      "definition"
+    ],
+    "notes_for_writer": "Detailed algorithm description for METHOD chapter"
+  },
+  {
+    "id": "diss_001",
+    "title_ru": "Разработка методов диагностирования трансмиссии автомобиля",
+    "author": "Кузнецов К.К.",
     "year": 2021,
-    "source_type": "conference_paper",
-    "conference": "International Conference on Diagnostics of Machines and Structures",
-    "pages": "142-150",
-    "language": "en",
-    "doi": null,
-    "url": null,
-    "abstract": "Proposes an EKF-based framework for real-time parameter estimation in rotating machinery. Validated on a laboratory test rig with simulated bearing faults.",
-    "keywords": ["extended Kalman filter", "parameter estimation", "real-time diagnostics", "rotating machinery"],
-    "evidence_role": "methodological",
-    "relevance_tags": ["state_estimation", "kalman_filter", "real_time"],
-    "quality_score": 0.78,
-    "notes": "Conference paper; method applicable to drivetrain but tested on bearing system only. No DOI — cited by conference proceedings metadata."
-  },
-  {
-    "id": "DISS_KOROLEV_002",
-    "type": "dissertation",
-    "title": "Диагностирование технического состояния элементов трансмиссии мобильных машин на основе виброакустических сигналов",
-    "authors": ["Королев А.Н."],
-    "year": 2017,
-    "source_type": "candidate_dissertation",
-    "institution": "Брянский государственный технический университет",
-    "language": "ru",
-    "doi": null,
-    "url": null,
-    "abstract": "Разработаны методы и средства диагностирования элементов трансмиссии мобильных машин по виброакустическим сигналам. Предложена система классификации дефектов на основе нейронных сетей.",
-    "keywords": ["трансмиссия", "виброакустический сигнал", "диагностирование", "нейронные сети"],
-    "evidence_role": "empirical",
-    "relevance_tags": ["drivetrain_diagnostics", "mobile_machinery", "neural_classification"],
-    "quality_score": 0.82,
-    "notes": "Russian candidate of sciences dissertation. Directly relevant to drivetrain diagnostics domain. No DOI — accessed via library catalog."
+    "source_platform": "dissercat",
+    "publication_type": "dissertation",
+    "degree_type": "candidate",
+    "specialty_code": "05.05.03",
+    "specialty_name": "Колёсные и гусеничные машины",
+    "institution": "МГТУ им. Н.Э. Баумана",
+    "dissercat_url": null,
+    "toc_available": true,
+    "chapter_count": 4,
+    "discipline_cluster": "AUTOMATION_CONTROL",
+    "evidence_role": [
+      "structure_reference",
+      "method_comparison"
+    ],
+    "notes_for_writer": "Chapter structure reference for thesis planning"
   }
 ]

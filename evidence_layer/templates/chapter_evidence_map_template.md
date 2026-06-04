@@ -32,7 +32,7 @@ A JSON object with the following structure:
       "evidence_bindings": [
         {
           "source_id": "normalized_record_id",
-          "evidence_role": "foundational | comparative | methodological | empirical | gap_filler",
+          "evidence_role": "background_context | method_basis | empirical_support | method_comparison",
           "coverage": "covered | partial | missing",
           "note": "How this source supports the claim"
         }
@@ -53,7 +53,7 @@ A JSON object with the following structure:
 | Field | Required | Description |
 |-------|----------|-------------|
 | `source_id` | Yes | Must match an ID from the normalized literature records. **Never fabricate.** |
-| `evidence_role` | Yes | How the source contributes: foundational (baseline theory), comparative (prior work benchmark), methodological (method reference), empirical (data/validation), gap_filler (bridges a known gap) |
+| `evidence_role` | Yes | How the source contributes: background_context, method_basis, empirical_support, method_comparison, research_gap |
 | `coverage` | Yes | `covered` = claim fully supported; `partial` = some aspects missing; `missing` = no supporting evidence found |
 | `gap_note` | Conditional | Required when coverage is `partial` or `missing` |
 | `risk_level` | Optional | `low` / `medium` / `high` — reflects how critical the gap is |
@@ -66,8 +66,8 @@ See: `../examples/chapter_evidence_map_sample.json`
 
 Given an outline section "2.4 Extended Kalman Filter for Drivetrain State Estimation":
 
-- `covered`: A literature record with `evidence_role: "methodological"` describing
-  EKF application to gear mesh vibration signals provides direct methodological support.
+- `covered`: A literature record with `evidence_role: "method_basis"` describing
+  EKF application to gear mesh vibration signals provides direct method_basis support.
 - `partial`: Only UKF-based approaches are in the literature; no EKF-specific drivetrain
   application found — `gap_note: "Need EKF-specific drivetrain application or cite general EKF reference + note adaptation"`.
 - `missing`: No literature on real-time implementation constraints — `gap_note: "Search for embedded implementation or real-time diagnostics papers"`.

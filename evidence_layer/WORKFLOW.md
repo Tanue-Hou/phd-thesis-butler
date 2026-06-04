@@ -30,7 +30,7 @@ The PhD Thesis Butler Evidence Layer operates through four distinct modes. Each 
 
 ### Operations
 1. Parse `recommended_query` fields from gap reports or user input
-2. Execute search across academic databases (Semantic Scholar, arXiv, Google Scholar)
+2. Execute search across academic databases (Semantic Scholar, arXiv, eLIBRARY/DisserCat)
 3. For each candidate source:
    - Extract metadata (title, authors, year, venue, DOI)
    - Assess relevance to the target claim

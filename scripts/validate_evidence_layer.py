@@ -220,13 +220,10 @@ def main():
             # Flatten the JSON for field checking
             map_text = json.dumps(map_data, ensure_ascii=False)
             required_map_fields = [
-                "section_id",
-                "section_title",
-                "claim",
-                "evidence_bindings",
-                "evidence_role",
-                "source_id",
-                "gap_note",
+                "chapter_id",
+                "chapter_name",
+                "bound_records",
+                "gap_analysis",
             ]
             missing_map = [f for f in required_map_fields if f not in map_text]
             check("9. chapter_evidence_map_sample.json 包含必需字段",

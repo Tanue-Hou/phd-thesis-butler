@@ -27,7 +27,7 @@ A JSON object:
     {
       "sentence_id": 1,
       "text": "Original sentence text",
-      "claim_type": "factual | methodological | interpretive | descriptive",
+      "claim_type": "factual | method_basis | interpretive | descriptive",
       "requires_citation": true,
       "coverage": "covered | partial | missing",
       "matched_sources": [
@@ -58,10 +58,10 @@ A JSON object:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `claim_type` | Yes | `factual` = stating a fact/study result; `methodological` = describing a method; `interpretive` = author's analysis/opinion; `descriptive` = background/context |
-| `requires_citation` | Yes | `true` for factual/methodological claims; may be `false` for descriptive sentences that are common knowledge |
+| `claim_type` | Yes | `factual` = stating a fact/study result; `method_basis` = describing a method; `interpretive` = author's analysis/opinion; `descriptive` = background/context |
+| `requires_citation` | Yes | `true` for factual/method_basis claims; may be `false` for descriptive sentences that are common knowledge |
 | `coverage` | Yes | `covered` = matched source exists; `partial` = source exists but doesn't fully support the claim; `missing` = no source found |
-| `risk_level` | Yes | `high` = factual/methodological claim with no citation (academic integrity risk); `medium` = partial coverage; `low` = covered or common knowledge |
+| `risk_level` | Yes | `high` = factual/method_basis claim with no citation (academic integrity risk); `medium` = partial coverage; `low` = covered or common knowledge |
 | `suggestion` | Yes | Actionable advice: cite specific source, search for evidence, rephrase as opinion, mark as common knowledge |
 
 ## Example

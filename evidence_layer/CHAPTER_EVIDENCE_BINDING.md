@@ -8,7 +8,7 @@
 
 The table below shows which evidence roles are expected (✓), optional (○), or not applicable (—) for each chapter type.
 
-| Evidence Role | Ch.1 Intro | Ch.2 Lit.Review | Ch.3 Method | Ch.4 Architecture | Ch.5 Eval | Ch.6 Results | Ch.7 Discussion | Ch.8 Conclusion |
+| Evidence Role | INTRO Intro | SURVEY Lit.Review | THEORY Method | MODEL Architecture | METHOD Eval | EXPERIMENT Results | RESULT Discussion | DISCUSSION Conclusion |
 |---|---|---|---|---|---|---|---|---|
 | background_context | ✓ | ✓ | ○ | — | — | — | ✓ | ○ |
 | research_gap | ✓ | ✓ | ○ | — | — | — | ○ | ○ |
@@ -43,11 +43,11 @@ IF role is — for chapter → gap_status = not_needed (enforced)
 
 | Chapter Section | Minimum Strength |
 |----------------|-----------------|
-| Literature Review (Ch.2) | medium |
-| Methodology (Ch.3) | strong |
-| Results (Ch.6) | strong |
-| Introduction (Ch.1) | weak (acceptable for background) |
-| Discussion (Ch.7) | medium |
+| Literature Review (SURVEY) | medium |
+| Methodology (THEORY) | strong |
+| Results (EXPERIMENT) | strong |
+| Introduction (INTRO) | weak (acceptable for background) |
+| Discussion (RESULT) | medium |
 
 ```
 IF evidence_strength < threshold → gap_status = partial
@@ -62,18 +62,18 @@ A single source can serve multiple roles, but each binding record specifies exac
 
 These roles MUST appear at least once per chapter:
 
-- **Ch.1 Introduction**: background_context, research_gap, contribution_positioning
-- **Ch.2 Literature Review**: background_context, research_gap, empirical_support
-- **Ch.3 Methodology**: definition, method_basis, validation_standard
-- **Ch.4 Architecture**: definition, method_basis, structure_reference
-- **Ch.5 Evaluation**: benchmark, validation_standard
-- **Ch.6 Results**: benchmark, empirical_support
-- **Ch.7 Discussion**: background_context, empirical_support, contradiction, contribution_positioning
-- **Ch.8 Conclusion**: contribution_positioning
+- **INTRO Introduction**: background_context, research_gap, contribution_positioning
+- **SURVEY Literature Review**: background_context, research_gap, empirical_support
+- **THEORY Methodology**: definition, method_basis, validation_standard
+- **MODEL Architecture**: definition, method_basis, structure_reference
+- **METHOD Evaluation**: benchmark, validation_standard
+- **EXPERIMENT Results**: benchmark, empirical_support
+- **RESULT Discussion**: background_context, empirical_support, contradiction, contribution_positioning
+- **DISCUSSION Conclusion**: contribution_positioning
 
 ### Rule 5: Cross-Chapter Consistency
 
-Sources cited in multiple chapters must maintain consistent metadata. If a source is cited in Ch.2 with role `empirical_support` and in Ch.7 with role `contradiction`, both bindings are valid but must reference the same source_id.
+Sources cited in multiple chapters must maintain consistent metadata. If a source is cited in SURVEY with role `empirical_support` and in RESULT with role `contradiction`, both bindings are valid but must reference the same source_id.
 
 ### Rule 6: Contradiction Handling
 
