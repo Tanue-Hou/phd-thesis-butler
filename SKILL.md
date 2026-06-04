@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "Russian academic writing sentence bank — 16,722 Russian-first templates plus dissertation planning assets. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "5.2.2"
+version: "5.3.0"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -53,6 +53,35 @@ Actions:
 
 See `research_layer/` for complete workflow documentation, query strategies, and source profiles.
 
+
+
+## Evidence-Aware Writing Mode (v5.3)
+
+Trigger when the user asks to:
+- bind literature to thesis chapters
+- check whether a paragraph needs citations
+- identify unsupported claims
+- connect eLIBRARY/DisserCat records to writing
+- review citation gaps while polishing
+- decide which sources support INTRO, METHOD, EXPERIMENT, RESULT, or CONCLUSION
+
+This mode does not perform real-time search. It uses user-provided normalized records, existing research_layer outputs, or recommended_source_type when no concrete source_id is available.
+
+Workflow:
+1. Detect chapter type and claim type
+2. Determine required evidence roles from `evidence_layer/EVIDENCE_ROLE_TAXONOMY.md`
+3. Match available source_id when provided
+4. If no source exists, output recommended_source_type instead of inventing citations
+5. Mark gap_status as covered, partial, missing, or not_needed
+6. Provide recommended_action
+7. Route back to Normal polishing mode if the user also asks for Russian expression improvement
+
+**Evidence roles (12):** background_context, research_gap, definition, method_basis, method_comparison, benchmark, validation_standard, empirical_support, contradiction, contribution_positioning, structure_reference
+
+**Chapter types (9):** INTRO, SURVEY, THEORY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION
+
+See `evidence_layer/` for complete documentation, schemas, and templates.
+
 ## Planning Mode
 
 Planning Mode is a **supplementary operating mode** for thesis-level structural planning. It activates **only** when the user's request is explicitly about planning, structure, methodology design, experiment design, logic flow, proposal defense, or supervisor reporting. It does **not** replace the normal sentence-template workflow.
@@ -87,6 +116,35 @@ When Planning Mode activates, first determine the user's discipline cluster:
 
 #
 
+
+
+
+## Evidence-Aware Writing Mode (v5.3)
+
+Trigger when the user asks to:
+- bind literature to thesis chapters
+- check whether a paragraph needs citations
+- identify unsupported claims
+- connect eLIBRARY/DisserCat records to writing
+- review citation gaps while polishing
+- decide which sources support INTRO, METHOD, EXPERIMENT, RESULT, or CONCLUSION
+
+This mode does not perform real-time search. It uses user-provided normalized records, existing research_layer outputs, or recommended_source_type when no concrete source_id is available.
+
+Workflow:
+1. Detect chapter type and claim type
+2. Determine required evidence roles from `evidence_layer/EVIDENCE_ROLE_TAXONOMY.md`
+3. Match available source_id when provided
+4. If no source exists, output recommended_source_type instead of inventing citations
+5. Mark gap_status as covered, partial, missing, or not_needed
+6. Provide recommended_action
+7. Route back to Normal polishing mode if the user also asks for Russian expression improvement
+
+**Evidence roles (12):** background_context, research_gap, definition, method_basis, method_comparison, benchmark, validation_standard, empirical_support, contradiction, contribution_positioning, structure_reference
+
+**Chapter types (9):** INTRO, SURVEY, THEORY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION
+
+See `evidence_layer/` for complete documentation, schemas, and templates.
 
 ## Planning Mode Workflow
 

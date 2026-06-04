@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://phd-thesis-butler/schemas/chapter_evidence_map.schema.json",
+  "title": "Chapter Evidence Map",
+  "description": "Aggregated evidence bindings and gap analysis for a single thesis chapter. Version 1.0.",
+  "type": "object",
+  "required": ["chapter_id", "chapter_name", "bound_records", "gap_analysis"],
+  "properties": {
+    "chapter_id": {
+      "type": "string",
+      "description": "Unique chapter identifier, e.g. 'CH1', 'CH2'",
+      "pattern": "^CH[1-8]$"
+    },
+    "chapter_name": {
+      "type": "string",
+      "description": "Human-readable chapter name, e.g. 'Introduction', 'Literature Review', 'Методология'"
+    },
+    "bound_records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["binding_id", "claim_type", "evidence_roles"],
+        "properties": {
+          "binding_id": {
+            "type": "string",
+            "description": "Reference to the evidence_binding_record ID"
+          },
+          "claim_type": {
+            "type": "string",
+            "enum": [
+              "factual_claim",
+              "methodological_claim",
+              "evaluative_claim",
+              "gap_claim",
+              "contribution_claim",
+              "theoretical_claim",
+              "descriptive_claim",
+              "common_knowledge"
+            ]
+          },
+          "evidence_roles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "background_context",
+                "research_gap",
+                "definition",
+                "method_basis",
+                "method_comparison",
+                "benchmark",
+                "validation_standard",
+                "empirical_support",
+                "contradiction",
+                "contribution_positioning",
+                "structure_reference",
+                "supplementary_detail"
+              ]
+            }
+          },
+          "evidence_strength": {
+            "type": "string",
+            "enum": ["strong", "medium", "weak", "none"]
+          },
+          "gap_status": {
+            "type": "string",
+            "enum": ["covered", "partial", "missing", "not_needed"]
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "All binding records associated with this chapter"
+    },
+    "gap_analysis": {
+      "type": "object",
+      "required": ["total_claims", "covered", "partial", "missing", "not_needed", "coverage_ratio", "unresolved_gaps"],
+      "properties": {
+        "total_claims": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of claim sentences identified in this chapter"
+        },
+        "covered": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of claims with gap_status = covered"
+        },
+        "partial": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of claims with gap_status = partial"
+        },
+        "missing": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of claims with gap_status = missing"
+        },
+        "not_needed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of claims with gap_status = not_needed"
+        },
+        "coverage_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of claims that are covered (covered + not_needed) / total"
+        },
+        "unresolved_gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["binding_id", "claim_text", "missing_roles", "risk_level"],
+            "properties": {
+              "binding_id": {
+                "type": "string"
+              },
+              "claim_text": {
+                "type": "string",
+                "description": "The claim that has a gap. Example (RU): 'Проблема верификации цитат остаётся неизученной.'"
+              },
+              "missing_roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Evidence roles that are not yet covered"
+              },
+              "risk_level": {
+                "type": "string",
+                "enum": ["critical", "high", "medium", "low"]
+              },
+              "recommended_query": {
+                "type": "string",
+                "description": "Suggested search query to find a source. Example (RU): 'верификация цитат RAG системы исследование'"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "List of gaps that need resolution"
+        }
+      },
+      "additionalProperties": false
+    },
+    "required_roles_present": {
+      "type": "object",
+      "description": "Map of required roles for this chapter to their presence status",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["present", "missing", "partial"]
+      }
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when this map was generated"
+    }
+  },
+  "additionalProperties": false
+}

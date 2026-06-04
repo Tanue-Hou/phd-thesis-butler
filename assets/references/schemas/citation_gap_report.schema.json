@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://phd-thesis-butler/schemas/citation_gap_report.schema.json",
+  "title": "Citation Gap Report",
+  "description": "Sentence-by-sentence analysis of citation coverage for a thesis chapter. Version 1.0.",
+  "type": "object",
+  "required": ["report_id", "chapter", "claims"],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Unique report identifier, e.g. 'GAP-CH2-20260605'"
+    },
+    "chapter": {
+      "type": "string",
+      "description": "Chapter identifier, e.g. 'CH2'",
+      "pattern": "^CH[1-8]$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_text",
+          "claim_type",
+          "citation_need",
+          "gap_status",
+          "recommended_evidence_role",
+          "risk_level"
+        ],
+        "properties": {
+          "claim_text": {
+            "type": "string",
+            "description": "The analyzed sentence from the thesis. Example (RU): 'Использование цепочки рассуждений повышает качество ответов на сложных вопросах.'"
+          },
+          "claim_type": {
+            "type": "string",
+            "enum": [
+              "factual_claim",
+              "methodological_claim",
+              "evaluative_claim",
+              "gap_claim",
+              "contribution_claim",
+              "theoretical_claim",
+              "descriptive_claim",
+              "common_knowledge"
+            ],
+            "description": "Classified type of the claim"
+          },
+          "citation_need": {
+            "type": "string",
+            "enum": ["required", "recommended", "optional", "not_needed"],
+            "description": "Whether a citation is required, recommended, optional, or not needed for this claim"
+          },
+          "gap_status": {
+            "type": "string",
+            "enum": ["covered", "partial", "missing", "not_needed"],
+            "description": "Current coverage status of this claim"
+          },
+          "recommended_evidence_role": {
+            "type": "string",
+            "enum": [
+              "background_context",
+              "research_gap",
+              "definition",
+              "method_basis",
+              "method_comparison",
+              "benchmark",
+              "validation_standard",
+              "empirical_support",
+              "contradiction",
+              "contribution_positioning",
+              "structure_reference",
+              "supplementary_detail"
+            ],
+            "description": "The primary evidence role needed to cover this gap"
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "description": "Risk level if this gap is not resolved"
+          },
+          "matched_source_id": {
+            "type": ["string", "null"],
+            "description": "Source ID if a match exists, null otherwise"
+          },
+          "evidence_strength": {
+            "type": "string",
+            "enum": ["strong", "medium", "weak", "none"],
+            "description": "Strength of current evidence binding"
+          },
+          "recommended_action": {
+            "type": "string",
+            "description": "Actionable next step, e.g. 'Найти peer-reviewed источник, подтверждающий эффективность chain-of-thought prompting'"
+          },
+          "recommended_query": {
+            "type": "string",
+            "description": "Search query for finding a source. Example: 'chain-of-thought prompting effectiveness LLM reasoning'"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Per-sentence citation analysis"
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "total_claims": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_gap_status": {
+          "type": "object",
+          "properties": {
+            "covered": { "type": "integer", "minimum": 0 },
+            "partial": { "type": "integer", "minimum": 0 },
+            "missing": { "type": "integer", "minimum": 0 },
+            "not_needed": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "by_risk_level": {
+          "type": "object",
+          "properties": {
+            "critical": { "type": "integer", "minimum": 0 },
+            "high": { "type": "integer", "minimum": 0 },
+            "medium": { "type": "integer", "minimum": 0 },
+            "low": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "coverage_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of claims that are covered or not_needed"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
