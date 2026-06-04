@@ -116,6 +116,7 @@ v5.2 受开源项目 [academic-search](https://github.com/ustc-ai4science/academ
 | v5.1.3 | 运行时可靠性 | 强化验证器、隐藏 mixed 条目、重写 README、明确公开包边界。 |
 | v5.2.0 | Russian Research Layer | 新增调研层：8个数据源profile、2个元数据schema、文献标准化与综述生成脚本。 |
 | v5.2.1 | 一致性修复 | 版本统一、CJK深层清理、normalize字段兼容、build_literature_review_brief.py入库。 |
+| v5.2.2 | 最终收尾 | 版本统一到5.2.2、检索能力说明、学科映射增强、brief去重、目录树补全。 |
 
 ### 能做什么
 
@@ -286,7 +287,7 @@ Skill полезен в двух основных ситуациях:
 - **От идеи к плану**: у пользователя есть тема, гипотеза, метод или требования научного руководителя; skill помогает построить структуру, задачи, методологию и план проверки.
 - **От готового текста к улучшению**: у пользователя уже есть статья, глава, раздел или черновик; skill помогает отполировать стиль, улучшить логику, сохранить исходный смысл и приблизить текст к русской академической манере.
 
-Цель v5.1.3: **дать ассистенту дистиллированные знания о российском диссертационном письме без повторного чтения исходных PDF и без дообучения модели.**
+Цель v5.2: **дать ассистенту возможность не только писать диссертацию, но и исследовать российскую научную литературу, планировать структуру, подбирать источники и оформлять обзор.**
 
 ### Роль и границы
 
@@ -344,6 +345,7 @@ Skill не заменяет автора, научного руководите�
 | v5.1.3 | Надежность runtime | Усилен validator, hidden mixed entries, уточнены README и границы пакета. |
 | v5.2.0 | Russian Research Layer | Добавлен исследовательский слой: 8 профилей, 2 схемы метаданных, скрипты нормализации и обзора. |
 | v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
+| v5.2.2 | Финальное закрытие | Унификация версии до 5.2.2, описание поисковых возможностей, усиление маппинга дисциплин. |
 
 ### Что можно делать
 ### Возможности поиска литературы
@@ -470,7 +472,7 @@ It supports two major workflows:
 - **From idea to plan**: when the user has a topic, hypothesis, method idea, or supervisor requirement, the skill helps build dissertation structure, research questions, methodology, experiments, and logic flow.
 - **From finished draft to polished text**: when the user already has an article, chapter, section, or Russian draft, the skill helps polish academic expression, improve paragraph logic, preserve the author's meaning, and align the text with Russian dissertation style.
 
-The goal of v5.1.3 is: **give assistants dissertation-writing competence without requiring users to reread source PDFs or retrain a model.**
+The goal of v5.2 is: **give assistants the ability to not only write dissertations, but also research Russian academic literature, plan structure, find sources, and generate reviews.**
 
 ### Role and Boundaries
 
@@ -528,6 +530,7 @@ Planning assets live in `planning_layer/`.
 | v5.1.3 | Runtime reliability | Stronger validation, hidden mixed entries, clearer README and boundaries. |
 | v5.2.0 | Russian Research Layer | New research layer: 8 source profiles, 2 metadata schemas, literature normalization and review scripts. |
 | v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize compat, build script tracked. |
+| v5.2.2 | Final closure | Version unified to 5.2.2, search capability docs, discipline mapping enhancement, brief dedup. |
 ### Literature Search Capabilities
 
 v5.2 is inspired by the open-source [academic-search](https://github.com/ustc-ai4science/academic-search) project. Built on its multi-platform search architecture, we deeply adapt it for the Russian academic ecosystem.
