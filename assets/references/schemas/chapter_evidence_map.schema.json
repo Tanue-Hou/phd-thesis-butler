@@ -35,7 +35,7 @@
         "properties": {
           "binding_id": {
             "type": "string",
-            "description": "Reference to the evidence_binding_record ID"
+            "description": "Must reference a binding_id from an evidence_binding_record for full claim-level traceability"
           },
           "claim_type": {
             "type": "string",
@@ -77,7 +77,8 @@
               "medium",
               "weak",
               "none"
-            ]
+            ],
+            "description": "Summary field: corresponds to evidence_strength in evidence_binding_record"
           },
           "gap_status": {
             "type": "string",
@@ -86,14 +87,16 @@
               "partial",
               "missing",
               "not_needed"
-            ]
+            ],
+            "description": "Summary field: corresponds to the aggregated gap_status from evidence_binding_record"
           },
           "evidence_role": {
             "type": "string",
-            "description": "Single evidence role (canonical role name)"
+            "description": "Summary field: primary evidence role; derived from required_evidence_roles in the full evidence_binding_record"
           },
           "source_id": {
-            "type": "string"
+            "type": "string",
+            "description": "Summary field: corresponds to matched_source_ids[0] in the full evidence_binding_record"
           },
           "recommended_action": {
             "type": "string"

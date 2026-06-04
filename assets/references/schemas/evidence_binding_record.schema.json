@@ -4,16 +4,21 @@
   "title": "Evidence Binding Record",
   "description": "A single binding linking a thesis claim to a source with an assigned evidence role. Version 1.0.",
   "type": "object",
-  "required": ["binding_id", "chapter", "claim_type", "required_evidence_roles"],
+  "required": [
+    "binding_id",
+    "chapter",
+    "claim_type",
+    "required_evidence_roles"
+  ],
   "properties": {
     "binding_id": {
       "type": "string",
-      "description": "Unique identifier for this binding record, e.g. 'BIND-CH2-001'",
+      "description": "Unique binding identifier. Referenced by chapter_evidence_map.bound_records[].binding_id",
       "pattern": "^BIND-[A-Z0-9]+-[0-9]+$"
     },
     "chapter": {
       "type": "string",
-      "description": "Target chapter identifier, e.g. 'CH1', 'CH2', ..., 'CH8'",
+      "description": "Target chapter: INTRO/SURVEY/THEORY/MODEL/METHOD/EXPERIMENT/RESULT/DISCUSSION/CONCLUSION",
       "pattern": "^CH[1-8]$"
     },
     "chapter_function": {
@@ -36,7 +41,7 @@
         "descriptive_claim",
         "common_knowledge"
       ],
-      "description": "Classification of the claim made in the text"
+      "description": "Type of claim this evidence supports"
     },
     "required_evidence_roles": {
       "type": "array",
@@ -55,7 +60,8 @@
           "contribution_positioning",
           "structure_reference",
           "supplementary_detail"
-        ]
+        ],
+        "description": "Evidence roles needed to support this claim; aggregated as evidence_role in chapter_evidence_map"
       },
       "minItems": 1,
       "description": "Evidence roles needed to support this claim"
@@ -63,18 +69,29 @@
     "matched_source_ids": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "description": "Source IDs that provide evidence; summarized as source_id in chapter_evidence_map"
       },
       "description": "IDs of sources matched to this binding, e.g. ['SRC-2024-001', 'SRC-2023-042']"
     },
     "evidence_strength": {
       "type": "string",
-      "enum": ["strong", "medium", "weak", "none"],
+      "enum": [
+        "strong",
+        "medium",
+        "weak",
+        "none"
+      ],
       "description": "Strength of the evidence binding: strong (peer-reviewed, direct match), medium (relevant but indirect), weak (tangentially related), none (no source matched)"
     },
     "gap_status": {
       "type": "string",
-      "enum": ["covered", "partial", "missing", "not_needed"],
+      "enum": [
+        "covered",
+        "partial",
+        "missing",
+        "not_needed"
+      ],
       "description": "Current coverage status: covered (fully supported), partial (partially supported), missing (no support), not_needed (no citation required)"
     },
     "recommended_action": {
