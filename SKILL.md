@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "Russian academic writing sentence bank — 16,722 Russian-first templates plus dissertation planning assets. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "5.3.0"
+version: "5.3.1"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -81,6 +81,32 @@ Workflow:
 **Chapter types (9):** INTRO, SURVEY, THEORY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION
 
 See `evidence_layer/` for complete documentation, schemas, and templates.
+
+
+### Chapter Evidence Binding Mode (v5.3.1)
+
+Trigger when the user asks to bind literature to specific chapters.
+
+Actions:
+1. Load chapter outline and normalized literature records
+2. Match literature evidence roles to chapter requirements
+3. Generate `evidence_binding_records` and `chapter_evidence_map`
+4. Output coverage analysis with gap status for each chapter
+
+Run: `python3 scripts/bind_evidence_to_chapters.py --outline <file> --literature <file> --chapter <type> --output <json> --bindings-output <json>`
+
+### Citation Gap Detection Mode (v5.3.2)
+
+Trigger when the user asks to check a paragraph or chapter for citation gaps.
+
+Actions:
+1. Read user chapter draft
+2. Detect claim types (gap_claim, evaluative_claim, theoretical_claim, etc.)
+3. Match against literature records when available
+4. Generate `citation_gap_report` with claim-level gap analysis
+
+Run: `python3 scripts/detect_citation_gaps.py --input <file> --literature <file> --output <json>`
+
 
 ## Planning Mode
 

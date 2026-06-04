@@ -1,0 +1,53 @@
+{
+  "chapter_id": "INTRO",
+  "chapter_name": "Введение (Introduction)",
+  "bound_records": [
+    {
+      "binding_id": "BIND-INTRO-001",
+      "source_id": "lit_001",
+      "evidence_role": "background_context",
+      "evidence_strength": "medium",
+      "gap_status": "covered",
+      "recommended_action": "Verify relevance of source lit_001 for 'background_context'"
+    },
+    {
+      "binding_id": "BIND-INTRO-002",
+      "source_id": "lit_001",
+      "evidence_role": "research_gap",
+      "evidence_strength": "medium",
+      "gap_status": "covered",
+      "recommended_action": "Verify relevance of source lit_001 for 'research_gap'"
+    },
+    {
+      "binding_id": "BIND-INTRO-003",
+      "source_id": "lit_002",
+      "evidence_role": "contribution_positioning",
+      "evidence_strength": "weak",
+      "gap_status": "partial",
+      "recommended_action": "Strengthen 'contribution_positioning' evidence for Обзор современных методов диагностики трансмиссии with additional sources"
+    }
+  ],
+  "gap_analysis": {
+    "total_bound": 3,
+    "covered": 2,
+    "partial": 1,
+    "missing": 0,
+    "not_needed": 0,
+    "coverage_ratio": 0.67,
+    "unresolved_gaps": [
+      {
+        "evidence_role": "contribution_positioning",
+        "status": "partial",
+        "recommended_source_type": "elibrary",
+        "risk_level": "medium",
+        "recommended_query": "contribution_positioning data типы характерные стенда огибающая"
+      }
+    ]
+  },
+  "required_roles_present": {
+    "background_context": "present",
+    "research_gap": "present",
+    "contribution_positioning": "partial"
+  },
+  "generated_at": "2026-06-04T22:43:54Z"
+}

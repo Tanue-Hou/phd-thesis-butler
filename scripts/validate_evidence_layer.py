@@ -357,6 +357,167 @@ def main():
         results.append(False)
         print(f"      {FAIL} 部分样例内容质量问题")
 
+    # ── 12. Generated sample existence & schema conformance ──
+    print()
+    print("  12. Generated sample 端到端 schema 校验")
+    gen_samples = [
+        ("chapter_evidence_map_generated_sample.json", "chapter_evidence_map.schema.json"),
+        ("evidence_binding_records_sample.json", "evidence_binding_record.schema.json"),
+    ]
+    gen_ok = True
+    for sample_name, schema_name in gen_samples:
+        sample_path = os.path.join(ex_dir, sample_name)
+        schema_path = os.path.join(schemas_dir, schema_name)
+        label = f"12. {sample_name}"
+
+        if not os.path.isfile(sample_path):
+            check(f"{label} 存在", False, "文件不存在")
+            gen_ok = False
+            continue
+        if not os.path.isfile(schema_path):
+            check(f"{label} schema 存在", False, f"{schema_name} 不存在")
+            gen_ok = False
+            continue
+
+        sample_data, parse_err = try_parse_json(sample_path)
+        if parse_err:
+            check(f"{label} JSON 可解析", False, parse_err)
+            gen_ok = False
+            continue
+
+        with open(schema_path) as f:
+            schema_data = json.load(f)
+
+        # For array-typed samples (evidence_binding_records), validate each element
+        if isinstance(sample_data, list):
+            if schema_data.get("type") == "object":
+                # Schema is for a single record; validate each item in the array
+                item_errors = []
+                for i, item in enumerate(sample_data):
+                    item_errors.extend(deep_check_dict(item, schema_data, f"{sample_name}[{i}]"))
+                if item_errors:
+                    gen_ok = False
+                    for err in item_errors[:5]:
+                        e(f"  {sample_name}: schema violation: {err}")
+                else:
+                    check(f"{label} schema 校验通过", True)
+            else:
+                check(f"{label} schema 校验", False, "schema type mismatch")
+                gen_ok = False
+        else:
+            deep_errors = deep_check_dict(sample_data, schema_data, sample_name)
+            if deep_errors:
+                gen_ok = False
+                for err in deep_errors[:5]:
+                    e(f"  {sample_name}: schema violation: {err}")
+            else:
+                check(f"{label} schema 校验通过", True)
+
+    # ── 13. Generated sample cross-reference integrity ──
+    print()
+    print("  13. Generated sample 交叉引用完整性")
+    cem_path = os.path.join(ex_dir, "chapter_evidence_map_generated_sample.json")
+    ebr_path = os.path.join(ex_dir, "evidence_binding_records_sample.json")
+    if os.path.isfile(cem_path) and os.path.isfile(ebr_path):
+        cem_data, _ = try_parse_json(cem_path)
+        ebr_data, _ = try_parse_json(ebr_path)
+        if cem_data and ebr_data:
+            # Check that every binding_id in CEM exists in EBR
+            ebr_ids = set(rec.get("binding_id") for rec in ebr_data if isinstance(rec, dict))
+            cem_binding_ids = set(
+                r.get("binding_id") for r in cem_data.get("bound_records", [])
+            )
+            missing_refs = cem_binding_ids - ebr_ids
+            check("13. CEM bound_records binding_id 全部在 EBR 中有对应",
+                  len(missing_refs) == 0,
+                  f"缺少: {missing_refs}" if missing_refs else "")
+
+            # Check source_id in CEM bound_records are non-empty when gap_status != missing
+            empty_source = []
+            for r in cem_data.get("bound_records", []):
+                if r.get("gap_status") != "missing" and not r.get("source_id"):
+                    empty_source.append(r.get("binding_id"))
+            check("13. CEM bound_records 非 missing 记录有 source_id",
+                  len(empty_source) == 0,
+                  f"缺少 source_id: {empty_source}" if empty_source else "")
+        else:
+            check("13. Generated samples 可解析", False, "JSON 解析失败")
+    else:
+        check("13. Generated samples 存在", False, "至少一个文件不存在")
+
+    # ── 12. 端到端检查：detect_citation_gaps.py 生成的 JSON 符合 schema ──
+    print()
+    print("  12. 端到端检查：detect_citation_gaps.py 生成的 JSON 符合 schema")
+    e2e_ok = True
+    det_script = os.path.join(PROJECT_ROOT, "scripts", "detect_citation_gaps.py")
+    e2e_input = os.path.join(el, "examples", "user_chapter_sample.md")
+    e2e_lit = os.path.join(el, "examples", "normalized_literature_sample.json")
+    e2e_output = os.path.join("/tmp", "e2e_citation_gap_report.json")
+    e2e_schema = os.path.join(schemas_dir, "citation_gap_report.schema.json")
+
+    if not os.path.isfile(det_script):
+        check("12. detect_citation_gaps.py 存在", False, "脚本不存在")
+        e2e_ok = False
+    elif not os.path.isfile(e2e_input) or not os.path.isfile(e2e_lit):
+        check("12. 端到端检查", False, "输入样例文件缺失")
+        e2e_ok = False
+    elif not os.path.isfile(e2e_schema):
+        check("12. 端到端检查", False, "schema 缺失")
+        e2e_ok = False
+    else:
+        import subprocess
+        cmd = [
+            sys.executable, det_script,
+            "--input", e2e_input,
+            "--literature", e2e_lit,
+            "--output", e2e_output,
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if proc.returncode != 0:
+            check("12. detect_citation_gaps.py 执行成功", False,
+                  proc.stderr.strip()[:120])
+            e2e_ok = False
+        else:
+            print(f"      {PASS} detect_citation_gaps.py 执行成功")
+            results.append(True)
+            # Validate output JSON structure
+            e2e_data, e2e_err = try_parse_json(e2e_output)
+            if e2e_err:
+                check("12. 输出 JSON 可解析", False, e2e_err)
+                e2e_ok = False
+            else:
+                print(f"      {PASS} 输出 JSON 可解析")
+                results.append(True)
+                with open(e2e_schema) as f:
+                    e2e_schema_data = json.load(f)
+                e2e_errors = deep_check_dict(e2e_data, e2e_schema_data, "e2e_output")
+                if e2e_errors:
+                    for err in e2e_errors[:5]:
+                        e(f"  e2e output: schema violation: {err}")
+                    e2e_ok = False
+                else:
+                    print(f"      {PASS} 输出符合 citation_gap_report.schema.json")
+                    results.append(True)
+                # Check summary coherence
+                s = e2e_data.get("summary", {})
+                claims = e2e_data.get("claims", [])
+                summary_ok = s.get("total_claims") == len(claims)
+                if not summary_ok:
+                    e(f"  e2e: summary.total_claims ({s.get('total_claims')}) "
+                      f"!= len(claims) ({len(claims)})")
+                    e2e_ok = False
+                else:
+                    print(f"      {PASS} summary.total_claims == len(claims)")
+                    results.append(True)
+                # Cleanup temp file
+                try:
+                    os.remove(e2e_output)
+                except OSError:
+                    pass
+
+    check("12. 端到端检查：generate + validate pipeline", e2e_ok,
+          "" if e2e_ok else "端到端检查失败")
+
     # ── Summary ──
     print()
     print("=" * 60)

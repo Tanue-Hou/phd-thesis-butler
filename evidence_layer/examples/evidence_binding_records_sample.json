@@ -1,0 +1,57 @@
+[
+  {
+    "binding_id": "BIND-INTRO-001",
+    "chapter": "CH1",
+    "chapter_function": "introduction",
+    "claim_text": "Domain background and current state of Обзор современных методов диагностики трансмиссии.",
+    "claim_type": "descriptive_claim",
+    "required_evidence_roles": [
+      "background_context"
+    ],
+    "matched_source_ids": [
+      "lit_001"
+    ],
+    "evidence_strength": "medium",
+    "gap_status": "covered",
+    "recommended_action": "Verify relevance of source lit_001 for 'background_context'",
+    "created_at": "2026-06-04T22:43:54Z",
+    "updated_at": "2026-06-04T22:43:54Z"
+  },
+  {
+    "binding_id": "BIND-INTRO-002",
+    "chapter": "CH1",
+    "chapter_function": "introduction",
+    "claim_text": "Existing approaches to Обзор современных методов диагностики трансмиссии have known limitations.",
+    "claim_type": "gap_claim",
+    "required_evidence_roles": [
+      "research_gap"
+    ],
+    "matched_source_ids": [
+      "lit_001"
+    ],
+    "evidence_strength": "medium",
+    "gap_status": "covered",
+    "recommended_action": "Verify relevance of source lit_001 for 'research_gap'",
+    "created_at": "2026-06-04T22:43:54Z",
+    "updated_at": "2026-06-04T22:43:54Z"
+  },
+  {
+    "binding_id": "BIND-INTRO-003",
+    "chapter": "CH1",
+    "chapter_function": "introduction",
+    "claim_text": "This work contributes a novel approach to Обзор современных методов диагностики трансмиссии.",
+    "claim_type": "contribution_claim",
+    "required_evidence_roles": [
+      "contribution_positioning"
+    ],
+    "matched_source_ids": [
+      "lit_002"
+    ],
+    "evidence_strength": "weak",
+    "gap_status": "partial",
+    "recommended_action": "Strengthen 'contribution_positioning' evidence for Обзор современных методов диагностики трансмиссии with additional sources",
+    "created_at": "2026-06-04T22:43:54Z",
+    "updated_at": "2026-06-04T22:43:54Z",
+    "recommended_query": "contribution_positioning data типы характерные стенда огибающая"
+  }
+]

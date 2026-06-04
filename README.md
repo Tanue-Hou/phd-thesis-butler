@@ -1,4 +1,4 @@
-# PhD Thesis Butler v5.3.0 — Dissertation Writing Intelligence Platform
+# PhD Thesis Butler v5.3.1 — Dissertation Writing Intelligence Platform
 
 Russian dissertation writing and polishing skill for AI assistants.
 
