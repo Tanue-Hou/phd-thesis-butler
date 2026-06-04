@@ -9,6 +9,7 @@ Exit code: 0 = 全部通过，1 = 至少1项失败。
 import json
 import os
 import re
+import subprocess
 import sys
 
 # Resolve project root (one level up from scripts/)
@@ -446,8 +447,60 @@ def main():
         check("13. Generated samples 存在", False, "至少一个文件不存在")
 
     # ── 12. 端到端检查：detect_citation_gaps.py 生成的 JSON 符合 schema ──
+    # ── 14. 不变量检查：covered + null source 不允许存在 ──
+    invariants_ok = True
+    
+    # Check generated citation gap sample
+    gen_cgr_path = os.path.join(ex_dir, "citation_gap_generated_sample.json")
+    if os.path.isfile(gen_cgr_path):
+        with open(gen_cgr_path) as f:
+            gen_cgr = json.load(f)
+        for i, c in enumerate(gen_cgr.get("claims", [])):
+            gs = c.get("gap_status")
+            sid = c.get("matched_source_id")
+            es = c.get("evidence_strength")
+            cn = c.get("citation_need", "")
+            
+            if gs == "covered" and (sid is None or sid == ""):
+                invariants_ok = False
+                e(f"  gen_cgr.claims[{i}]: gap_status=covered but matched_source_id is null")
+            
+            if es in ("strong", "medium") and (sid is None or sid == ""):
+                invariants_ok = False
+                e(f"  gen_cgr.claims[{i}]: evidence_strength={es} but matched_source_id is null")
+            
+            if cn in ("required", "recommended") and gs == "covered" and (sid is None or sid == ""):
+                invariants_ok = False
+                e(f"  gen_cgr.claims[{i}]: citation_need={cn} but covered+null source")
+    
+    # Run detect_citation_gaps with no literature (regression test)
+    import tempfile
+    no_lit_out = "/tmp/test_invariant_cgr.json"
+    r = subprocess.run(
+        [sys.executable, "scripts/detect_citation_gaps.py",
+         "--input", os.path.join(ex_dir, "user_chapter_sample.md"),
+         "--output", no_lit_out],
+        capture_output=True, text=True, cwd=PROJECT_ROOT, timeout=15
+    )
+    if r.returncode == 0 and os.path.isfile(no_lit_out):
+        with open(no_lit_out) as f:
+            no_lit_cgr = json.load(f)
+        for i, c in enumerate(no_lit_cgr.get("claims", [])):
+            if c.get("gap_status") == "covered":
+                invariants_ok = False
+                e(f"  no-lit.claims[{i}]: gap_status=covered without literature input")
+            sid = c.get("matched_source_id")
+            es = c.get("evidence_strength")
+            if es in ("strong", "medium") and (sid is None or sid == ""):
+                invariants_ok = False
+                e(f"  no-lit.claims[{i}]: evidence_strength={es} but no literature")
+    
+    check("14. 不变量检查（covered+null source, strong+null source, no-literature no-covered）",
+          invariants_ok, "" if invariants_ok else f"不变量违规")
+
+    # ── 15. 端到端检查：detect_citation_gaps.py ──
     print()
-    print("  12. 端到端检查：detect_citation_gaps.py 生成的 JSON 符合 schema")
+    print("  15. 端到端检查：detect_citation_gaps.py 生成的 JSON 符合 schema")
     e2e_ok = True
     det_script = os.path.join(PROJECT_ROOT, "scripts", "detect_citation_gaps.py")
     e2e_input = os.path.join(el, "examples", "user_chapter_sample.md")
@@ -456,16 +509,15 @@ def main():
     e2e_schema = os.path.join(schemas_dir, "citation_gap_report.schema.json")
 
     if not os.path.isfile(det_script):
-        check("12. detect_citation_gaps.py 存在", False, "脚本不存在")
+        check("15. detect_citation_gaps.py 存在", False, "脚本不存在")
         e2e_ok = False
     elif not os.path.isfile(e2e_input) or not os.path.isfile(e2e_lit):
-        check("12. 端到端检查", False, "输入样例文件缺失")
+        check("15. 端到端检查", False, "输入样例文件缺失")
         e2e_ok = False
     elif not os.path.isfile(e2e_schema):
-        check("12. 端到端检查", False, "schema 缺失")
+        check("15. 端到端检查", False, "schema 缺失")
         e2e_ok = False
     else:
-        import subprocess
         cmd = [
             sys.executable, det_script,
             "--input", e2e_input,
@@ -474,7 +526,7 @@ def main():
         ]
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         if proc.returncode != 0:
-            check("12. detect_citation_gaps.py 执行成功", False,
+            check("15. detect_citation_gaps.py 执行成功", False,
                   proc.stderr.strip()[:120])
             e2e_ok = False
         else:
@@ -483,7 +535,7 @@ def main():
             # Validate output JSON structure
             e2e_data, e2e_err = try_parse_json(e2e_output)
             if e2e_err:
-                check("12. 输出 JSON 可解析", False, e2e_err)
+                check("15. 输出 JSON 可解析", False, e2e_err)
                 e2e_ok = False
             else:
                 print(f"      {PASS} 输出 JSON 可解析")
@@ -515,7 +567,7 @@ def main():
                 except OSError:
                     pass
 
-    check("12. 端到端检查：generate + validate pipeline", e2e_ok,
+    check("15. 端到端检查：generate + validate pipeline", e2e_ok,
           "" if e2e_ok else "端到端检查失败")
 
     # ── Summary ──

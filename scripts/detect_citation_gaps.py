@@ -341,8 +341,14 @@ def detect_gaps(input_path, literature):
             gap_status = "not_needed"
             matched_ids = []
         elif has_cite:
-            gap_status = "covered"
-            matched_ids = []
+            # Inline citation exists, but we need actual literature records to confirm
+            if literature is not None:
+                gap_status, matched_ids = match_literature(sentence, literature)
+                if gap_status != "covered":
+                    gap_status = "partial"  # cited but can't verify from our literature
+            else:
+                gap_status = "partial"
+                matched_ids = []
         elif literature is not None:
             gap_status, matched_ids = match_literature(sentence, literature)
             # If citation not needed, override
@@ -359,6 +365,10 @@ def detect_gaps(input_path, literature):
         evidence_role = CLAIM_TYPE_TO_EVIDENCE_ROLE.get(claim_type, "definition")
         risk = risk_for_claim(claim_type, chapter)
         matched_source = matched_ids[0] if matched_ids else None
+        
+        # INVARIANT: covered requires a real source ID
+        if gap_status == "covered" and matched_source is None:
+            gap_status = "partial"
 
         # Build claim object
         claim = {
@@ -375,9 +385,11 @@ def detect_gaps(input_path, literature):
         else:
             claim["matched_source_id"] = None
 
-        # Evidence strength heuristic
-        if gap_status == "covered":
+        # Evidence strength heuristic (with source ID invariant)
+        if gap_status == "covered" and matched_source is not None:
             claim["evidence_strength"] = "strong"
+        elif gap_status == "covered" and matched_source is None:
+            claim["evidence_strength"] = "medium"
         elif gap_status == "partial":
             claim["evidence_strength"] = "weak"
         elif gap_status == "not_needed":
