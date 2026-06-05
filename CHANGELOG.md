@@ -1,5 +1,20 @@
 # Changelog
 
+## v5.4.0 (hotfix 2026-06-05) — Landscape pipeline stabilization
+
+### Fixed
+- **P0**: `structure_confidence` type mismatch — now accepts string ("high"/"medium"/"low"), numeric 0.0-1.0, or None, via `normalize_confidence()` helper
+- **P0**: Zotero status check — uses `/api/users/0/items/top?limit=1` instead of `/connector/ping` (which returns HTML); 3-way status: AVAILABLE / APP_RUNNING / UNAVAILABLE
+- **P1**: `validation_type: null` crash — null/empty/None now safely handled as "unknown" via `safe_str()`
+- **P1**: `read_depth`/`source_access` enums unified — all samples, import script output, and validator now use canonical values
+- **P1**: `source_summary` reads `source_name` with fallback chain (`source_name > source_platform > source`)
+- **P1**: `year: null` crash — safe comparison with `(r.get("year") or 2025)`
+- **P1**: Methodology/validation label generation — `None.replace()` crash fixed via `safe_str()`
+- **P1**: Aggressive record merge — reduced from merging 20+ records per theme to zero; now accurately reports 10/8 records
+
+### Enhanced
+- Validator: read_depth/source_access enum validation, structure_confidence string/numeric/null, E2E build test on raw samples (--deep mode: 228/228 checks)
+
 ## v5.4.0 — Dissertation Landscape (2026-06-05)
 
 ### Added
