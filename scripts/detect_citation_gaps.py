@@ -425,15 +425,19 @@ def build_summary(claims):
             needs_citation += 1
 
     total = len(claims)
-    not_needed = by_gap["not_needed"]
-    covered_or_not_needed = by_gap["covered"] + not_needed
-    coverage_ratio = round(covered_or_not_needed / total, 4) if total > 0 else 0.0
+    resolved = by_gap["covered"] + by_gap["partial"] + by_gap["not_needed"]
+    evidence_covered = by_gap["covered"]
+    evidence_total = by_gap["covered"] + by_gap["partial"] + by_gap["missing"]
+
+    overall_resolution_ratio = round(resolved / total, 4) if total > 0 else 0.0
+    evidence_coverage_ratio = round(evidence_covered / evidence_total, 4) if evidence_total > 0 else 0.0
 
     return {
         "total_claims": total,
         "by_gap_status": by_gap,
         "by_risk_level": by_risk,
-        "coverage_ratio": coverage_ratio,
+        "overall_resolution_ratio": overall_resolution_ratio,
+        "evidence_coverage_ratio": evidence_coverage_ratio,
         "needs_citation": needs_citation,
         "covered": by_gap["covered"],
         "partial": by_gap["partial"],
@@ -478,7 +482,8 @@ def main():
     print(f"  Total claims: {summary['total_claims']}", file=sys.stderr)
     print(f"  Needs citation: {summary['needs_citation']}", file=sys.stderr)
     print(f"  Covered: {summary['covered']}, Partial: {summary['partial']}, Missing: {summary['missing']}", file=sys.stderr)
-    print(f"  Coverage ratio: {summary['coverage_ratio']:.1%}", file=sys.stderr)
+    print(f"  Resolution ratio: {summary['overall_resolution_ratio']:.1%}", file=sys.stderr)
+    print(f"  Evidence coverage: {summary['evidence_coverage_ratio']:.1%}", file=sys.stderr)
     print(f"Output: {args.output}", file=sys.stderr)
 
 

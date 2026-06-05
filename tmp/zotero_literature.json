@@ -1,0 +1,83 @@
+[
+  {
+    "id": "zotero_4666",
+    "title_ru": "基于车辆导航系统的最优估计问题",
+    "title_en": "Optimal estimation for vehicle navigation systems",
+    "authors": [
+      "袁宏伟",
+      "宋信敏"
+    ],
+    "year": 2023,
+    "source_platform": "elibrary",
+    "publication_type": "journal_article",
+    "abstract_ru": "面向车辆导航系统的状态估计算法利用卡尔曼滤波技术。针对多传感器融合、数据丢失和状态突变问题，提出了测量序列融合自适应卡尔曼滤波器等三种算法。",
+    "keywords_ru": [
+      "车辆导航",
+      "卡尔曼滤波",
+      "多传感器融合",
+      "状态估计"
+    ],
+    "discipline_cluster": "AUTOMATION_CONTROL",
+    "evidence_role": [
+      "method_basis",
+      "method_comparison",
+      "research_gap"
+    ]
+  },
+  {
+    "id": "zotero_5447",
+    "title_ru": "Physics-informed online learning of gray-box models by moving horizon estimation",
+    "title_en": "Physics-informed online learning of gray-box models by moving horizon estimation",
+    "authors": [
+      "Kristoffer Fink Løwenstein",
+      "Daniele Bernardini",
+      "Lorenzo Fagiano"
+    ],
+    "year": 2023,
+    "source_platform": "elibrary",
+    "publication_type": "journal_article",
+    "journal": "European Journal of Control",
+    "doi": null,
+    "abstract_ru": "A physics-informed gray-box model for model-based control and estimation. Moving horizon estimation is used for online learning of unknown model parameters.",
+    "keywords_ru": [
+      "physics-informed",
+      "gray-box model",
+      "moving horizon estimation",
+      "online learning"
+    ],
+    "discipline_cluster": "AUTOMATION_CONTROL",
+    "evidence_role": [
+      "method_basis",
+      "definition",
+      "validation_standard"
+    ]
+  },
+  {
+    "id": "zotero_4690",
+    "title_ru": "一种基于分布式估计的车辆与轮胎状态观测器设计方法",
+    "title_en": "Distributed estimation method for vehicle and tire state observer design",
+    "authors": [
+      "赵林辉",
+      "杨子芃"
+    ],
+    "year": 2024,
+    "source_platform": "elibrary",
+    "publication_type": "patent",
+    "journal": "橡胶科技",
+    "doi": null,
+    "abstract_ru": "基于分布式估计的车辆与轮胎状态观测器设计方法。考虑复合工况轮胎魔术公式，建立4个互联子系统的观测器，实现车辆和轮胎的状态估计。",
+    "keywords_ru": [
+      "分布式估计",
+      "轮胎状态",
+      "观测器",
+      "魔术公式",
+      "复合工况"
+    ],
+    "discipline_cluster": "AUTOMATION_CONTROL",
+    "evidence_role": [
+      "method_basis",
+      "empirical_support",
+      "structure_reference"
+    ]
+  }
+]

@@ -1,6 +1,6 @@
 {
   "project": "phd-thesis-butler",
-  "version": "5.3.1",
+  "version": "5.3.2",
   "release_date": "2026-06-03",
   "schema_version": "5.3",
   "description": "Corpus-distilled Russian dissertation writing intelligence platform. Aggregated from 2,118 Russian dissertations (3 universities), with 679 deep analyses across 5 discipline clusters.",

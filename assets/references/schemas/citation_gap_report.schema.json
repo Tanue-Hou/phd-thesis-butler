@@ -192,12 +192,6 @@
           },
           "additionalProperties": false
         },
-        "coverage_ratio": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Proportion of claims that are covered or not_needed"
-        },
         "needs_citation": {
           "type": "integer"
         },
@@ -209,6 +203,14 @@
         },
         "missing": {
           "type": "integer"
+        },
+        "overall_resolution_ratio": {
+          "type": "number",
+          "description": "Proportion of claims that are resolved (covered+partial+not_needed) / total"
+        },
+        "evidence_coverage_ratio": {
+          "type": "number",
+          "description": "Proportion of evidence-needing claims that are covered: covered / (covered+partial+missing)"
         }
       },
       "required": [

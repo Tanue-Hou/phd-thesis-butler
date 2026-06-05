@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "Russian academic writing sentence bank — 16,722 Russian-first templates plus dissertation planning assets. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "5.3.1"
+version: "5.3.2"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -57,56 +57,15 @@ See `research_layer/` for complete workflow documentation, query strategies, and
 
 ## Evidence-Aware Writing Mode (v5.3)
 
-Trigger when the user asks to:
-- bind literature to thesis chapters
-- check whether a paragraph needs citations
-- identify unsupported claims
-- connect eLIBRARY/DisserCat records to writing
-- review citation gaps while polishing
-- decide which sources support INTRO, METHOD, EXPERIMENT, RESULT, or CONCLUSION
+Trigger when the user needs literature bound to thesis chapters or citation gaps detected.
 
-This mode does not perform real-time search. It uses user-provided normalized records, existing research_layer outputs, or recommended_source_type when no concrete source_id is available.
+Routes to:
+- `evidence_layer/WORKFLOW.md` — full workflow
+- `evidence_layer/EVIDENCE_ROLE_TAXONOMY.md` — 12 evidence roles
+- `scripts/bind_evidence_to_chapters.py` — chapter evidence binding
+- `scripts/detect_citation_gaps.py` — citation gap detection
 
-Workflow:
-1. Detect chapter type and claim type
-2. Determine required evidence roles from `evidence_layer/EVIDENCE_ROLE_TAXONOMY.md`
-3. Match available source_id when provided
-4. If no source exists, output recommended_source_type instead of inventing citations
-5. Mark gap_status as covered, partial, missing, or not_needed
-6. Provide recommended_action
-7. Route back to Normal polishing mode if the user also asks for Russian expression improvement
-
-**Evidence roles (12):** background_context, research_gap, definition, method_basis, method_comparison, benchmark, validation_standard, empirical_support, contradiction, contribution_positioning, structure_reference, supplementary_detail
-
-**Chapter types (9):** INTRO, SURVEY, THEORY, MODEL, METHOD, EXPERIMENT, RESULT, DISCUSSION, CONCLUSION
-
-See `evidence_layer/` for complete documentation, schemas, and templates.
-
-
-### Chapter Evidence Binding Mode (v5.3.1)
-
-Trigger when the user asks to bind literature to specific chapters.
-
-Actions:
-1. Load chapter outline and normalized literature records
-2. Match literature evidence roles to chapter requirements
-3. Generate `evidence_binding_records` and `chapter_evidence_map`
-4. Output coverage analysis with gap status for each chapter
-
-Run: `python3 scripts/bind_evidence_to_chapters.py --outline <file> --literature <file> --chapter <type> --output <json> --bindings-output <json>`
-
-### Citation Gap Detection Mode (v5.3.2)
-
-Trigger when the user asks to check a paragraph or chapter for citation gaps.
-
-Actions:
-1. Read user chapter draft
-2. Detect claim types (gap_claim, evaluative_claim, theoretical_claim, etc.)
-3. Match against literature records when available
-4. Generate `citation_gap_report` with claim-level gap analysis
-
-Run: `python3 scripts/detect_citation_gaps.py --input <file> --literature <file> --output <json>`
-
+This mode does **not** perform real-time search or fabricate sources. It uses user-provided normalized records. Missing evidence outputs `recommended_source_type` only.
 
 ## Planning Mode
 
