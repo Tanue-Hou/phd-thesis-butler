@@ -1,505 +1,318 @@
-# PhD Thesis Butler v5.3.4 — Dissertation Writing Intelligence Platform
+# PhD Thesis Butler v5.3.4
 
-Russian dissertation writing and polishing skill for AI assistants.
+Russian dissertation planning, evidence-aware revision, and academic polishing skill for AI assistants such as Codex, Hermes, Claude Code, and Antigravity.
 
 [中文](#中文) · [Русский](#русский) · [English](#english)
 
 ---
 
-## 🚀 能做什么
-
-- 📝 **论文结构规划** — 给定研究方向，自动规划章节、方法论和实验方案
-- 🔬 **俄罗斯文献调研** — 生成 eLIBRARY/DisserCat/РГБ/CyberLeninka 检索策略
-- 🌐 **英文文献检索** — 支持 arXiv / Semantic Scholar / OpenAlex / Crossref
-- 🔗 **文献证据绑定** — 将文献按证据角色绑定到 INTRO/METHOD/EXPERIMENT 等章节
-- 🔍 **引用缺口检测** — 检测段落中哪些论断缺引用，标记 missing/partial/covered
-- 📊 **可读报告生成** — 自动生成俄语 Markdown 报告（风险→补引用→已覆盖→检索建议）
-- 🎯 **俄语学术润色** — 基于 16,722 个俄语学术句模进行句式替换和语法修正
-- ✅ **论文逻辑审校** — 检查文章是否形成「问题→目标→方法→验证→结论」闭环
-
----
-
----
-
 ## 中文
 
-### 这是什么
+### 一句话说明
 
-PhD Thesis Butler 是一个面向俄罗斯 кандидат наук / 博士论文写作的 Codex/Hermes skill。它不是"一键代写论文"的工具，而是一个可安装、可检索、可验证的论文写作辅助包。
+**PhD Thesis Butler 是一个开源俄语论文写作 Skill，可供 Codex、Hermes、Claude Code、Antigravity 等智能体调用，用于论文结构规划、文献证据检查和俄语学术润色。**
 
-#### 核心能力一览
+它面向正在写俄语 кандидат наук / PhD / 博士论文、俄语期刊论文、开题报告、章节草稿和文献综述的人。它的目标是帮助用户把研究想法变成结构清晰、证据更稳、表达更像俄罗斯学术写作的论文文本。
 
-| 能力 | 说明 |
-|:-----|:-----|
-| 📝 **论文结构规划** | 给定研究方向，自动规划章节结构、研究问题、方法论路线和实验验证方案 |
-| 🔬 **俄罗斯文献调研** | 生成 eLIBRARY/РИНЦ、DisserCat、РГБ、CyberLeninka 的检索策略，含ВАК代码和学科关键词 |
-| 🌐 **英文文献检索** | 支持 arXiv、Semantic Scholar、OpenAlex、Crossref 检索策略生成 |
-| 🔗 **文献证据绑定** | 将查到的文献按证据角色绑定到具体章节（INTRO/SURVEY/METHOD/EXPERIMENT等） |
-| 🔍 **引用缺口检测** | 检测用户段落中哪些论断需要引用，识别 missing/partial/covered 状态，给出补查建议 |
-| 📊 **可读报告生成** | 将引用分析JSON转为俄语Markdown报告（必须补引用的句子、建议补充、已覆盖等6大区块） |
-| 🎯 **俄语学术润色** | 基于16,722个俄语学术句模进行句式替换、语法修正和学术表达提升 |
-| ✅ **论文逻辑审校** | 检查完整文章是否形成"问题→目标→任务→方法→验证→结论"闭环 |
+> 它不是代写工具。它不替代作者贡献、导师判断、事实核验或学术伦理责任。
 
-v5.2 的核心目标是：**从"会写俄语论文"升级为"会调研俄罗斯文献、会规划论文结构、会引用证据、会润色成稿"的俄罗斯博士论文智能体。**
+### 最核心能做什么
 
+优先级从高到低：
 
-### 文献检索与调研能力
+| 优先级 | 能力 | 适合什么时候用 |
+|---:|---|---|
+| 1 | **论文结构规划** | 只有研究方向、题目、方法想法或导师要求时，生成论文结构、章节顺序、研究问题、目标、任务和逻辑链。 |
+| 2 | **文献调研路径设计** | 需要围绕 eLIBRARY、DisserCat、CyberLeninka、OpenAlex 等来源规划检索式、标准化文献记录、生成参考文献调研 brief。 |
+| 3 | **证据绑定与引用缺口检查** | 已经有章节或草稿时，检查哪些论断缺引用、哪些文献适合放到引言/综述/方法/实验/结论。 |
+| 4 | **俄语学术润色** | 已经写出俄语段落、章节或全文时，在不改变作者意思的前提下优化学术表达、段落衔接和机器化痕迹；可能有助于降低文本的 AI 味，但暂未做全量验证。 |
+| 5 | **私有扩展基础** | 未来用户可以把自己的领域论文、Zotero 文献或私有材料脱敏后接入扩展层。 |
 
-v5.2 受开源项目 [academic-search](https://github.com/ustc-ai4science/academic-search) 启发，在其多平台检索架构基础上，针对俄罗斯学术生态做了深度适配和功能扩展。
+### 典型使用场景
 
-**俄语检索（特色强化）**
+#### 1. 从想法到论文框架
 
-| 数据源 | 特色能力 |
-|:-------|:---------|
-| **eLIBRARY / РИНЦ** | 俄罗斯最大科学引文数据库。可检索期刊论文、会议论文、专著；获取РИНЦ引用数、ВАК专业代码、作者机构信息。适合支撑文献综述、актуальность论证、研究空白定位和引用依据。 |
-| **DisserCat** | 俄罗斯学位论文目录。可检索相近 кандидат/доктор 论文；查看学科代码、章节结构预览、参考文献池。适合支撑论文结构范式参照、章节安排参考、相近选题对比、专业代码匹配。 |
-| **РГБ / НЭБ** | 俄罗斯国家图书馆电子馆藏，作为 DisserCat 的官方补充验证源。 |
-| **CyberLeninka** | 开放获取俄语论文平台，CC协议，全文可读。适合补充开放获取文献。 |
+```text
+我想写车辆状态估计和横向控制方向的俄语博士论文，请帮我规划整体结构。
+```
 
-**英文/国际检索（academic-search 融合）**
+可以得到：
 
-| 数据源 | 特色能力 |
-|:-------|:---------|
-| **arXiv** | 预印本，适合最新方法追踪，OAI-PMH API |
-| **Semantic Scholar** | 语义搜索+引用图，适合高引论文定位和引用分析 |
-| **OpenAlex** | 开放学术图谱，250M+作品，免费API，适合文献计量 |
-| **Crossref** | DOI元数据+引用关系，适合补全引用格式 |
+- 学科大类判断；
+- 论文整体章节顺序；
+- 每章应该完成的写作功能；
+- 问题、目标、任务、方法、实验、结论之间的闭环；
+- 哪些章节需要模型、实验、对比、消融或案例论证。
 
-**融合方式**
+#### 2. 从研究思路到方法论路线
 
-不是将 academic-search 的代码直接复制，而是借鉴其**平台路由 + 统一元数据 schema + 两遍检索 + 去重合并**的架构思路，重新针对俄罗斯论文写作场景设计：
+```text
+我的思路是用多传感器融合提高车辆控制稳定性，请拆成研究问题、目标、任务和实验路线。
+```
 
-- 新增 `research_layer/` 完整调研工作流（检索策略生成 → 文献接收 → 元数据标准化 → 综述生成）
-- 8 个数据源各配独立 profile（搜索方法、字段映射、限制说明）
-- 5 个学科各有专用检索模板（关键词、ВАК代码、典型检索式）
-- 输出统一为 `russian_literature_record` / `russian_dissertation_record` 两种 schema
-- 参考文献列表支持 ГОСТ Р 7.0.5-2008 和 Harvard 两种引用格式
+可以得到：
 
+- 研究问题类型；
+- 方法论路线；
+- 变量、模型、数据、指标和验证设计；
+- 可能的 benchmark、对比方法和风险点。
 
-### 作用边界
+#### 3. 从文献到章节证据
 
-这个 skill 能帮助智能体更像一位“论文写作助手”和“结构审稿助手”：
+```text
+请帮我判断这些文献应该分别支撑引言、综述、方法章还是实验章。
+```
 
-- 理解用户的研究想法，并转化为论文结构；
-- 判断论文适合哪类学科写作范式；
-- 给出章节级写作动作，例如引言如何提出问题、方法章如何建立模型、实验章如何验证；
-- 检索俄语学术表达模板，帮助用户改写或润色；
-- 检查完整文章或章节是否形成问题-目标-任务-方法-验证-结论闭环；
-- 对已经写完的文章进行基于原始思路的润色，而不是脱离作者意图重写；
-- 提醒常见错误，例如目标过宽、任务和结论不对应、实验指标不足、章节功能混乱。
+可以得到：
 
-它不能替代：
+- 文献证据角色：background、research gap、method basis、benchmark、empirical support 等；
+- 章节证据地图；
+- 哪些章节证据足够，哪些只是 partial，哪些还需要补 eLIBRARY / DisserCat / CyberLeninka 文献。
 
-- 作者本人的研究贡献；
-- 导师意见；
-- 事实核验；
-- 学术伦理判断；
-- 学校或期刊的正式审查。
+#### 4. 检查引用缺口
 
-禁止将本 skill 用于自动生成完整学位论文、规避学术审查或把模板原样复制为最终论文。
+```text
+这是我的第二章，请检查哪些论断缺少引用支撑，并告诉我应该补什么类型的文献。
+```
 
-### 数据与资产
+可以得到：
 
-公开包只包含蒸馏后的写作资产，不包含原始 PDF、全文、作者可追溯信息、LLM 调用记录或私有构建缓存。
+- 每个论断的 `covered / partial / missing / not_needed` 状态；
+- 证据覆盖率、需引用论断比例；
+- 高风险缺口；
+- 可读 Markdown 报告；
+- 下一步检索建议。
+
+#### 5. 润色已经写好的俄语论文
+
+```text
+这是我写好的俄语引言。请保留我的原始思路，优化学术表达和段落逻辑，不要新增未经我提供的事实。
+```
+
+可以得到：
+
+- 更自然的俄语学术表达；
+- 更清楚的段落衔接；
+- 减少机器化、直译化、口语化表达；
+- 对目标、任务、结论不一致之处提出修改意见。
+
+### 这不是做什么
+
+请不要把本 skill 用于：
+
+- 一键生成完整学位论文；
+- 编造实验、数据、文献或引用；
+- 绕过导师、学校、期刊或学术伦理审查；
+- 直接复制模板作为最终论文文本；
+- 代替作者完成研究贡献。
+
+推荐用法是：**作者提供真实研究内容，智能体帮助规划、检查、组织、润色和提示风险。**
+
+### 核心资产
+
+公开仓库只包含脱敏和蒸馏后的知识资产，不包含原始 PDF、全文语料、作者可追溯信息、私有 LLM 调用记录或 `.phd_build/` 构建缓存。
 
 | 资产层 | 数量 / 状态 | 作用 |
 |---|---:|---|
-| 俄语表达与润色模板层 | 16,722 条 | 用于句式替换、段落润色、章节表达增强；这是润色层，不代表整个系统规模。 |
-| 论文范式蒸馏来源 | 2,118 篇公开俄罗斯学位论文 | 用于形成结构、方法论、逻辑链和学科写作范式。 |
-| 深度语义分析样本 | 679 篇 | 用于提取章节功能、方法路线、实验验证模式和逻辑闭环规则。 |
-| 学科大类知识资产 | 5 个 | 覆盖自动化控制、理工、农医、艺术体育、人文政经。 |
-| 论文规划推理聚类 | 6 个 | 用于从研究想法生成章节蓝图、实验设计和导师汇报结构。 |
-| 表达质量分级 | Q2: 4,236 / Q1: 10,486 / Q0: 2,000 | 用于优先调用高质量俄语表达模板。 |
+| 俄语表达与润色模板 | 16,722 条 | 用于句式替换、段落润色、章节表达增强。这只是语言润色层，不代表系统全部能力。 |
+| 公开俄罗斯学位论文蒸馏来源 | 2,118 篇 | 用于形成论文结构、方法论路线、逻辑链和学科写作范式。 |
+| 深度分析样本 | 679 篇 | 用于提取章节功能、方法路线、验证模式和逻辑闭环规则。 |
+| 学科大类资产 | 5 个 | 自动化控制、理工、农医、艺术体育、人文政经。 |
+| 规划层聚类 | 6 个 | 用于把研究想法转成章节蓝图、方法路线、实验设计和汇报结构。 |
+| 模板质量分级 | Q2: 4,236 / Q1: 10,486 / Q0: 2,000 | 用于优先调用更可靠的俄语学术表达。 |
 
-换句话说，`16,722` 是**语言表达和润色引擎**的规模；整个 skill 的核心价值在于把这些表达模板与论文结构范式、方法论路线、实验验证模式和逻辑闭环规则组合成一个可调用的 dissertation-writing intelligence system。
+### 五大学科大类
 
-五大学科大类资产位于 `assets/references/disciplines/`：
-
-- `AUTOMATION_CONTROL`：自动化、控制、车辆控制方向，深度增强；
-- `SCI_TECH`：理工类；
-- `AGRI_MED`：农医类；
-- `ARTS_SPORTS`：艺术体育类；
-- `HUM_POL_ECON`：人文、政治、经济类。
-
-规划层位于 `planning_layer/`，用于论文结构、章节任务、方法论路线、实验方案和逻辑链设计。
-
-### 版本迭代
-
-| 版本 | 重点 | 说明 |
-|---|---|---|
-| v1.0 | 初始句式库 | 手工整理基础俄语学术表达。 |
-| v2.0 | 模板扩展 | 从公开俄罗斯论文中扩展到较大规模句式模板。 |
-| v3.0 | 质量体系 | 引入 Q0/Q1/Q2 质量分级、学科聚类和三层检索。 |
-| v3.3.5 | 稳定基线 | 完成资产校验、规划层和较稳定的运行时模板检索。 |
-| v4.0 | 语料蒸馏设计 | 从单纯句式库升级为论文结构、方法论、逻辑链蒸馏系统。 |
-| v5.0 | 全量范式资产 | 汇总 2,118 篇分类论文和 679 篇深度分析，形成五大学科资产。 |
-| v5.1.0 | 不重训练升级 | 保留原句式库，增强结构、方法论、逻辑链、章节写作规则。 |
-| v5.1.1 | 学科资产标准化 | 五大学科 JSON 统一为七类资产格式，并加入 evidence 字段。 |
-| v5.1.2 | 语义级清理 | 修复中文污染、混合语言条目和检索暴露问题。 |
-| v5.1.3 | 运行时可靠性 | 强化验证器、隐藏 mixed 条目、重写 README、明确公开包边界。 |
-| v5.2.0 | Russian Research Layer | 新增调研层：8个数据源profile、2个元数据schema、文献标准化与综述生成脚本。 |
-| v5.2.1 | 一致性修复 | 版本统一、CJK深层清理、normalize字段兼容、build_literature_review_brief.py入库。 |
-| v5.2.2 | 最终收尾 | 版本统一到5.2.2、检索能力说明、学科映射增强、brief去重、目录树补全。 |
-| v5.3.0 | Evidence-Aware Writing | 新增证据层：12种证据角色、3个绑定schema、引用缺口检测规则、16/16验证门禁。 |
-| v5.3.1 | Chapter Binding + Gap Detection | 章节证据绑定脚本 + 引用缺口检测脚本 + 24/24验证门禁。 |
-| v5.3.2 | 质量优化 | coverage指标语义修正、SKILL.md精简至519行。 |
-| v5.3.3 | 证据层稳定化 | 6种新claim类型、reason解释字段、render报告脚本、evals测试集。 |
-| v5.3.4 | Zotero兼容 + 报告修复 | year=null修复、版本统一、报告语义修正、27/27验证门禁。 |
-
-### 能做什么
-
-#### 1. 基于想法规划论文
-
-当用户只有研究思路时，智能体可以帮助：
-
-- 判断研究方向对应的学科大类；
-- 生成博士论文整体结构；
-- 设计章节顺序和每章功能；
-- 把“研究想法”拆成问题、目标、任务、方法、实验、结论；
-- 给出导师汇报或开题报告框架；
-- 建议哪些章节需要模型、实验、对比、消融、案例或规范论证。
-
-示例：
-
-```text
-我想写车辆横向控制和状态估计方向的俄语博士论文，请帮我规划整体结构。
-我只有一个想法：用多传感器融合提高控制稳定性，请帮我拆成研究问题、目标、任务和实验路线。
-帮我设计一个控制类博士论文的章节顺序，并说明每章应该完成什么写作功能。
-```
-
-#### 2. 润色已经完成的文章
-
-当用户已经写完一章、一个小节或整篇文章时，智能体可以帮助：
-
-- 保留作者原始思路，不改变核心论点；
-- 把口语化或机器化表达改成更自然的俄语学术表达；
-- 检查术语、句式、段落衔接和章节功能是否一致；
-- 按俄罗斯论文常见结构重排段落；
-- 检查结论是否回应目标和任务；
-- 给出“应该改哪里、为什么改、如何改”的建议。
-
-示例：
-
-```text
-这是我写完的俄语引言，请基于我的原始思路进行学术润色，不要改变研究含义。
-请检查这篇文章是否有 AI 味太重、逻辑跳跃或俄语学术表达不自然的问题。
-请按俄罗斯博士论文风格润色这一章，并指出哪些段落需要重排。
-请只优化表达和逻辑衔接，不新增未经我提供的事实。
-```
-
-#### 3. 检索俄语句式模板
-
-当用户需要某一章节的表达时，智能体可以调用句式库：
-
-```bash
-python3 scripts/retrieve_templates.py \
-  --category INTRO \
-  --cluster AUTOMATION_CONTROL \
-  --query "цель исследования актуальность" \
-  --limit 5
-```
-
-常用 `category`：
-
-- `INTRO`：引言、 актуальность、目标、任务；
-- `SURVEY`：文献综述、已有方法、研究空白；
-- `MODEL`：模型、假设、变量、约束；
-- `METHOD`：方法、算法、流程；
-- `EXPERIMENT`：实验设计、指标、对比；
-- `RESULT`：结果描述；
-- `DISCUSSION`：讨论、限制、解释；
-- `CONCLUSION`：结论、贡献、未来工作；
-- `TRANSITION`：章节过渡。
-
-普通检索默认隐藏 `v5_lang=mixed` 条目，只返回俄语安全内容。
-
-#### 4. 检查逻辑闭环
-
-适合检查完整文章或章节链条：
-
-```text
-请检查我的论文是否形成：问题 → 目标 → 任务 → 方法 → 实验 → 结果 → 结论 的闭环。
-请找出这篇文章中目标和结论不对应的地方。
-请检查实验指标是否足以支撑我的研究贡献。
-```
-
-#### 5. 支持私有扩展
-
-用户可以未来用自己的论文或领域文献构建私有扩展包。公开 skill 不直接包含用户私有语料；建议在本地完成抽取、脱敏、聚合，再接入 `extension_layer/`。
-
-### 运行逻辑
-
-智能体应按任务类型选择资产：
-
-| 用户意图 | 优先资产 |
+| 学科资产 | 覆盖范围 |
 |---|---|
-| 论文规划、开题、章节结构 | `planning_layer/` |
-| 学科范式、方法论路线、逻辑链 | `assets/references/disciplines/` |
-| 俄语句式、段落表达、润色替换 | `scripts/retrieve_templates.py` + `assets/cluster/` + `assets/global/` |
-| 已完成文章润色 | 先理解作者思路，再结合句式库和学科规则局部改写 |
-| 用户私有论文学习 | `extension_layer/` 作为未来私有扩展入口 |
+| `AUTOMATION_CONTROL` | 自动化、控制、车辆控制、状态估计，重点增强。 |
+| `SCI_TECH` | 理工类、工程类、自然科学类。 |
+| `AGRI_MED` | 农业、医学、生物、健康相关方向。 |
+| `ARTS_SPORTS` | 艺术、文化、体育相关方向。 |
+| `HUM_POL_ECON` | 人文、政治、经济、管理、社会科学方向。 |
+
+每个学科资产围绕七类知识组织：
+
+```text
+typical_structures
+chapter_sequence
+research_question_types
+methodology_routes
+logic_chains
+validation_patterns
+chapter_writing_rules
+```
+
+### 能力层级
+
+```text
+User request
+  ├─ 论文规划 / 开题 / 章节设计
+  │    └─ planning_layer/
+  ├─ 学科范式 / 方法论 / 逻辑闭环
+  │    └─ assets/references/disciplines/
+  ├─ 文献调研 / 检索式 / 元数据标准化
+  │    └─ research_layer/ + normalize/build_review scripts
+  ├─ 证据绑定 / 引用缺口检测
+  │    └─ evidence_layer/ + bind/detect/render scripts
+  └─ 俄语表达 / 润色 / 句式替换
+       └─ retrieve_templates.py + assets/cluster + assets/global
+```
+
+### 如何实际使用
+
+普通用户不需要手动运行脚本。这个仓库的脚本和资产主要交给 **Codex / Hermes / Claude Code / Antigravity** 等智能体在后台调用。
+
+你只需要对智能体说清楚任务，例如：
+
+```text
+请用 phd-thesis-butler 帮我规划一篇俄语博士论文结构。
+请检查这章哪些论断缺少引用。
+请根据这些参考文献判断它们应该放在引言、综述、方法章还是实验章。
+请保留我的原意，润色这段俄语论文文本。
+```
+
+开发者如果需要调试具体脚本，可以查看 `scripts/`、`research_layer/` 和 `evidence_layer/` 中的示例文件。
 
 ### 仓库结构
 
 ```text
 phd-thesis-butler/
 ├── SKILL.md
-├── BUILD_INFO.json
 ├── README.md
+├── BUILD_INFO.json
 ├── CHANGELOG.md
 ├── assets/
-│   ├── cluster/
-│   ├── global/
+│   ├── cluster/                 # 句式模板聚类资产
+│   ├── global/                  # 全局模板资产
 │   └── references/
-│       ├── disciplines/
-│       ├── schemas/
-│       ├── corpus_summary_v5.json
-│       ├── cross_cluster_insights_v5.json
-│       └── polishing_rules_v5.json
-├── research_layer/
-│   ├── sources/ (8 data sources)
-│   ├── templates/ (5 discipline strategies)
-│   └── examples/
-├── evidence_layer/
-│   ├── EVIDENCE_ROLE_TAXONOMY.md
-│   ├── CHAPTER_EVIDENCE_BINDING.md
-│   ├── CITATION_GAP_DETECTION.md
-│   ├── templates/
-│   └── examples/
-├── planning_layer/
-│   ├── clusters/
-│   ├── patterns/
-│   ├── schemas/
-│   ├── templates/
-│   ├── THESIS_PLANNER.md
-│   ├── METHODOLOGY_GUIDE.md
-│   ├── LOGIC_FLOW_GUIDE.md
-│   └── EXPERIMENT_DESIGN_GUIDE.md
-├── scripts/
-│   ├── retrieve_templates.py
-│   ├── normalize_russian_metadata.py
-│   ├── build_literature_review_brief.py
-│   ├── validate_skill_assets.py
-│   ├── validate_planning_assets.py
-│   ├── validate_research_layer.py
-│   ├── validate_evidence_layer.py
-│   └── smoke_test.sh
-├── research_layer/
-├── evidence_layer/
-└── extension_layer/
+│       ├── disciplines/         # 五大学科大类资产
+│       └── schemas/             # 公开 schema
+├── planning_layer/              # 论文规划、方法论、实验设计、逻辑闭环
+├── research_layer/              # 文献调研来源、检索策略、示例
+├── evidence_layer/              # 证据角色、章节绑定、引用缺口检测
+├── extension_layer/             # 用户私有扩展入口
+└── scripts/                     # 检索、调研、证据、验证脚本
 ```
 
 ### 验证
 
-公开仓库可直接运行：
-
 ```bash
 python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
+python3 scripts/validate_research_layer.py
+python3 scripts/validate_evidence_layer.py
 bash scripts/smoke_test.sh
 ```
 
-这些检查覆盖版本一致性、资产目录、discipline JSON schema、planning layer、CJK 污染、检索脚本和本地路径泄漏。
+`v5.3.4` 当前验证重点：
 
-### 公开包与私有管线边界
+- 版本一致性；
+- 资产 JSON / JSONL 可解析；
+- planning layer 完整性；
+- research layer 元数据标准化；
+- evidence layer schema 与安全不变量；
+- `year: null` Zotero metadata 兼容；
+- citation gap 报告中 `covered` 与 `not_needed` 分离；
+- 普通模板检索隐藏 mixed/CJK 污染条目。
 
-公开包只保留用户运行所需的资产和脚本。以下内容不属于公开包：
+### 版本路线
 
-- 原始论文 PDF；
-- `.phd_build/`；
-- Layer 0-6 全量处理脚本；
-- 私有 LLM 调用记录；
-- 作者、学校、具体论文级追溯信息；
-- 私有测试或抽样审计目录。
+| 版本 | 重点 |
+|---|---|
+| v3.3.5 | 稳定句式库、规划层和模板检索基线。 |
+| v5.0 | 从句式库升级为论文范式资产。 |
+| v5.1 | 五大学科资产、结构/方法论/逻辑链增强，不重新训练。 |
+| v5.2 | Research Layer：俄语与国际文献调研路径、元数据标准化、综述 brief。 |
+| v5.3 | Evidence-Aware Writing：章节证据绑定、引用缺口检测、可读报告。 |
+| 下一步 | Semantic Evidence Matching：解决俄语正文与英文/中文/Zotero 文献元数据之间的跨语言匹配问题。 |
 
-如果继续训练或蒸馏新的论文，应在本地私有管线完成，再把脱敏后的聚合资产发布到 `assets/references/`。
+完整记录见 [CHANGELOG.md](CHANGELOG.md)。
+
+### 参与开发
+
+欢迎提交：
+
+- 新学科方向的写作规则；
+- 更好的俄语学术表达模板；
+- eLIBRARY / DisserCat / CyberLeninka 检索策略；
+- Zotero、本地文献库、BibTeX 工作流集成；
+- 证据匹配与引用缺口检测的测试用例；
+- 不同学科的论文结构范式反馈。
+
+优先贡献方向：
+
+1. 跨语言语义证据匹配；
+2. 更严格的学科过滤与模板路由；
+3. `evals/` 自动评测集；
+4. 用户私有扩展层；
+5. 插件 / MCP 版本的实时检索能力。
 
 ### 学术诚信
 
-本 skill 是学术写作辅助工具。它可以帮助规划、润色、检查和检索表达，但不能替代作者的研究工作。任何输出都必须由作者本人进行实质性修改、事实核验、逻辑整合和学术责任承担。
+PhD Thesis Butler 是科研写作辅助工具。它可以帮助规划、检索、检查、润色和提出修改意见，但所有事实、引用、实验、结论和学术责任都必须由作者本人确认。
 
 ---
 
 ## Русский
 
-### Что это такое
+### Кратко
 
-PhD Thesis Butler — это skill для Codex/Hermes, предназначенный для помощи в написании российских диссертаций уровня кандидат наук / PhD. Это не инструмент для автоматического написания диссертации. Это пакет проверяемых письменных активов, который помогает AI-ассистенту работать как помощник по структуре, методологии, логике и русскоязычной академической формулировке.
+**PhD Thesis Butler — это open-source skill для AI-ассистентов, таких как Codex, Hermes, Claude Code и Antigravity. Он помогает планировать структуру русской диссертации, проверять доказательную базу и редактировать академический русский текст.**
 
-Skill полезен в двух основных ситуациях:
+Это не генератор диссертаций. Skill помогает автору планировать, проверять, связывать утверждения с источниками и улучшать уже написанный русский академический текст.
 
-- **От идеи к плану**: у пользователя есть тема, гипотеза, метод или требования научного руководителя; skill помогает построить структуру, задачи, методологию и план проверки.
-- **От готового текста к улучшению**: у пользователя уже есть статья, глава, раздел или черновик; skill помогает отполировать стиль, улучшить логику, сохранить исходный смысл и приблизить текст к русской академической манере.
+### Главные возможности
 
-Цель v5.2: **дать ассистенту возможность не только писать диссертацию, но и исследовать российскую научную литературу, планировать структуру, подбирать источники и оформлять обзор.**
+| Приоритет | Возможность | Когда использовать |
+|---:|---|---|
+| 1 | **Планирование диссертации** | Тема, идея, метод или требования руководителя уже есть, но нужна структура глав и логика исследования. |
+| 2 | **Литературный поиск** | Нужно спланировать поиск по eLIBRARY, DisserCat, CyberLeninka, OpenAlex и нормализовать метаданные. |
+| 3 | **Evidence-aware writing** | Нужно понять, какие утверждения требуют ссылок и какие источники подходят к главам. |
+| 4 | **Русская академическая полировка** | Черновик уже написан, нужно улучшить стиль, связность и научную формулировку; это может помочь снизить машинный оттенок текста, но пока не проверено на полномасштабной оценке. |
+| 5 | **Частное расширение** | Пользователь хочет позже подключить собственный корпус или Zotero-библиотеку. |
 
-### Роль и границы
-
-Skill помогает:
-
-- превратить исследовательскую идею в структуру диссертации;
-- определить дисциплинарный профиль;
-- спланировать главы и функции разделов;
-- выбрать методологический маршрут;
-- подобрать русскоязычные академические шаблоны;
-- проверить цепочку проблема-цель-задачи-метод-проверка-вывод;
-- редактировать уже написанный текст, сохраняя мысль автора;
-- выявлять типичные ошибки структуры, логики и выражения.
-
-Skill не заменяет автора, научного руководителя, фактчекинг, рецензирование или академическую ответственность. Его нельзя использовать для автоматической генерации полной диссертации или обхода академической этики.
-
-### Данные и активы
-
-Публичный пакет содержит только дистиллированные активы. Он не содержит исходные PDF, полные тексты, имена авторов, трассируемые метаданные, журналы LLM-вызовов или приватные build-кэши.
-
-| Уровень активов | Значение | Назначение |
-|---|---:|---|
-| Уровень русской формулировки и полировки | 16 722 записи | Используется для переформулирования, стилистической полировки и усиления академического выражения; это языковой слой, а не весь масштаб системы. |
-| Источник дистилляции диссертационных парадигм | 2 118 публичных российских диссертаций | Основа для структур, методологии, логических цепочек и дисциплинарных моделей письма. |
-| Глубокий семантический анализ | 679 работ | Извлечение функций глав, методологических маршрутов, экспериментальных схем и правил логической замкнутости. |
-| Дисциплинарные knowledge assets | 5 профилей | Автоматизация/управление, science/engineering, agriculture/medicine, arts/sports, humanities/politics/economics. |
-| Планировочные кластеры | 6 кластеров | Преобразование исследовательской идеи в структуру глав, экспериментальный дизайн и план доклада руководителю. |
-| Качество выражений | Q2: 4 236 / Q1: 10 486 / Q0: 2 000 | Приоритетное использование более сильных русскоязычных формулировок. |
-
-Иными словами, `16 722` — это масштаб **языкового и полировочного слоя**. Главная ценность skill — объединение этого слоя со структурами диссертаций, методологическими маршрутами, экспериментальными паттернами и правилами логической замкнутости.
-
-Пять профилей находятся в `assets/references/disciplines/`:
-
-- `AUTOMATION_CONTROL`: автоматизация, управление, транспортные системы; усиленный профиль;
-- `SCI_TECH`: инженерные и естественно-научные направления;
-- `AGRI_MED`: аграрные и медицинские направления;
-- `ARTS_SPORTS`: искусство, культура, спорт;
-- `HUM_POL_ECON`: гуманитарные, политические и экономические направления.
-
-Планировочные материалы находятся в `planning_layer/`.
-
-### История версий
-
-| Версия | Фокус | Описание |
-|---|---|---|
-| v1.0 | Базовые фразы | Ручная коллекция академических русских формулировок. |
-| v2.0 | Расширение шаблонов | Увеличение корпуса шаблонов на основе публичных диссертаций. |
-| v3.0 | Качество и поиск | Q0/Q1/Q2, кластеризация, трехуровневый retrieval. |
-| v3.3.5 | Стабильная база | Валидация активов, planning layer, стабильный runtime retrieval. |
-| v4.0 | Дистилляция корпуса | Переход от банка фраз к структуре, методологии и логике диссертации. |
-| v5.0 | Полные профильные активы | 2 118 классифицированных работ и 679 глубоких анализов. |
-| v5.1.0 | Обновление без дообучения | Усиление структуры, методологии, логических цепочек и правил глав. |
-| v5.1.1 | Стандартизация профилей | Пять discipline JSON приведены к единому формату. |
-| v5.1.2 | Семантическая чистка | Исправлены mixed/CJK записи и runtime-фильтрация. |
-| v5.1.3 | Надежность runtime | Усилен validator, hidden mixed entries, уточнены README и границы пакета. |
-| v5.2.0 | Russian Research Layer | Добавлен исследовательский слой: 8 профилей, 2 схемы метаданных, скрипты нормализации и обзора. |
-| v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
-| v5.2.2 | Финальное закрытие | Унификация версии до 5.2.2, описание поисковых возможностей, усиление маппинга дисциплин. |
-| v5.3.0 | Evidence-Aware Writing | Добавлен слой Evidence Layer: 12 ролей свидетельств, 3 схемы привязки, правила обнаружения пробелов в цитировании. |
-| v5.3.1 | Chapter Binding + Gap Detection | Скрипты привязки глав и обнаружения пробелов в цитировании, 24/24 проверки. |
-| v5.3.2 | Оптимизация качества | Исправление семантики coverage, сокращение SKILL.md до 519 строк. |
-| v5.3.3 | Стабилизация Evidence Layer | 6 новых типов claim, поле reason, скрипт отчёта, evals-тесты. |
-| v5.3.4 | Совместимость с Zotero | Исправление year=null, унификация версий, исправление семантики отчёта. |
-
-### Что можно делать
-### Возможности поиска литературы
-
-v5.2 вдохновлён открытым проектом [academic-search](https://github.com/ustc-ai4science/academic-search). На его многоплатформенной архитектуре поиска выполнена глубокая адаптация под российскую академическую экосистему.
-
-**Поиск на русском языке**
-
-| Источник | Возможности |
-|:---------|:------------|
-| **eLIBRARY / РИНЦ** | Крупнейшая база научных статей России. Поиск журнальных статей, конференций, монографий; получение числа цитирований РИНЦ, кодов ВАК, информации об авторах и организациях. |
-| **DisserCat** | Каталог диссертаций. Поиск кандидатских и докторских диссертаций по специальности; просмотр структуры глав, списка литературы. |
-| **РГБ / НЭБ** | Официальное дополнение к DisserCat, электронный фонд РГБ. |
-| **CyberLeninka** | Открытые статьи на русском языке, лицензия CC, полный текст доступен. |
-
-**Поиск на английском языке**
-
-| Источник | Возможности |
-|:---------|:------------|
-| **arXiv** | Препринты, OAI-PMH API, категорийный поиск |
-| **Semantic Scholar** | Семантический поиск, граф цитирований |
-| **OpenAlex** | Открытая академическая карта, 250M+ работ |
-| **Crossref** | DOI-метаданные, связи цитирований |
-
-
-
-
-#### Планирование по идее
+### Типовые задачи
 
 ```text
 Помоги спланировать структуру диссертации по управлению транспортным средством.
-У меня есть идея о мультисенсорном слиянии для устойчивости управления. Разложи ее на проблему, цель, задачи и эксперименты.
-Составь план глав для диссертации по автоматическому управлению и объясни функцию каждой главы.
+Разложи мою идею на проблему, цель, задачи, метод и экспериментальную проверку.
+Проверь, какие утверждения во второй главе требуют ссылок.
+Отполируй введение на русском, сохранив мой исходный смысл.
 ```
 
-#### Полировка готового текста
+### Основные слои
 
 ```text
-Вот готовое введение на русском. Отполируй его академически, сохранив мой смысл.
-Проверь, нет ли в этом разделе машинного стиля, логических скачков или слабой русской академической формулировки.
-Перестрой абзацы этой главы под стиль российской диссертации, но не добавляй новых фактов.
+planning_layer/                         структура, главы, методология, эксперименты
+assets/references/disciplines/          дисциплинарные writing profiles
+research_layer/                         стратегии поиска и нормализация литературы
+evidence_layer/                         роли источников, привязка к главам, citation gaps
+assets/cluster/ + assets/global/        русские шаблоны и полировка
+extension_layer/                        будущие пользовательские расширения
 ```
 
-#### Поиск шаблонов
+### Активы
 
-```bash
-python3 scripts/retrieve_templates.py \
-  --category METHOD \
-  --cluster AUTOMATION_CONTROL \
-  --query "модель эксперимент верификация" \
-  --limit 5
-```
+| Слой | Объём | Назначение |
+|---|---:|---|
+| Русские шаблоны и полировка | 16 722 | Академические формулировки и редактирование текста. |
+| Источник диссертационной дистилляции | 2 118 работ | Структура, методология, логика и дисциплинарные паттерны. |
+| Глубокий анализ | 679 работ | Функции глав, методы, валидация, логические цепочки. |
+| Дисциплинарные профили | 5 | Automation/control, science/engineering, agriculture/medicine, arts/sports, humanities/economics/politics. |
+| Planning clusters | 6 | Преобразование идеи в план глав и проверочную логику. |
 
-Категории: `INTRO`, `SURVEY`, `MODEL`, `METHOD`, `EXPERIMENT`, `RESULT`, `DISCUSSION`, `CONCLUSION`, `TRANSITION`.
+### Как использовать
 
-Обычный поиск скрывает записи с `v5_lang=mixed`.
+Обычному пользователю не нужно запускать скрипты вручную. Активы и утилиты этого репозитория предназначены для вызова AI-ассистентом, например Codex, Hermes, Claude Code или Antigravity.
 
-#### Проверка логики
+Пользователь формулирует задачу естественным языком:
 
 ```text
-Проверь, замкнута ли логика проблема → цель → задачи → метод → эксперимент → вывод.
-Найди места, где выводы не отвечают заявленным задачам.
-Проверь, достаточно ли экспериментальных метрик для заявленного вклада.
-```
-
-### Runtime-логика
-
-| Запрос пользователя | Основной актив |
-|---|---|
-| План, структура, главы | `planning_layer/` |
-| Методология, логика, дисциплинарная модель | `assets/references/disciplines/` |
-| Фразы, абзацы, редактирование | `scripts/retrieve_templates.py` и JSONL-активы |
-| Полировка готовой статьи | Сначала смысл автора, затем локальная правка по шаблонам и правилам |
-| Частный корпус пользователя | `extension_layer/` как будущий вход |
-
-### Структура репозитория
-
-```text
-phd-thesis-butler/
-├── SKILL.md
-├── BUILD_INFO.json
-├── README.md
-├── CHANGELOG.md
-├── assets/
-│   ├── cluster/
-│   ├── global/
-│   └── references/
-│       ├── disciplines/
-│       ├── schemas/
-│       ├── corpus_summary_v5.json
-│       ├── cross_cluster_insights_v5.json
-│       └── polishing_rules_v5.json
-├── planning_layer/
-├── scripts/
-│   ├── retrieve_templates.py
-│   ├── normalize_russian_metadata.py
-│   ├── build_literature_review_brief.py
-│   ├── validate_skill_assets.py
-│   ├── validate_planning_assets.py
-│   ├── validate_research_layer.py
-│   ├── validate_evidence_layer.py
-│   └── smoke_test.sh
-├── research_layer/
-├── evidence_layer/
-└── extension_layer/
+Помоги спланировать структуру русской диссертации.
+Проверь, какие утверждения в этой главе требуют ссылок.
+Свяжи мои источники с введением, обзором, методической и экспериментальной главами.
+Отполируй этот русский академический текст, сохранив мой смысл.
 ```
 
 ### Проверка
@@ -507,195 +320,76 @@ phd-thesis-butler/
 ```bash
 python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
+python3 scripts/validate_research_layer.py
+python3 scripts/validate_evidence_layer.py
 bash scripts/smoke_test.sh
 ```
 
-### Академическая этика
+### Ограничения
 
-Все результаты должны быть переработаны, проверены и интегрированы автором. Skill помогает писать, планировать и редактировать, но не создает научный вклад вместо пользователя.
+Skill не заменяет автора, научного руководителя, фактчекинг, рецензирование и академическую ответственность. Нельзя использовать его для автоматического создания полной диссертации или выдумывания источников.
 
 ---
 
 ## English
 
-### What This Is
+### In One Sentence
 
-PhD Thesis Butler is a Codex/Hermes skill for assisting with Russian кандидат наук / PhD dissertation writing. It is not a one-click dissertation generator. It is a structured, auditable writing-support package that helps an AI assistant use distilled Russian dissertation-writing patterns.
+**PhD Thesis Butler is an open-source skill for AI assistants such as Codex, Hermes, Claude Code, and Antigravity. It helps with Russian dissertation planning, evidence-aware revision, and academic polishing.**
 
-It supports two major workflows:
+It is not a one-click dissertation generator. It helps authors structure real research, identify citation gaps, bind sources to chapters, and improve Russian academic writing while preserving the author's intent.
 
-- **From idea to plan**: when the user has a topic, hypothesis, method idea, or supervisor requirement, the skill helps build dissertation structure, research questions, methodology, experiments, and logic flow.
-- **From finished draft to polished text**: when the user already has an article, chapter, section, or Russian draft, the skill helps polish academic expression, improve paragraph logic, preserve the author's meaning, and align the text with Russian dissertation style.
+### Core Capabilities
 
-The goal of v5.2 is: **give assistants the ability to not only write dissertations, but also research Russian academic literature, plan structure, find sources, and generate bibliographies.**
+| Priority | Capability | Use it when |
+|---:|---|---|
+| 1 | **Dissertation planning** | You have a topic, idea, method, or supervisor requirement and need chapter structure and research logic. |
+| 2 | **Literature research workflow** | You need search paths for eLIBRARY, DisserCat, CyberLeninka, OpenAlex, metadata normalization, and review briefs. |
+| 3 | **Evidence-aware revision** | You need to know which claims need citations and which sources support which chapter. |
+| 4 | **Russian academic polishing** | You already have a Russian draft and want stronger academic style without changing meaning; it may help reduce machine-like phrasing, but this has not been fully validated at scale. |
+| 5 | **Private extension base** | You want to later connect your own papers, Zotero library, or local corpus. |
 
-### Role and Boundaries
+### Typical Prompts
 
-The skill helps an assistant:
+```text
+Plan a Russian dissertation structure for vehicle state estimation and control.
+Break my research idea into problem, goal, tasks, method, experiment, and conclusion.
+Check which claims in this chapter need citations.
+Polish this Russian introduction while preserving my meaning and not adding new facts.
+```
 
-- turn research ideas into dissertation plans;
-- classify the user's field into a writing profile;
-- design chapter sequence and chapter functions;
-- choose methodology routes;
-- retrieve Russian academic sentence patterns;
-- check problem-goal-task-method-validation-conclusion closure;
-- polish already written work while preserving the author's intent;
-- detect common failures in structure, logic, and expression.
+### Architecture
 
-It does not replace the author, supervisor, peer review, fact checking, or academic responsibility. It must not be used to auto-generate a full dissertation or bypass academic integrity requirements.
+```text
+planning_layer/                         dissertation structure, methodology, experiments
+assets/references/disciplines/          discipline-specific writing profiles
+research_layer/                         source profiles, search strategy, metadata normalization
+evidence_layer/                         evidence roles, chapter binding, citation gap detection
+assets/cluster/ + assets/global/        Russian sentence templates and polishing assets
+extension_layer/                        future private corpus extension point
+```
 
-### Data and Assets
+### Assets
 
-The public package contains distilled writing assets only. It does not include raw PDFs, full source texts, author-traceable metadata, LLM call logs, or private build caches.
-
-| Asset layer | Value | Role |
+| Layer | Scale | Role |
 |---|---:|---|
-| Russian expression and polishing layer | 16,722 entries | Used for sentence replacement, paragraph polishing, and academic expression enhancement; this is the language layer, not the whole system. |
-| Dissertation paradigm distillation source | 2,118 public Russian dissertations | Basis for structure, methodology, logic chains, and discipline-specific writing patterns. |
-| Deep semantic analysis sample | 679 papers | Extracts chapter functions, methodology routes, validation patterns, and logic-closure rules. |
-| Discipline knowledge assets | 5 profiles | Automation/control, science/engineering, agriculture/medicine, arts/sports, humanities/politics/economics. |
-| Planning-reasoning clusters | 6 clusters | Turns research ideas into chapter blueprints, experiment designs, and supervisor-report structures. |
-| Expression quality tiers | Q2: 4,236 / Q1: 10,486 / Q0: 2,000 | Prioritizes stronger Russian academic formulations at retrieval time. |
+| Russian expression and polishing layer | 16,722 entries | Sentence replacement, paragraph polishing, academic phrasing. |
+| Dissertation paradigm source | 2,118 public Russian dissertations | Structure, methodology, logic chains, discipline patterns. |
+| Deep analysis sample | 679 works | Chapter functions, validation patterns, logic closure. |
+| Discipline assets | 5 profiles | Automation/control, science/engineering, agriculture/medicine, arts/sports, humanities/economics/politics. |
+| Planning clusters | 6 clusters | Turns ideas into chapter blueprints and validation routes. |
 
-In short, `16,722` is the scale of the **language and polishing engine**. The real value of the skill is the combination of that expression layer with dissertation structure paradigms, methodology routes, validation patterns, and logic-closure rules.
+### How To Use
 
-The five discipline profiles live in `assets/references/disciplines/`:
+End users do not need to run these scripts manually. The repository is designed for AI assistants such as Codex, Hermes, Claude Code, and Antigravity to call the right assets and utilities in the background.
 
-- `AUTOMATION_CONTROL`: automation, control, vehicle control; enhanced profile;
-- `SCI_TECH`: science and engineering;
-- `AGRI_MED`: agriculture and medicine;
-- `ARTS_SPORTS`: arts, culture, and sports;
-- `HUM_POL_ECON`: humanities, politics, and economics.
-
-Planning assets live in `planning_layer/`.
-
-### Version History
-
-| Version | Focus | Notes |
-|---|---|---|
-| v1.0 | Initial phrases | Manually curated Russian academic expressions. |
-| v2.0 | Template expansion | Larger template bank from public Russian dissertations. |
-| v3.0 | Quality and retrieval | Q0/Q1/Q2 quality scoring, clustering, three-level retrieval. |
-| v3.3.5 | Stable baseline | Validation, planning layer, stable runtime retrieval. |
-| v4.0 | Corpus distillation | Shift from sentence bank to structure, methodology, and logic assets. |
-| v5.0 | Full paradigm assets | 2,118 classified papers and 679 deep analyses. |
-| v5.1.0 | No-retrain upgrade | Added structure, methodology, logic-chain, and chapter-writing rules. |
-| v5.1.1 | Profile standardization | Five discipline JSON files standardized. |
-| v5.1.2 | Semantic cleanup | Mixed/CJK entries and retrieval exposure fixed. |
-| v5.1.3 | Runtime reliability | Stronger validation, hidden mixed entries, clearer README and boundaries. |
-| v5.2.0 | Russian Research Layer | New research layer: 8 source profiles, 2 metadata schemas, literature normalization and review scripts. |
-| v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize compat, build script tracked. |
-| v5.2.2 | Final closure | Version unified to 5.2.2, search capability docs, discipline mapping enhancement, brief dedup. |
-| v5.3.0 | Evidence-Aware Writing | New evidence layer: 12 evidence roles, 3 binding schemas, citation gap rules, 16/16 validation gate. |
-| v5.3.1 | Chapter Binding + Gap Detection | Chapter evidence binding + citation gap detection scripts, 24/24 validation. |
-| v5.3.2 | Quality optimization | Coverage ratio semantic fix, SKILL.md condensed to 519 lines. |
-| v5.3.3 | Evidence layer stabilization | 6 new claim types, reason field, render report script, evals test suite. |
-| v5.3.4 | Zotero compatibility + report fix | year=null fix, version unification, report semantics, 27/27 validation. |
-### Literature Search Capabilities
-
-v5.2 is inspired by the open-source [academic-search](https://github.com/ustc-ai4science/academic-search) project. Built on its multi-platform search architecture, we deeply adapt it for the Russian academic ecosystem.
-
-**Russian-language search**
-
-| Source | Capabilities |
-|:-------|:-------------|
-| **eLIBRARY / RINC** | Russia's largest scientific citation database. Search journal articles, conference papers, monographs; retrieve RINC citation counts, VAK specialty codes, author/institution info. |
-| **DisserCat** | Russian dissertation catalog. Search candidate/doctoral theses by specialty code; preview chapter structure and bibliography. |
-| **RSL / NEB** | Russian State Library electronic collection, official supplement to DisserCat. |
-| **CyberLeninka** | Open-access Russian papers, CC license, full text available. |
-
-**English-language search**
-
-| Source | Capabilities |
-|:-------|:-------------|
-| **arXiv** | Preprints, OAI-PMH API, category-based search |
-| **Semantic Scholar** | Semantic search, citation graph, influential citations |
-| **OpenAlex** | Open scholarly graph, 250M+ works, free API |
-| **Crossref** | DOI metadata, citation relationships |
-
-
-
-
-### What It Can Do
-
-#### Plan From an Idea
+Users can simply ask:
 
 ```text
-Plan a Russian dissertation structure for a vehicle-control topic.
-I have an idea about multisensor fusion for control stability. Break it into problem, goal, tasks, and experiments.
-Design the chapter sequence for an automation-control dissertation and explain each chapter's function.
-```
-
-#### Polish a Finished Draft
-
-```text
-Here is my completed Russian introduction. Polish it academically while preserving my meaning.
-Check whether this section sounds too machine-generated, has logic jumps, or uses unnatural Russian academic phrasing.
-Reorganize this chapter in Russian dissertation style, but do not add facts I did not provide.
-```
-
-#### Retrieve Russian Templates
-
-```bash
-python3 scripts/retrieve_templates.py \
-  --category METHOD \
-  --cluster AUTOMATION_CONTROL \
-  --query "модель эксперимент верификация" \
-  --limit 5
-```
-
-Common categories: `INTRO`, `SURVEY`, `MODEL`, `METHOD`, `EXPERIMENT`, `RESULT`, `DISCUSSION`, `CONCLUSION`, `TRANSITION`.
-
-Normal retrieval hides entries tagged `v5_lang=mixed`.
-
-#### Check Logic Closure
-
-```text
-Check whether my dissertation closes the chain: problem → goal → tasks → method → experiment → conclusion.
-Find conclusions that do not answer the stated tasks.
-Check whether my experimental metrics are enough to support the claimed contribution.
-```
-
-### Runtime Routing
-
-| User intent | Main asset |
-|---|---|
-| Planning, structure, chapters | `planning_layer/` |
-| Methodology, logic, discipline profile | `assets/references/disciplines/` |
-| Phrases, paragraphs, polishing | `scripts/retrieve_templates.py` and JSONL assets |
-| Finished article polishing | Preserve author's idea first, then apply local style and logic edits |
-| User private corpus | `extension_layer/` as a future extension entry |
-
-### Repository Structure
-
-```text
-phd-thesis-butler/
-├── SKILL.md
-├── BUILD_INFO.json
-├── README.md
-├── CHANGELOG.md
-├── assets/
-│   ├── cluster/
-│   ├── global/
-│   └── references/
-│       ├── disciplines/
-│       ├── schemas/
-│       ├── corpus_summary_v5.json
-│       ├── cross_cluster_insights_v5.json
-│       └── polishing_rules_v5.json
-├── planning_layer/
-├── scripts/
-│   ├── retrieve_templates.py
-│   ├── normalize_russian_metadata.py
-│   ├── build_literature_review_brief.py
-│   ├── validate_skill_assets.py
-│   ├── validate_planning_assets.py
-│   ├── validate_research_layer.py
-│   ├── validate_evidence_layer.py
-│   └── smoke_test.sh
-├── research_layer/
-├── evidence_layer/
-└── extension_layer/
+Help me plan a Russian dissertation structure.
+Check which claims in this chapter need citations.
+Map these references to introduction, review, method, and experiment chapters.
+Polish this Russian academic paragraph while preserving my meaning.
 ```
 
 ### Validation
@@ -703,12 +397,23 @@ phd-thesis-butler/
 ```bash
 python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
+python3 scripts/validate_research_layer.py
+python3 scripts/validate_evidence_layer.py
 bash scripts/smoke_test.sh
 ```
 
+### Roadmap
+
+| Version | Focus |
+|---|---|
+| v5.1 | Discipline assets, methodology routes, logic chains, chapter rules. |
+| v5.2 | Research layer for Russian and international literature workflows. |
+| v5.3 | Evidence-aware writing: chapter evidence binding and citation gap reports. |
+| Next | Semantic evidence matching across Russian text and English/Chinese/Zotero metadata. |
+
 ### Academic Integrity
 
-All outputs must be revised, checked, and academically owned by the author. The skill helps with writing, planning, polishing, and review; it does not create the user's research contribution.
+The skill assists planning, checking, literature organization, polishing, and revision. It does not create the user's research contribution. All facts, citations, experiments, and conclusions must be verified and owned by the author.
 
 ---
 
