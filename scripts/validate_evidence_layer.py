@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-validate_evidence_layer.py — v5.3.0 门禁验证脚本
+validate_evidence_layer.py — v5.3.4 门禁验证脚本
 检查 evidence_layer 完整性和数据质量。
 
 Exit code: 0 = 全部通过，1 = 至少1项失败。
@@ -139,7 +139,7 @@ def main():
     schemas_dir = os.path.join(PROJECT_ROOT, "assets", "references", "schemas")
 
     print("=" * 60)
-    print("evidence_layer 验证报告 (v5.3.0)")
+    print("evidence_layer 验证报告 (v5.3.4)")
     print(f"项目根目录: {PROJECT_ROOT}")
     print("=" * 60)
 

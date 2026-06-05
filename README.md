@@ -118,6 +118,10 @@ v5.2 受开源项目 [academic-search](https://github.com/ustc-ai4science/academ
 | v5.2.1 | 一致性修复 | 版本统一、CJK深层清理、normalize字段兼容、build_literature_review_brief.py入库。 |
 | v5.2.2 | 最终收尾 | 版本统一到5.2.2、检索能力说明、学科映射增强、brief去重、目录树补全。 |
 | v5.3.0 | Evidence-Aware Writing | 新增证据层：12种证据角色、3个绑定schema、引用缺口检测规则、16/16验证门禁。 |
+| v5.3.1 | Chapter Binding + Gap Detection | 章节证据绑定脚本 + 引用缺口检测脚本 + 24/24验证门禁。 |
+| v5.3.2 | 质量优化 | coverage指标语义修正、SKILL.md精简至519行。 |
+| v5.3.3 | 证据层稳定化 | 6种新claim类型、reason解释字段、render报告脚本、evals测试集。 |
+| v5.3.4 | Zotero兼容 + 报告修复 | year=null修复、版本统一、报告语义修正、27/27验证门禁。 |
 
 ### 能做什么
 
@@ -364,6 +368,10 @@ Skill не заменяет автора, научного руководите�
 | v5.2.1 | Исправление согласованности | Унификация версий, очистка CJK, совместимость полей normalize, интеграция Research Layer в SKILL.md. |
 | v5.2.2 | Финальное закрытие | Унификация версии до 5.2.2, описание поисковых возможностей, усиление маппинга дисциплин. |
 | v5.3.0 | Evidence-Aware Writing | Добавлен слой Evidence Layer: 12 ролей свидетельств, 3 схемы привязки, правила обнаружения пробелов в цитировании. |
+| v5.3.1 | Chapter Binding + Gap Detection | Скрипты привязки глав и обнаружения пробелов в цитировании, 24/24 проверки. |
+| v5.3.2 | Оптимизация качества | Исправление семантики coverage, сокращение SKILL.md до 519 строк. |
+| v5.3.3 | Стабилизация Evidence Layer | 6 новых типов claim, поле reason, скрипт отчёта, evals-тесты. |
+| v5.3.4 | Совместимость с Zotero | Исправление year=null, унификация версий, исправление семантики отчёта. |
 
 ### Что можно делать
 ### Возможности поиска литературы
@@ -556,6 +564,10 @@ Planning assets live in `planning_layer/`.
 | v5.2.1 | Consistency fixes | Version unification, CJK cleanup, normalize compat, build script tracked. |
 | v5.2.2 | Final closure | Version unified to 5.2.2, search capability docs, discipline mapping enhancement, brief dedup. |
 | v5.3.0 | Evidence-Aware Writing | New evidence layer: 12 evidence roles, 3 binding schemas, citation gap rules, 16/16 validation gate. |
+| v5.3.1 | Chapter Binding + Gap Detection | Chapter evidence binding + citation gap detection scripts, 24/24 validation. |
+| v5.3.2 | Quality optimization | Coverage ratio semantic fix, SKILL.md condensed to 519 lines. |
+| v5.3.3 | Evidence layer stabilization | 6 new claim types, reason field, render report script, evals test suite. |
+| v5.3.4 | Zotero compatibility + report fix | year=null fix, version unification, report semantics, 27/27 validation. |
 ### Literature Search Capabilities
 
 v5.2 is inspired by the open-source [academic-search](https://github.com/ustc-ai4science/academic-search) project. Built on its multi-platform search architecture, we deeply adapt it for the Russian academic ecosystem.
