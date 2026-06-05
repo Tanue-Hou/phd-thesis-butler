@@ -33,7 +33,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 | 📚 **Zotero 私有库直连** | 支持读取本地 Zotero 文献库的元数据、标签、集合、已索引全文，按条件搜索筛选后直接进入论文对比分析——**不需要手动导出** |
 | 🏗 **同方向论文结构对比** | 从公开来源或 Zotero 获取 10-30 篇同方向论文，自动聚类主题、对比章节结构模式、方法论路线和验证方式，生成 12 节结构化报告 + 推荐大纲 |
 | 📝 **16,722 条俄语学术句式** | 从 2,118 篇俄罗斯学位论文中蒸馏出的俄语原生句式模板，覆盖引言、综述、模型、方法、实验、结果、讨论、结论等全部章节，三层回退检索 |
-| 🧩 **论文全流程规划** | 6 大学科大类 × 5 种结构模式 × 方法论指南 × 实验设计指南 × 逻辑闭环检查，从研究方向直接生成章节蓝图 |
+| 🧩 **论文全流程规划** | 从研究方向自动生成完整论文结构：整体章节设计（6大学科×5种结构模式）、方法论路线选择、实验方案设计、各章节写作功能定义和输入输出——不是只给大纲框架，而是每章该写什么、怎么展开、和前后章节如何闭环 |
 | ✅ **引用缺口检测** | 逐句检测章节草稿中的论断是否缺引用，12 种证据角色，自动标注 covered / missing / not_needed
 
 ### 典型使用场景
@@ -254,6 +254,7 @@ bash scripts/smoke_test.sh
 | v5.2 | Research Layer：俄语与国际文献调研路径、元数据标准化、综述 brief。 |
 | v5.3 | Evidence-Aware Writing：章节证据绑定、引用缺口检测、可读报告。 |
 | v5.4 | **文献调研与论文对比**：同方向俄罗斯博士论文搜索（DisserCat/eLIBRARY）、Zotero 私有文献库、结构化对比分析、自动推荐论文大纲。 |
+| v5.4.1 | **工作流路由收敛**：6 个平级入口→4 个用户工作流，SKILL.md 路由优先规则，多意图处理，三语文档同步。 |
 
 完整记录见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -305,7 +306,7 @@ PhD Thesis Butler 是科研写作辅助工具。它可以帮助规划、检索�
 | 📚 **Интеграция с Zotero** | Чтение метаданных, тегов, коллекций, индексированного полного текста — **без ручного экспорта** |
 | 🏗 **Сравнение структур диссертаций** | Автоматическая кластеризация 10–30 диссертаций по теме, сравнение структуры глав, методологий и типов валидации — отчёт из 12 разделов + рекомендуемый план |
 | 📝 **16 722 русских академических шаблона** | Дистиллированы из 2 118 диссертаций (МГТУ/МГУ/СПбГУ), покрытие всех глав от ВВЕДЕНИЯ до ЗАКЛЮЧЕНИЯ |
-| 🧩 **Полное планирование диссертации** | 6 дисциплинарных кластеров × 5 структурных паттернов × руководства по методологии, экспериментам и логике |
+| 🧩 **Полное планирование диссертации** | От направления исследования → полная структура: проектирование глав (6 кластеров × 5 паттернов), выбор методологии, дизайн экспериментов, функции каждой главы и её ввод/вывод — не просто план, а что писать в каждой главе, как её развивать и как главы связаны |
 | ✅ **Проверка цитирования** | Пословный анализ утверждений, 12 ролей источников, автоматическая маркировка covered / missing / not_needed |
 
 Это не генератор диссертаций. Skill помогает автору планировать, искать, проверять и улучшать уже написанный текст.
@@ -401,7 +402,7 @@ It is not a one-click dissertation generator. It helps authors structure real re
 | 📚 **Zotero direct integration** | Read local Zotero metadata, tags, collections, indexed full text — search and feed directly into comparative analysis. **No manual export needed.** |
 | 🏗 **Comparative landscape analysis** | Collect 10-30 similar-topic dissertations from public sources or Zotero, auto-cluster themes, compare chapter structures, methodology routes, and validation patterns — generates a 12-section structured report + recommended outline |
 | 📝 **16,722 Russian sentence templates** | Distilled from 2,118 Russian dissertations (BMSTU/MSU/SPbSU), covers INTRO through CONCLUSION, 3-layer fallback retrieval |
-| 🧩 **Full thesis planning** | 6 discipline clusters × 5 structure patterns × methodology guides × experiment design guides × logic closure checks |
+| 🧩 **Full thesis planning** | From research direction → complete thesis structure: whole-chapter design (6 clusters × 5 patterns), methodology route selection, experiment design, per-chapter writing function and input/output — not just an outline, but what each chapter should cover, how to develop it, and how chapters connect |
 | ✅ **Citation gap detection** | Sentence-level claim analysis, 12 evidence roles, automatic covered/missing/not_needed annotation |
 
 ### Typical Prompts
@@ -472,6 +473,7 @@ bash scripts/smoke_test.sh
 | v5.2 | Research layer for Russian and international literature workflows. |
 | v5.3 | Evidence-aware writing: chapter evidence binding and citation gap reports. |
 | v5.4 | **Dissertation Landscape**: agentic landscape comparison, DisserCat/eLIBRARY public search, Zotero private corpus, structure/methodology/validation pattern comparison, recommended outline → planning_layer. |
+| v5.4.1 | **Workflow Router**: 6 flat entry points → 4 user workflows, routing priority in SKILL.md, multi-intent handling, trilingual README sync. |
 
 ### Academic Integrity
 
