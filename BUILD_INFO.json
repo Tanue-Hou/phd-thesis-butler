@@ -55,7 +55,9 @@
     "deterministic": true,
     "index_based": true,
     "fallback_strategy": "cluster→discipline→global",
-    "extension_compatible": false
+    "extension_compatible": false,
+    "zotero_integration": true,
+    "zotero_status": "v5.4 Local API (status/search/builder pipeline)"
   },
   "pipeline": {
     "layer0_ingest": 2267,

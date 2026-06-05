@@ -1,6 +1,6 @@
 ---
 name: phd-thesis-butler
-description: "Russian academic writing sentence bank — 16,722 Russian-first templates plus dissertation planning assets. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
+description: "Four-workflow Russian dissertation assistant: ① polishing (16.7K sentence templates from 2,118 dissertations) ② planning (6 discipline clusters + methodology guides) ③ literature search & landscape (DisserCat/eLIBRARY/CyberLeninka/OpenAlex + Zotero private corpus) ④ evidence audit (citation gap detection + chapter binding). Supports EN/ZH/RU control."
 version: "5.4.1"
 ---
 
