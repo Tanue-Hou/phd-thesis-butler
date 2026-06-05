@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "Russian academic writing sentence bank — 16,722 Russian-first templates plus dissertation planning assets. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "5.3.2"
+version: "5.3.3"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -64,6 +64,7 @@ Routes to:
 - `evidence_layer/EVIDENCE_ROLE_TAXONOMY.md` — 12 evidence roles
 - `scripts/bind_evidence_to_chapters.py` — chapter evidence binding
 - `scripts/detect_citation_gaps.py` — citation gap detection
+- `scripts/render_citation_gap_report.py` — human-readable Markdown report
 
 This mode does **not** perform real-time search or fabricate sources. It uses user-provided normalized records. Missing evidence outputs `recommended_source_type` only.
 

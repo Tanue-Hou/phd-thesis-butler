@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-detect_citation_gaps.py — v5.3.2  Citation Gap Detection (rule-based)
+detect_citation_gaps.py — v5.4.0  Citation Gap Detection (rule-based)
 
 Detects claims in thesis chapter text and identifies citation gaps.
 Pure regex/keyword approach, no LLM, no external dependencies.
@@ -105,6 +105,73 @@ CONTRIBUTION_PATTERNS = [
     r"this\s+work\s+advances",
 ]
 
+BACKGROUND_PATTERNS = [
+    r"широко\s+используется",
+    r"является\s+основой",
+    r"представляет\s+собой",
+    r"широко\s+применяется",
+    r"служит\s+основой",
+    r"is\s+widely\s+used\s+(?:as|in|for)",
+    r"is\s+the\s+basis",
+    r"forms\s+the\s+basis",
+    r"represents\s+(?:a|the)\s+(?:standard|common|fundamental)",
+]
+
+FIELD_STATUS_PATTERNS = [
+    r"в\s+настоящее\s+время",
+    r"современн(?:ые|ых|ому)",
+    r"последние\s+годы",
+    r"актуальн(?:ость|ые|ым)",
+    r"в\s+последнее\s+время",
+    r"currently",
+    r"modern\s+(?:approaches|methods|systems)",
+    r"in\s+recent\s+years",
+    r"state[\s-]of[\s-]the[\s-]art",
+    r"contemporary",
+]
+
+METHOD_PATTERNS = [
+    r"используется\s+метод",
+    r"применяется\s+алгоритм",
+    r"основан\s+на\s+(?:методе|алгоритме|подходе)",
+    r"метод(?:\s+|\s*\()\s*[А-Яа-яA-Za-z]",
+    r"алгоритм(?:\s+|\s*\()\s*[А-Яа-яA-Za-z]",
+    r"uses?\s+(?:the\s+)?(?:method|algorithm|technique|procedure)",
+    r"based\s+on\s+(?:the\s+)?(?:method|algorithm|approach|technique)",
+    r"applies?\s+(?:the\s+)?(?:method|algorithm|technique)",
+    r"employs?\s+(?:the\s+)?(?:method|algorithm|technique)",
+    r"implemented\s+(?:using|with|via)",
+]
+
+COMPARISON_PATTERNS = [
+    r"превосходит",
+    r"уступает",
+    r"более\s+эффективно",
+    r"по\s+сравнению\s+с",
+    r"превосходит\s+(?:по|в)",
+    r"outperforms",
+    r"is\s+inferior\s+to",
+    r"more\s+efficient\s+than",
+    r"compared\s+(?:to|with)",
+    r"better\s+than",
+    r"worse\s+than",
+    r"surpasses",
+    r"exceeds",
+]
+
+RESULT_PATTERNS = [
+    r"результаты\s+показывают",
+    r"эксперимент\s+подтверждает",
+    r"достигнута\s+(?:точност|эффективност|производительн)",
+    r"получен(?:ы|ные)\s+результат",
+    r"экспериментальн(?:ые|ых)\s+(?:результат|данные)",
+    r"results?\s+(?:show|demonstrate|confirm|indicate)",
+    r"experiment(?:s|al)?\s+(?:confirm|show|demonstrate)",
+    r"achieved\s+(?:accuracy|performance|efficiency|precision)",
+    r"experimental\s+(?:results?|data|evaluation)",
+    r"our\s+(?:experiments?|evaluation|results?)\s+(?:show|confirm)",
+]
+
 COMMON_KNOWLEDGE_PATTERNS = [
     r"widely\s+used",
     r"well[- ]known",
@@ -112,6 +179,10 @@ COMMON_KNOWLEDGE_PATTERNS = [
     r"broadly\s+accepted",
     r"является\s+(?:распространён|стандартн|классическ)",
     r"является\s+интерпретируемым",
+    r"широко\s+признано",
+    r"стандартный\s+подход",
+    r"is\s+commonly\s+known",
+    r"standard\s+(?:approach|practice|technique)",
 ]
 
 CITATION_PATTERN = re.compile(
@@ -120,6 +191,63 @@ CITATION_PATTERN = re.compile(
     r"(?:,?\s*\d{4}(?:[a-z]?)?(?:;\s*[A-ZА-ЯЁ][a-zа-яё]+\s*,?\s*\d{4})*)?\))",
     re.IGNORECASE,
 )
+
+# ─── Reason templates for claim types ──────────────────────────────────
+
+REASON_TEMPLATES = {
+    "gap_claim": (
+        "该句描述了研究空白（research gap），属于gap_claim，"
+        "需要引用相关文献来支撑空白的存在性论证"
+    ),
+    "evaluative_claim": (
+        "该句包含评估性判断，属于evaluative_claim，"
+        "需要引用基准文献或实验数据支撑"
+    ),
+    "theoretical_claim": (
+        "该句涉及理论基础，属于theoretical_claim，"
+        "需要引用理论来源或框架定义文献"
+    ),
+    "methodological_claim": (
+        "该句描述方法论，属于methodological_claim，"
+        "需要引用方法原始文献或方法论综述"
+    ),
+    "factual_claim": (
+        "该句陈述事实性断言，属于factual_claim，"
+        "需要引用权威来源支撑"
+    ),
+    "contribution_claim": (
+        "该句陈述本文贡献，属于contribution_claim，"
+        "需要引用相关对比工作以定位贡献"
+    ),
+    "descriptive_claim": (
+        "该句为描述性陈述，属于descriptive_claim，"
+        "通常不需要引用，除非涉及特定方法或数据"
+    ),
+    "common_knowledge": (
+        "该句描述常识性内容，属于common_knowledge，"
+        "不需要引用"
+    ),
+    "background_claim": (
+        "该句描述了领域背景或现有方法现状，属于background_claim，"
+        "需要引用综述或方法类文献支撑"
+    ),
+    "field_status_claim": (
+        "该句描述了领域当前状态或发展趋势，属于field_status_claim，"
+        "需要引用综述或最新进展类文献支撑"
+    ),
+    "method_claim": (
+        "该句描述了具体方法或算法，属于method_claim，"
+        "需要引用该方法的原始文献"
+    ),
+    "comparison_claim": (
+        "该句包含方法对比或优劣判断，属于comparison_claim，"
+        "需要引用对比实验或基准文献"
+    ),
+    "result_claim": (
+        "该句陈述实验结果或结论，属于result_claim，"
+        "需要引用实验数据或相关验证文献"
+    ),
+}
 
 # ─── Risk level matrix: claim_type → {chapter_range: risk_level} ────────
 
@@ -132,6 +260,11 @@ RISK_TABLE = {
     "theoretical_claim":  {"1-2": "high",     "3-4": "critical", "5-6": "medium",   "7-8": "medium"},
     "descriptive_claim":  {"1-2": "low",      "3-4": "medium",   "5-6": "low",      "7-8": "low"},
     "common_knowledge":   {"1-2": "low",      "3-4": "low",      "5-6": "low",      "7-8": "low"},
+    "background_claim":   {"1-2": "medium",   "3-4": "medium",   "5-6": "low",      "7-8": "low"},
+    "field_status_claim": {"1-2": "medium",   "3-4": "medium",   "5-6": "low",      "7-8": "low"},
+    "method_claim":       {"1-2": "high",     "3-4": "critical", "5-6": "high",     "7-8": "medium"},
+    "comparison_claim":   {"1-2": "medium",   "3-4": "high",     "5-6": "critical", "7-8": "high"},
+    "result_claim":       {"1-2": "low",      "3-4": "medium",   "5-6": "critical", "7-8": "high"},
 }
 
 CLAIM_TYPE_TO_EVIDENCE_ROLE = {
@@ -143,6 +276,11 @@ CLAIM_TYPE_TO_EVIDENCE_ROLE = {
     "theoretical_claim":  "definition",
     "descriptive_claim":  "definition",
     "common_knowledge":   "background_context",
+    "background_claim":   "background_context",
+    "field_status_claim": "background_context",
+    "method_claim":       "method_basis",
+    "comparison_claim":   "benchmark",
+    "result_claim":       "empirical_support",
 }
 
 RISK_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -231,6 +369,16 @@ def classify_claim_type(text):
         return "contribution_claim"
     if _matches(lower, COMMON_KNOWLEDGE_PATTERNS):
         return "common_knowledge"
+    if _matches(lower, RESULT_PATTERNS):
+        return "result_claim"
+    if _matches(lower, COMPARISON_PATTERNS):
+        return "comparison_claim"
+    if _matches(lower, METHOD_PATTERNS):
+        return "method_claim"
+    if _matches(lower, FIELD_STATUS_PATTERNS):
+        return "field_status_claim"
+    if _matches(lower, BACKGROUND_PATTERNS):
+        return "background_claim"
     if _matches(lower, DESCRIPTIVE_PATTERNS):
         return "descriptive_claim"
     return "descriptive_claim"
@@ -248,7 +396,12 @@ def determine_citation_need(claim_type, text):
         "methodological_claim": "recommended",
         "factual_claim":      "recommended",
         "descriptive_claim":  "not_needed",
-        "common_knowledge":   "optional",
+        "common_knowledge":   "not_needed",
+        "background_claim":   "recommended",
+        "field_status_claim": "recommended",
+        "method_claim":       "required",
+        "comparison_claim":   "required",
+        "result_claim":       "required",
     }
     return NEED_MAP.get(claim_type, "recommended")
 
@@ -370,6 +523,9 @@ def detect_gaps(input_path, literature):
         if gap_status == "covered" and matched_source is None:
             gap_status = "partial"
 
+        # Generate reason explanation
+        reason = REASON_TEMPLATES.get(claim_type, "未分类的claim，建议人工审查引用需求")
+
         # Build claim object
         claim = {
             "claim_id": f"c{idx:03d}",
@@ -379,6 +535,7 @@ def detect_gaps(input_path, literature):
             "gap_status": gap_status,
             "recommended_evidence_role": evidence_role,
             "risk_level": risk,
+            "reason": reason,
         }
         if matched_source is not None:
             claim["matched_source_id"] = matched_source
@@ -415,6 +572,7 @@ def build_summary(claims):
     by_gap = {"covered": 0, "partial": 0, "missing": 0, "not_needed": 0}
     by_risk = {"critical": 0, "high": 0, "medium": 0, "low": 0}
     needs_citation = 0
+    by_type = {}
 
     for c in claims:
         gs = c["gap_status"]
@@ -423,6 +581,8 @@ def build_summary(claims):
         by_risk[rl] = by_risk.get(rl, 0) + 1
         if c["citation_need"] in ("required", "recommended"):
             needs_citation += 1
+        ct = c["claim_type"]
+        by_type[ct] = by_type.get(ct, 0) + 1
 
     total = len(claims)
     resolved = by_gap["covered"] + by_gap["partial"] + by_gap["not_needed"]
@@ -431,13 +591,16 @@ def build_summary(claims):
 
     overall_resolution_ratio = round(resolved / total, 4) if total > 0 else 0.0
     evidence_coverage_ratio = round(evidence_covered / evidence_total, 4) if evidence_total > 0 else 0.0
+    citation_gap_ratio = round(needs_citation / total, 4) if total > 0 else 0.0
 
     return {
         "total_claims": total,
         "by_gap_status": by_gap,
         "by_risk_level": by_risk,
+        "by_claim_type": by_type,
         "overall_resolution_ratio": overall_resolution_ratio,
         "evidence_coverage_ratio": evidence_coverage_ratio,
+        "citation_gap_ratio": citation_gap_ratio,
         "needs_citation": needs_citation,
         "covered": by_gap["covered"],
         "partial": by_gap["partial"],
@@ -484,6 +647,7 @@ def main():
     print(f"  Covered: {summary['covered']}, Partial: {summary['partial']}, Missing: {summary['missing']}", file=sys.stderr)
     print(f"  Resolution ratio: {summary['overall_resolution_ratio']:.1%}", file=sys.stderr)
     print(f"  Evidence coverage: {summary['evidence_coverage_ratio']:.1%}", file=sys.stderr)
+    print(f"  Citation gap ratio: {summary['citation_gap_ratio']:.1%}", file=sys.stderr)
     print(f"Output: {args.output}", file=sys.stderr)
 
 

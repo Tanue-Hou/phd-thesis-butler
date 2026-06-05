@@ -1,7 +1,7 @@
 {
   "report_id": "GAP-CH2-20260605",
   "chapter": "CH2",
-  "generated_at": "2026-06-05T00:04:39Z",
+  "generated_at": "2026-06-05T00:12:54Z",
   "claims": [
     {
       "claim_id": "c001",
@@ -11,6 +11,7 @@
       "gap_status": "partial",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": "lit_002",
       "evidence_strength": "weak"
     },
@@ -22,6 +23,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -33,6 +35,7 @@
       "gap_status": "missing",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": null,
       "evidence_strength": "none",
       "recommended_action": "Find source for theoretical claim: search literature databases for relevant evidence",
@@ -46,6 +49,7 @@
       "gap_status": "missing",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": null,
       "evidence_strength": "none",
       "recommended_action": "Find source for theoretical claim: search literature databases for relevant evidence",
@@ -59,6 +63,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -70,6 +75,7 @@
       "gap_status": "missing",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": null,
       "evidence_strength": "none",
       "recommended_action": "Find source for theoretical claim: search literature databases for relevant evidence",
@@ -83,6 +89,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -94,6 +101,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -105,6 +113,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -116,6 +125,7 @@
       "gap_status": "partial",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": null,
       "evidence_strength": "weak"
     },
@@ -127,6 +137,7 @@
       "gap_status": "missing",
       "recommended_evidence_role": "benchmark",
       "risk_level": "medium",
+      "reason": "Утверждение содержит оценочное суждение (evaluative_claim). Требуется ссылка на базовую литературу или экспериментальные данные.",
       "matched_source_id": null,
       "evidence_strength": "none",
       "recommended_action": "Find source for evaluative claim: search literature databases for relevant evidence",
@@ -135,13 +146,16 @@
     {
       "claim_id": "c012",
       "claim_text": "Алгоритм расширенного фильтра Калмана",
-      "claim_type": "descriptive_claim",
-      "citation_need": "not_needed",
-      "gap_status": "not_needed",
-      "recommended_evidence_role": "definition",
-      "risk_level": "low",
+      "claim_type": "method_claim",
+      "citation_need": "required",
+      "gap_status": "missing",
+      "recommended_evidence_role": "method_basis",
+      "risk_level": "high",
+      "reason": "Утверждение описывает конкретный метод или алгоритм (method_claim). Требуется ссылка на оригинальную публикацию метода.",
       "matched_source_id": null,
-      "evidence_strength": "none"
+      "evidence_strength": "none",
+      "recommended_action": "Find source for method claim: search literature databases for relevant evidence",
+      "recommended_query": "Алгоритм расширенного фильтра Калмана"
     },
     {
       "claim_id": "c013",
@@ -151,6 +165,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -162,6 +177,7 @@
       "gap_status": "partial",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": "lit_002",
       "evidence_strength": "weak"
     },
@@ -173,6 +189,7 @@
       "gap_status": "missing",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": null,
       "evidence_strength": "none",
       "recommended_action": "Find source for theoretical claim: search literature databases for relevant evidence",
@@ -186,6 +203,7 @@
       "gap_status": "missing",
       "recommended_evidence_role": "definition",
       "risk_level": "high",
+      "reason": "Утверждение относится к теоретической основе (theoretical_claim). Требуется ссылка на источник теории или определения.",
       "matched_source_id": null,
       "evidence_strength": "none",
       "recommended_action": "Find source for theoretical claim: search literature databases for relevant evidence",
@@ -199,6 +217,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -210,6 +229,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     },
@@ -221,6 +241,7 @@
       "gap_status": "not_needed",
       "recommended_evidence_role": "definition",
       "risk_level": "low",
+      "reason": "Утверждение является описательным (descriptive_claim). Обычно не требует цитирования, кроме случаев с конкретными методами или данными.",
       "matched_source_id": null,
       "evidence_strength": "none"
     }
@@ -230,20 +251,27 @@
     "by_gap_status": {
       "covered": 0,
       "partial": 3,
-      "missing": 6,
-      "not_needed": 10
+      "missing": 7,
+      "not_needed": 9
     },
     "by_risk_level": {
       "critical": 0,
-      "high": 8,
+      "high": 9,
       "medium": 1,
-      "low": 10
+      "low": 9
     },
-    "overall_resolution_ratio": 0.6842,
+    "by_claim_type": {
+      "theoretical_claim": 8,
+      "descriptive_claim": 9,
+      "evaluative_claim": 1,
+      "method_claim": 1
+    },
+    "overall_resolution_ratio": 0.6316,
     "evidence_coverage_ratio": 0.0,
-    "needs_citation": 8,
+    "citation_gap_ratio": 0.4737,
+    "needs_citation": 9,
     "covered": 0,
     "partial": 3,
-    "missing": 6
+    "missing": 7
   }
 }

@@ -34,7 +34,8 @@
           "citation_need",
           "gap_status",
           "recommended_evidence_role",
-          "risk_level"
+          "risk_level",
+          "reason"
         ],
         "properties": {
           "claim_text": {
@@ -54,7 +55,10 @@
               "common_knowledge",
               "research_gap_claim",
               "result_claim",
-              "background_claim"
+              "background_claim",
+              "field_status_claim",
+              "method_claim",
+              "comparison_claim"
             ]
           },
           "citation_need": {
@@ -134,6 +138,10 @@
             "type": "string",
             "description": "Search query for finding a source. Example: 'chain-of-thought prompting effectiveness LLM reasoning'"
           },
+          "reason": {
+            "type": "string",
+            "description": "Human-readable explanation of why this claim needs a citation, based on claim type"
+          },
           "claim_id": {
             "type": "string"
           }
@@ -211,6 +219,18 @@
         "evidence_coverage_ratio": {
           "type": "number",
           "description": "Proportion of evidence-needing claims that are covered: covered / (covered+partial+missing)"
+        },
+        "citation_gap_ratio": {
+          "type": "number",
+          "description": "Proportion of claims that need citations: (required + recommended) / total"
+        },
+        "by_claim_type": {
+          "type": "object",
+          "description": "Count of claims per claim_type",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       },
       "required": [
