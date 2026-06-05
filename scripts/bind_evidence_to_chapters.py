@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-bind_evidence_to_chapters.py — v5.3.1 Chapter Evidence Binding
+bind_evidence_to_chapters.py — v5.3.4 Chapter Evidence Binding
 
 Pure-rule (no LLM) binding of normalized literature records to thesis chapters
 based on evidence role intersection and keyword overlap.

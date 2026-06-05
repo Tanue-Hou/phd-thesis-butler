@@ -107,11 +107,13 @@ def render(data: dict) -> str:
     else:
         denom = n_covered + n_partial + n_missing
         w(f"- **证据覆盖率**: {pct(n_covered, denom)}%")
-    if overall_res is not None:
-        w(f"- **需引用论断比例**: {(1 - overall_res) * 100:.1f}%")
+    # ── 需引用论断比例 from summary.citation_gap_ratio or compute from claims ──
+    cgr = summary.get("citation_gap_ratio") if summary else None
+    if cgr is not None:
+        w(f"- **需引用论断比例**: {cgr * 100:.1f}%")
     else:
-        denom = n_covered + n_partial + n_missing
-        w(f"- **需引用论断比例**: {pct(n_missing, denom)}%")
+        denom = n_covered + n_partial + n_missing + n_not_needed
+        w(f"- **需引用论断比例**: {pct(n_required + n_recommended, denom)}%")
     w(f"- **高风险论断**: {high_risk}")
     w("")
 
@@ -194,19 +196,31 @@ def render(data: dict) -> str:
     # ── Covered ──
     w("## 四、已有文献支撑的句子（covered）")
     w("")
-    all_good = covered + not_needed
-    if not all_good:
+    if not covered:
         w("_Нет._")
         w("")
     else:
-        for c in all_good:
-            status = c.get("gap_status", "")
-            label = "covered" if status == "covered" else "не требуется"
-            w(f"- `{label}` — {c.get('claim_text', '—')}")
+        for c in covered:
+            w(f"- `covered` — {c.get('claim_text', '—')}")
+        w("")
+
+    # ── not_needed section ──
+    w("")
+    w("## 五、不需要引用的句子（not_needed）")
+    w("")
+    w("下列句子属于常识性或描述性陈述，不需要引用：")
+    w("")
+    if not not_needed:
+        w("_Нет._")
+        w("")
+    else:
+        for c in not_needed:
+            w(f"- {c.get('claim_text', '—')}")
         w("")
 
     # ── Search suggestions ──
-    w("## 五、下一步检索建议")
+    w("")
+    w("## 六、下一步检索建议")
     w("")
     suggestions = []
     for c in missing:
