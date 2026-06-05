@@ -108,10 +108,10 @@ def render(data: dict) -> str:
         denom = n_covered + n_partial + n_missing
         w(f"- **证据覆盖率**: {pct(n_covered, denom)}%")
     if overall_res is not None:
-        w(f"- **引用缺口率**: {(1 - overall_res) * 100:.1f}%")
+        w(f"- **需引用论断比例**: {(1 - overall_res) * 100:.1f}%")
     else:
         denom = n_covered + n_partial + n_missing
-        w(f"- **引用缺口率**: {pct(n_missing, denom)}%")
+        w(f"- **需引用论断比例**: {pct(n_missing, denom)}%")
     w(f"- **高风险论断**: {high_risk}")
     w("")
 
@@ -192,7 +192,7 @@ def render(data: dict) -> str:
             w("")
 
     # ── Covered ──
-    w("## 四、引用已足够的地方（covered）")
+    w("## 四、已有文献支撑的句子（covered）")
     w("")
     all_good = covered + not_needed
     if not all_good:

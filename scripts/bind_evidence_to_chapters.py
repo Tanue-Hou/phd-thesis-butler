@@ -275,7 +275,7 @@ def find_candidates(role, literature, outline_kws):
             candidates.append((src, overlap, has_role))
 
     # Sort by (has_role desc, overlap desc, year desc)
-    candidates.sort(key=lambda c: (c[2], c[1], c[0].get("year", 0)), reverse=True)
+    candidates.sort(key=lambda c: (c[2], c[1], c[0].get("year") or 0), reverse=True)
     return candidates
 
 

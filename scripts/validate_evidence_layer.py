@@ -573,6 +573,52 @@ def main():
     # ── Summary ──
     print()
     print("=" * 60)
+    # ── 16. year=null regression test (Zotero metadata compatibility) ──
+    null_year_ok = True
+    lit_path = os.path.join(ex_dir, "normalized_literature_sample.json")
+    null_year_lit = "/tmp/e2e_null_year_literature.json"
+    
+    if os.path.isfile(lit_path):
+        with open(lit_path) as f:
+            lit_data = json.load(f)
+        # Set year to null for all records
+        for rec in lit_data:
+            rec["year"] = None
+        with open(null_year_lit, "w", encoding="utf-8") as f:
+            json.dump(lit_data, f, ensure_ascii=False, indent=2)
+        
+        r = subprocess.run(
+            [sys.executable, "scripts/bind_evidence_to_chapters.py",
+             "--outline", os.path.join(ex_dir, "user_outline_sample.md"),
+             "--literature", null_year_lit,
+             "--chapter", "METHOD",
+             "--output", "/tmp/e2e_null_year_cem.json",
+             "--bindings-output", "/tmp/e2e_null_year_ebr.json"],
+            capture_output=True, text=True, cwd=PROJECT_ROOT, timeout=15
+        )
+        
+        if r.returncode != 0:
+            null_year_ok = False
+            e(f"  year=null: exit code {r.returncode}")
+        else:
+            try:
+                with open("/tmp/e2e_null_year_cem.json") as f:
+                    cem = json.load(f)
+                with open("/tmp/e2e_null_year_ebr.json") as f:
+                    ebr = json.load(f)
+                if not cem.get("bound_records"):
+                    null_year_ok = False
+                    e("  year=null: CEM bound_records is empty")
+                if not ebr:
+                    null_year_ok = False
+                    e("  year=null: EBR is empty")
+            except Exception as ex:
+                null_year_ok = False
+                e(f"  year=null: parse error: {ex}")
+    
+    check("16. year=null 兼容性（Zotero metadata）",
+          null_year_ok, "" if null_year_ok else "year=null test failed")
+
     total = len(results)
     passed = sum(results)
     if all(results):

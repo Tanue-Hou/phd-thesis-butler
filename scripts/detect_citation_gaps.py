@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-detect_citation_gaps.py — v5.4.0  Citation Gap Detection (rule-based)
+detect_citation_gaps.py — v5.3.3  Citation Gap Detection (rule-based)
 
 Detects claims in thesis chapter text and identifies citation gaps.
 Pure regex/keyword approach, no LLM, no external dependencies.
