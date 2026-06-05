@@ -6,15 +6,18 @@ Russian dissertation writing and polishing skill for AI assistants.
 
 ---
 
-## 🚀 能做什么 / What It Can Do / Возможности
+## 🚀 能做什么
 
-| 📝 **论文结构规划** | 🔬 **俄罗斯文献调研** | 🌐 **英文文献检索** | 🔗 **文献证据绑定** |
-|:---|:---|:---|:---|
-| 给定研究方向，自动规划章节结构、方法论路线和实验方案 | 生成 eLIBRARY/DisserCat/РГБ/ CyberLeninka 检索策略（ВАК代码+关键词） | 支持 arXiv / Semantic Scholar / OpenAlex / Crossref 检索 | 将文献按证据角色绑定到 INTRO/SURVEY/METHOD/EXPERIMENT 等章节 |
+- 📝 **论文结构规划** — 给定研究方向，自动规划章节、方法论和实验方案
+- 🔬 **俄罗斯文献调研** — 生成 eLIBRARY/DisserCat/РГБ/CyberLeninka 检索策略
+- 🌐 **英文文献检索** — 支持 arXiv / Semantic Scholar / OpenAlex / Crossref
+- 🔗 **文献证据绑定** — 将文献按证据角色绑定到 INTRO/METHOD/EXPERIMENT 等章节
+- 🔍 **引用缺口检测** — 检测段落中哪些论断缺引用，标记 missing/partial/covered
+- 📊 **可读报告生成** — 自动生成俄语 Markdown 报告（风险→补引用→已覆盖→检索建议）
+- 🎯 **俄语学术润色** — 基于 16,722 个俄语学术句模进行句式替换和语法修正
+- ✅ **论文逻辑审校** — 检查文章是否形成「问题→目标→方法→验证→结论」闭环
 
-| 🔍 **引用缺口检测** | 📊 **可读报告生成** | 🎯 **俄语学术润色** | ✅ **论文逻辑审校** |
-|:---|:---|:---|:---|
-| 检测段落中哪些论断缺引用，标记 missing/partial/covered | JSON→俄语Markdown报告（6大区块：风险→补引用→已覆盖→检索建议） | 基于16,722个俄语学术句模进行句式替换和语法修正 | 检查文章是否形成"问题→目标→方法→验证→结论"闭环 |
+---
 
 ---
 
