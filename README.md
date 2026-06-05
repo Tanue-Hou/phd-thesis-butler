@@ -24,6 +24,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 | **论文结构规划** | 只有研究方向、题目、方法想法或导师要求时，生成论文结构、章节顺序、研究问题、目标、任务和逻辑链。 |
 | **文献调研路径设计** | 需要围绕 eLIBRARY、DisserCat、CyberLeninka、OpenAlex 等来源规划检索式、标准化文献记录、生成参考文献调研 brief。 |
 | **证据绑定与引用缺口检查** | 已经有章节或草稿时，检查哪些论断缺引用、哪些文献适合放到引言/综述/方法/实验/结论。 |
+| **论文景观对比 🆕** | 想知道同方向俄罗斯博士论文怎么写——通过 DisserCat/eLIBRARY 公开搜索和 Zotero 私有文献库，对比章节结构、方法论路线、验证方式，反推自己的论文结构。 |
 | **私有扩展基础** | 未来用户可以把自己的领域论文、Zotero 文献或私有材料脱敏后接入扩展层。 |
 
 ### 典型使用场景
@@ -42,7 +43,24 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 - 问题、目标、任务、方法、实验、结论之间的闭环；
 - 哪些章节需要模型、实验、对比、消融或案例论证。
 
-#### 2. 从研究思路到方法论路线
+#### 2. 论文景观对比 🆕
+
+```text
+我研究车辆状态估计，帮我找同方向俄罗斯博士论文，看看别人怎么写结构。
+——或者——
+从我的 Zotero 里找 vehicle state estimation 相关论文，分析它们怎么支撑我的博士论文结构。
+```
+
+可以得到：
+
+- 同方向论文的章节结构模式对比；
+- 方法论路线类型分析（卡尔曼滤波、自适应估计、多传感器融合等）；
+- 验证方式对比（仿真、实验台架、实车测试等）；
+- 用户选题在同方向论文中的定位：重合点、差异点、可创新点；
+- 建议的论文结构（可直接进入 planning_layer 进行细化）；
+- 每章所需的证据绑定需求（进入 evidence_layer）。
+
+#### 3. 从研究思路到方法论路线
 
 ```text
 我的思路是用多传感器融合提高车辆控制稳定性，请拆成研究问题、目标、任务和实验路线。
@@ -55,7 +73,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 - 变量、模型、数据、指标和验证设计；
 - 可能的 benchmark、对比方法和风险点。
 
-#### 3. 从文献到章节证据
+#### 4. 从文献到章节证据
 
 ```text
 请帮我判断这些文献应该分别支撑引言、综述、方法章还是实验章。
@@ -67,7 +85,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 - 章节证据地图；
 - 哪些章节证据足够，哪些只是 partial，哪些还需要补 eLIBRARY / DisserCat / CyberLeninka 文献。
 
-#### 4. 检查引用缺口
+#### 5. 检查引用缺口
 
 ```text
 这是我的第二章，请检查哪些论断缺少引用支撑，并告诉我应该补什么类型的文献。
@@ -81,7 +99,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 - 可读 Markdown 报告；
 - 下一步检索建议。
 
-#### 5. 润色已经写好的俄语论文
+#### 6. 润色已经写好的俄语论文
 
 ```text
 这是我写好的俄语引言。请保留我的原始思路，优化学术表达和段落逻辑，不要新增未经我提供的事实。
@@ -147,6 +165,8 @@ chapter_writing_rules
 User request
   ├─ 论文规划 / 开题 / 章节设计
   │    └─ planning_layer/
+  ├─ 论文景观对比 / 同方向论文结构分析 🆕
+  │    └─ research_layer/landscape/ + build_dissertation_landscape.py
   ├─ 学科范式 / 方法论 / 逻辑闭环
   │    └─ assets/references/disciplines/
   ├─ 文献调研 / 检索式 / 元数据标准化
@@ -188,6 +208,7 @@ phd-thesis-butler/
 │       └── schemas/             # 公开 schema
 ├── planning_layer/              # 论文规划、方法论、实验设计、逻辑闭环
 ├── research_layer/              # 文献调研来源、检索策略、示例
+│   └── landscape/               # 论文景观对比：结构化对比分析与 Zotero 私有文献接入 (v5.4)
 ├── evidence_layer/              # 证据角色、章节绑定、引用缺口检测
 ├── extension_layer/             # 用户私有扩展入口
 └── scripts/                     # 检索、调研、证据、验证脚本
@@ -200,6 +221,7 @@ python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
 python3 scripts/validate_research_layer.py
 python3 scripts/validate_evidence_layer.py
+python3 scripts/validate_dissertation_landscape.py
 bash scripts/smoke_test.sh
 ```
 
@@ -320,6 +342,7 @@ python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
 python3 scripts/validate_research_layer.py
 python3 scripts/validate_evidence_layer.py
+python3 scripts/validate_dissertation_landscape.py
 bash scripts/smoke_test.sh
 ```
 
@@ -343,6 +366,7 @@ It is not a one-click dissertation generator. It helps authors structure real re
 |---|---|
 | **Russian academic polishing** | You already have a Russian draft and want stronger academic style without changing meaning; it may help reduce machine-like phrasing, but this has not been fully validated at scale. |
 | **Dissertation planning** | You have a topic, idea, method, or supervisor requirement and need chapter structure and research logic. |
+| **Dissertation landscape 🆕** | You want to see how similar-topic Russian dissertations are structured — search DisserCat/eLIBRARY or your Zotero library, compare chapter structures, methodology routes, and validation patterns. |
 | **Literature research workflow** | You need search paths for eLIBRARY, DisserCat, CyberLeninka, OpenAlex, metadata normalization, and review briefs. |
 | **Evidence-aware revision** | You need to know which claims need citations and which sources support which chapter. |
 | **Private extension base** | You want to later connect your own papers, Zotero library, or local corpus. |
@@ -362,6 +386,7 @@ Polish this Russian introduction while preserving my meaning and not adding new 
 planning_layer/                         dissertation structure, methodology, experiments
 assets/references/disciplines/          discipline-specific writing profiles
 research_layer/                         source profiles, search strategy, metadata normalization
+  └── landscape/                        dissertation landscape comparison + Zotero (v5.4) 🆕
 evidence_layer/                         evidence roles, chapter binding, citation gap detection
 assets/cluster/ + assets/global/        Russian sentence templates and polishing assets
 extension_layer/                        future private corpus extension point
@@ -397,6 +422,7 @@ python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
 python3 scripts/validate_research_layer.py
 python3 scripts/validate_evidence_layer.py
+python3 scripts/validate_dissertation_landscape.py
 bash scripts/smoke_test.sh
 ```
 
