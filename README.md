@@ -1,4 +1,4 @@
-# PhD Thesis Butler v5.4.0
+# PhD Thesis Butler v5.4.1
 
 Russian dissertation planning, evidence-aware revision, and academic polishing skill for AI assistants such as Codex, Hermes, Claude Code, and Antigravity.
 
@@ -18,14 +18,12 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 
 核心能力概览：
 
-| 能力 | 适合什么时候用 |
-|---|---|
-| **俄语学术润色** | 已经写出俄语段落、章节或全文时，在不改变作者意思的前提下优化学术表达、段落衔接和机器化痕迹；可能有助于降低文本的 AI 味，但暂未做全量验证。 |
-| **论文结构规划** | 只有研究方向、题目、方法想法或导师要求时，生成论文结构、章节顺序、研究问题、目标、任务和逻辑链。 |
-| **文献调研路径设计** | 需要围绕 eLIBRARY、DisserCat、CyberLeninka、OpenAlex 等来源规划检索式、标准化文献记录、生成参考文献调研 brief。 |
-| **证据绑定与引用缺口检查** | 已经有章节或草稿时，检查哪些论断缺引用、哪些文献适合放到引言/综述/方法/实验/结论。 |
-| **同方向论文对比分析 🆕** | 想知道同方向俄罗斯博士论文怎么写——通过 DisserCat/eLIBRARY 公开搜索和 Zotero 私有文献库，对比章节结构、方法论路线、验证方式，反推自己的论文结构。 |
-| **私有扩展基础** | 未来用户可以把自己的领域论文、Zotero 文献或私有材料脱敏后接入扩展层。 |
+| 工作流 | 什么时候用 | 涉及哪些层 |
+|:-------|:-----------|:------------|
+| **① 俄语润色与表达优化** | 已有俄语段落/全文，需要润色、改写、降机器感、查句式 | assets + retrieve_templates.py |
+| **② 论文规划与结构设计** | 只有研究方向/想法，需要完整的论文结构、章节顺序、方法路线、实验方案 | planning_layer + discipline assets |
+| **③ 文献调研与论文对比** | 需要查文献、找同方向俄罗斯论文、对比结构/方法/验证、用 Zotero 私有库 | research_layer + landscape/ + dissercat/elibrary |
+| **④ 证据检查与引用修复** | 已有章节草稿，需要检查哪些论断缺引用、文献该放哪一章 | evidence_layer + binding/gap scripts |
 
 ### 典型使用场景
 
@@ -43,7 +41,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 - 问题、目标、任务、方法、实验、结论之间的闭环；
 - 哪些章节需要模型、实验、对比、消融或案例论证。
 
-#### 2. 同方向论文对比分析 🆕
+#### 2. 工作流 ③：文献调研与论文对比 🆕
 
 ```text
 我研究车辆状态估计，帮我找同方向俄罗斯博士论文，看看别人怎么写结构。
@@ -161,20 +159,17 @@ chapter_writing_rules
 
 ### 能力层级
 
-```text
-User request
-  ├─ 论文规划 / 开题 / 章节设计
-  │    └─ planning_layer/
-  ├─ 同方向论文对比 / 结构方法比对 🆕
-  │    └─ research_layer/landscape/ + build_dissertation_landscape.py
-  ├─ 学科范式 / 方法论 / 逻辑闭环
-  │    └─ assets/references/disciplines/
-  ├─ 文献调研 / 检索式 / 元数据标准化
-  │    └─ research_layer/ + normalize/build_review scripts
-  ├─ 证据绑定 / 引用缺口检测
-  │    └─ evidence_layer/ + bind/detect/render scripts
-  └─ 俄语表达 / 润色 / 句式替换
-       └─ retrieve_templates.py + assets/cluster + assets/global
+```
+User request — 4个工作流
+  ├─ ① 俄语润色与表达优化
+  │    └─ retrieve_templates.py + assets/cluster + assets/global
+  ├─ ② 论文规划与结构设计
+  │    └─ planning_layer/ + discipline assets（内部范式知识）
+  ├─ ③ 文献调研与论文对比
+  │    ├─ research_layer/（检索策略、元数据标准化）
+  │    └─ landscape/（同方向论文对比分析——高级子工作流）
+  └─ ④ 证据检查与引用修复
+       └─ evidence_layer/ + bind/detect/render scripts
 ```
 
 ### 如何实际使用
@@ -208,7 +203,7 @@ phd-thesis-butler/
 │       └── schemas/             # 公开 schema
 ├── planning_layer/              # 论文规划、方法论、实验设计、逻辑闭环
 ├── research_layer/              # 文献调研来源、检索策略、示例
-│   └── landscape/               # 同方向论文对比：结构化对比、方法分析、Zotero 私有文献接入 (v5.4)
+│   └── landscape/               # 同方向论文对比分析——文献调研的高级子工作流 (v5.4)
 ├── evidence_layer/              # 证据角色、章节绑定、引用缺口检测
 ├── extension_layer/             # 用户私有扩展入口
 └── scripts/                     # 检索、调研、证据、验证脚本
@@ -245,7 +240,7 @@ bash scripts/smoke_test.sh
 | v5.1 | 五大学科资产、结构/方法论/逻辑链增强，不重新训练。 |
 | v5.2 | Research Layer：俄语与国际文献调研路径、元数据标准化、综述 brief。 |
 | v5.3 | Evidence-Aware Writing：章节证据绑定、引用缺口检测、可读报告。 |
-| v5.4 | **同方向论文对比分析**：DisserCat/eLIBRARY 公开搜索、Zotero 私有文献库接入、结构/方法论/验证模式对比、推荐论文大纲 → planning_layer。 |
+| v5.4 | **文献调研与论文对比**：同方向俄罗斯博士论文搜索（DisserCat/eLIBRARY）、Zotero 私有文献库、结构化对比分析、自动推荐论文大纲。 |
 
 完整记录见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -362,14 +357,12 @@ It is not a one-click dissertation generator. It helps authors structure real re
 
 ### Core Capabilities
 
-| Capability | Use it when |
-|---|---|
-| **Russian academic polishing** | You already have a Russian draft and want stronger academic style without changing meaning; it may help reduce machine-like phrasing, but this has not been fully validated at scale. |
-| **Dissertation planning** | You have a topic, idea, method, or supervisor requirement and need chapter structure and research logic. |
-| **Dissertation landscape 🆕** | You want to see how similar-topic Russian dissertations are structured — search DisserCat/eLIBRARY or your Zotero library, compare chapter structures, methodology routes, and validation patterns. |
-| **Literature research workflow** | You need search paths for eLIBRARY, DisserCat, CyberLeninka, OpenAlex, metadata normalization, and review briefs. |
-| **Evidence-aware revision** | You need to know which claims need citations and which sources support which chapter. |
-| **Private extension base** | You want to later connect your own papers, Zotero library, or local corpus. |
+| Workflow | Use it when | Layers involved |
+|:---------|:------------|:----------------|
+| **① Russian polishing** | You have a Russian draft and want better academic style, less machine-like phrasing | assets + retrieve_templates.py |
+| **② Thesis planning** | You have a topic/idea and need full structure, chapters, methodology, experiments | planning_layer + discipline assets |
+| **③ Literature & dissertation landscape** | You need to search the literature, find comparative Russian dissertations, compare structures/methods, use your Zotero library | research_layer + landscape/ |
+| **④ Evidence & citation audit** | You have a chapter draft and need to check which claims lack citations, which sources support which chapter | evidence_layer + binding/gap scripts |
 
 ### Typical Prompts
 
@@ -383,13 +376,18 @@ Polish this Russian introduction while preserving my meaning and not adding new 
 ### Architecture
 
 ```text
-planning_layer/                         dissertation structure, methodology, experiments
-assets/references/disciplines/          discipline-specific writing profiles
-research_layer/                         source profiles, search strategy, metadata normalization
-  └── landscape/                        dissertation landscape comparison + Zotero (v5.4) 🆕
-evidence_layer/                         evidence roles, chapter binding, citation gap detection
-assets/cluster/ + assets/global/        Russian sentence templates and polishing assets
-extension_layer/                        future private corpus extension point
+ ─ Workflow ①: Polish & Templates
+    assets/cluster/ + assets/global/     Russian sentence templates and polishing assets
+ ─ Workflow ②: Thesis Planning
+    planning_layer/                      dissertation structure, methodology, experiments
+    assets/references/disciplines/       discipline-specific writing profiles (internal)
+ ─ Workflow ③: Literature & Landscape
+    research_layer/                      source profiles, search strategy, metadata normalization
+    └── landscape/                       comparative dissertation analysis + Zotero (v5.4)
+ ─ Workflow ④: Evidence & Citation
+    evidence_layer/                      evidence roles, chapter binding, citation gap detection
+ ─ Future
+    extension_layer/                     future private corpus extension point
 ```
 
 ### Assets

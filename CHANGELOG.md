@@ -1,5 +1,27 @@
 # Changelog
 
+## v5.4.1 — Unified Workflow Router (2026-06-05)
+
+### Changed
+- SKILL.md: Added Workflow Router section with 4-workflow routing priority, multi-intent handling, and internal layer role assignment. Existing mode docs kept as downstream references.
+- README.md: Restructured from flat capability table to 4-workflow model (①俄语润色 ②论文规划 ③文献调研与论文对比 ④证据检查). ZH and EN capability descriptions, hierarchy tree, and architecture sections updated.
+- Added `routing/WORKFLOW_ROUTER.md` — centralized routing rules document.
+
+### Key design decisions
+- `assets/references/disciplines/` → internal knowledge asset, not a user entry point
+- `research_layer/landscape/` → advanced sub-workflow of Research/Literature (Workflow 3), not standalone
+- landscape → borrowing from comparative analysis (用户说"同方向论文/Zotero"才激活), no longer independent entry
+- Multi-intent: if user asks for both "polish + check citations", Evidence first → Polish
+- Layer names in SKILL.md renamed: Research Layer → Research/Literature — Workflow 3, Evidence-Aware Writing → Evidence — Workflow 4, etc.
+
+### Validation
+- validate_skill_assets.py: ✅ ALL PASS
+- validate_dissertation_landscape.py: ✅ 163/163
+- validate_research_layer.py: ✅ 17/17
+- validate_evidence_layer.py: ✅ ALL PASS
+- validate_planning_assets.py: ✅ 22/22
+- smoke_test.sh: ✅ 7/7
+
 ## v5.4.0 (hotfix 2026-06-05) — Landscape pipeline stabilization
 
 ### Fixed
