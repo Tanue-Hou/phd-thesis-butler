@@ -1,7 +1,7 @@
 ---
 name: phd-thesis-butler
 description: "Russian academic writing sentence bank — 16,722 Russian-first templates plus dissertation planning assets. Supports EN/ZH control: users can request in Chinese/English ('帮我写俄语论文的MODEL部分', 'give me dissertation INTRO templates') and receive Russian templates with explanation in their language."
-version: "5.3.4"
+version: "5.4.0"
 ---
 
 # PhD Thesis Butler — Russian Academic Writing Assistant
@@ -67,6 +67,62 @@ Routes to:
 - `scripts/render_citation_gap_report.py` — human-readable Markdown report
 
 This mode does **not** perform real-time search or fabricate sources. It uses user-provided normalized records. Missing evidence outputs `recommended_source_type` only.
+
+## Dissertation Landscape Mode (v5.4)
+
+Analyze the landscape of dissertations similar to the user's topic — from public sources (DisserCat, eLIBRARY, CyberLeninka, OpenAlex) and optionally from the user's local Zotero library.
+
+### Trigger Conditions
+
+Activate when the user mentions:
+- 同方向论文 / похожие диссертации
+- 看看别人怎么写 / как другие пишут
+- 论文景观 / dissertation landscape
+- 结构对比 / сравнение структур
+- 方法路线对比 / сравнение методологий
+- 从我的Zotero找 / поиск в Zotero
+- 根据已有文献规划论文结构 / plan thesis from existing literature
+
+### Workflow
+
+1. **Direction & cluster identification**: Determine user's research direction and discipline cluster.
+2. **Zotero capability gate**: If Zotero is mentioned or available, check `http://127.0.0.1:23119` for Zotero Local API. If unavailable, downgrade gracefully.
+3. **Public source search**: Generate Russian search queries for DisserCat, eLIBRARY, CyberLeninka, OpenAlex, Semantic Scholar.
+4. **Record collection**: Collect 10–30 candidate dissertation records with `read_depth` and `source_access` annotations.
+5. **Landscape analysis**: Cluster by theme, compare chapter structures, methodology types, validation patterns.
+6. **Report generation**: Output `dissertation_landscape_report.md` with 12 sections (see `research_layer/landscape/DISSERTATION_LANDSCAPE.md`).
+7. **User positioning**: Identify overlap, differences, and innovation opportunities.
+8. **Outline recommendation**: Generate `recommended_outline` mapped to `planning_layer` chapter types.
+9. **Route to downstream modes**:
+   - Planning → `planning_layer/`
+   - Evidence binding → `evidence_layer/`
+   - Russian sentence templates → Auto-Serve Workflow
+
+### Zotero Capability Gate
+
+When the user requests Zotero integration:
+1. Check `http://127.0.0.1:23119` — Zotero Local API
+2. If available → enter Zotero Private Corpus Workflow (`research_layer/landscape/ZOTERO_PRIVATE_CORPUS.md`)
+3. If unavailable → fall back to BibTeX/RIS/JSON/manual intake
+4. Never assume Zotero is available; never crash if it isn't
+
+### Critical Rules
+
+- Every record must have `read_depth` and `source_access`
+- `metadata_only` ≠ full understanding — never claim otherwise
+- Never expose local Zotero attachment paths
+- Never save large verbatim text excerpts
+- Landscape reports are structural/comparative, not evaluative
+- Zotero private data never enters public assets
+
+Routes to:
+- `research_layer/landscape/DISSERTATION_LANDSCAPE.md` — workflow overview
+- `research_layer/landscape/AGENTIC_SEARCH.md` — agentic search strategy
+- `research_layer/landscape/ZOTERO_PRIVATE_CORPUS.md` — Zotero integration
+- `research_layer/landscape/COMPARISON_RUBRIC.md` — comparison rubric
+- `scripts/build_dissertation_landscape.py` — landscape builder
+- `scripts/import_zotero_landscape_records.py` — Zotero import
+- `scripts/validate_dissertation_landscape.py` — landscape validator
 
 ## Planning Mode
 

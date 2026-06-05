@@ -1,5 +1,37 @@
 # Changelog
 
+## v5.4.0 — Dissertation Landscape (2026-06-05)
+
+### Added
+- `research_layer/landscape/` — Dissertation Landscape Mode with 4 guide documents
+  - `DISSERTATION_LANDSCAPE.md` — end-to-end workflow for landscape comparison
+  - `AGENTIC_SEARCH.md` — agentic search strategy for DisserCat/eLIBRARY/CyberLeninka/OpenAlex
+  - `ZOTERO_PRIVATE_CORPUS.md` — Zotero private corpus integration with capability gate
+  - `COMPARISON_RUBRIC.md` — rubric for chapter/methodology/validation comparison
+  - 4 example files (dissercat input, zotero input, landscape result JSON, landscape report MD)
+- `scripts/build_dissertation_landscape.py` — landscape analysis builder (JSON + Markdown output)
+- `scripts/import_zotero_landscape_records.py` — Zotero Local API connector (status/search modes)
+- `scripts/validate_dissertation_landscape.py` — 34-item validation gate
+- SKILL.md: Dissertation Landscape Mode with trigger conditions, Zotero capability gate, and routing rules
+
+### Changed
+- README.md: version header v5.4.0, version history updated (ZH/EN), capability description
+- BUILD_INFO.json: version 5.4.0, schema_version 5.4
+
+### Capabilities
+- Agentic dissertation search across public Russian dissertation sources
+- Zotero private corpus integration with graceful degradation
+- 12-section landscape report: source coverage, theme clustering, structure/methodology/validation comparison, user positioning, recommended outline
+- read_depth/source_access/structure_confidence annotation on every record
+- recommended_outline mappable to planning_layer chapter types
+- evidence_layer_routes linking chapters to evidence binding needs
+
+### Validation
+- validate_dissertation_landscape.py: passes
+- All record examples have read_depth, source_access, structure_confidence
+- No large verbatim text in landscape artifacts
+- No Zotero local attachment paths in public examples
+
 ## v5.2.0 — Russian Research Layer (2026-06-04)
 
 ### Added

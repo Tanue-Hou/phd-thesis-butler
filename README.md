@@ -1,4 +1,4 @@
-# PhD Thesis Butler v5.3.4
+# PhD Thesis Butler v5.4.0
 
 Russian dissertation planning, evidence-aware revision, and academic polishing skill for AI assistants such as Codex, Hermes, Claude Code, and Antigravity.
 
@@ -223,7 +223,7 @@ bash scripts/smoke_test.sh
 | v5.1 | 五大学科资产、结构/方法论/逻辑链增强，不重新训练。 |
 | v5.2 | Research Layer：俄语与国际文献调研路径、元数据标准化、综述 brief。 |
 | v5.3 | Evidence-Aware Writing：章节证据绑定、引用缺口检测、可读报告。 |
-| 下一步 | Semantic Evidence Matching：解决俄语正文与英文/中文/Zotero 文献元数据之间的跨语言匹配问题。 |
+| v5.4 | **Dissertation Landscape**：智能论文景观对比、DisserCat/eLIBRARY 公开搜索、Zotero 私有文献库接入、结构/方法论/验证模式对比、推荐论文大纲 → planning_layer。 |
 
 完整记录见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -407,7 +407,7 @@ bash scripts/smoke_test.sh
 | v5.1 | Discipline assets, methodology routes, logic chains, chapter rules. |
 | v5.2 | Research layer for Russian and international literature workflows. |
 | v5.3 | Evidence-aware writing: chapter evidence binding and citation gap reports. |
-| Next | Semantic evidence matching across Russian text and English/Chinese/Zotero metadata. |
+| v5.4 | **Dissertation Landscape**: agentic landscape comparison, DisserCat/eLIBRARY public search, Zotero private corpus, structure/methodology/validation pattern comparison, recommended outline → planning_layer. |
 
 ### Academic Integrity
 

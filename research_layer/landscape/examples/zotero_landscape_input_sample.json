@@ -1,0 +1,313 @@
+[
+  {
+    "id": "zotero-ABCD1234",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_indexed_fulltext",
+    "read_depth": "fulltext",
+    "structure_confidence": "high",
+    "title": "Vehicle State Estimation Using Sensor Fusion and Kalman Filtering",
+    "author": "Petrov A.V.",
+    "year": 2020,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": "Technical University of Munich",
+    "abstract": "This thesis presents a comprehensive framework for vehicle state estimation using multi-sensor fusion. The proposed method combines IMU, GPS, and wheel speed sensor data using an Extended Kalman Filter with adaptive noise covariance estimation. Experimental validation on a test vehicle demonstrates speed estimation accuracy within 0.3 km/h and yaw rate estimation within 0.5 deg/s.",
+    "keywords": [
+      "vehicle state estimation",
+      "sensor fusion",
+      "EKF",
+      "IMU",
+      "GPS"
+    ],
+    "toc": [
+      "Introduction",
+      "Literature Review",
+      "Sensor Models and Signal Processing",
+      "EKF-based Fusion Algorithm",
+      "Experimental Setup and Results",
+      "Conclusions"
+    ],
+    "methods": [
+      "Extended Kalman Filter",
+      "sensor fusion",
+      "adaptive noise estimation"
+    ],
+    "validation_type": "simulation_then_field",
+    "zotero_item_key": "ABCD1234",
+    "bibtex_key": "petrov2020vehicle",
+    "zotero_collection": "PhD References",
+    "zotero_tags": [
+      "phd",
+      "vehicle-dynamics",
+      "estimation",
+      "EKF",
+      "sensor-fusion"
+    ],
+    "indexed_fulltext_available": true
+  },
+  {
+    "id": "zotero-EFGH5678",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_metadata",
+    "read_depth": "abstract_toc",
+    "structure_confidence": "medium",
+    "title": "Identification of Vehicle Parameters Using Extended Kalman Filter",
+    "author": "Ivanov K.S.",
+    "year": 2018,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": null,
+    "abstract": "The work addresses online identification of vehicle mass and road gradient using EKF. A simplified single-track vehicle model is used. Simulation results show convergence within 50 seconds for mass estimation.",
+    "keywords": [
+      "vehicle identification",
+      "EKF",
+      "mass estimation",
+      "road gradient"
+    ],
+    "toc": [],
+    "methods": [
+      "Extended Kalman Filter",
+      "parameter identification"
+    ],
+    "validation_type": "simulation_only",
+    "zotero_item_key": "EFGH5678",
+    "bibtex_key": "ivanov2018identification",
+    "zotero_collection": "Vehicle Dynamics",
+    "zotero_tags": [
+      "estimation",
+      "parameter-id",
+      "EKF"
+    ],
+    "indexed_fulltext_available": false
+  },
+  {
+    "id": "zotero-IJKL9012",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_metadata",
+    "read_depth": "title_only",
+    "structure_confidence": "low",
+    "title": null,
+    "author": "",
+    "year": null,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": null,
+    "abstract": null,
+    "keywords": [],
+    "toc": [],
+    "methods": [],
+    "validation_type": null,
+    "zotero_item_key": "IJKL9012",
+    "bibtex_key": "unknown_undated",
+    "zotero_collection": "Unsorted",
+    "zotero_tags": [
+      "to-review"
+    ],
+    "indexed_fulltext_available": false
+  },
+  {
+    "id": "zotero-MNOP3456",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_indexed_fulltext",
+    "read_depth": "fulltext",
+    "structure_confidence": "high",
+    "title": "Unscented Kalman Filter for Nonlinear Vehicle Dynamics Estimation",
+    "author": "Kim J.H., Park S.W.",
+    "year": 2021,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": "KAIST",
+    "abstract": "This paper proposes an Unscented Kalman Filter approach for estimating nonlinear vehicle dynamics states including sideslip angle and tire forces. The method avoids explicit Jacobian computation and shows improved robustness compared to EKF under aggressive maneuvers. Validated on CarSim simulation and real vehicle data.",
+    "keywords": [
+      "UKF",
+      "vehicle dynamics",
+      "sideslip angle",
+      "tire forces",
+      "nonlinear estimation"
+    ],
+    "toc": [],
+    "methods": [
+      "Unscented Kalman Filter",
+      "nonlinear estimation",
+      "CarSim simulation"
+    ],
+    "validation_type": "simulation_then_field",
+    "zotero_item_key": "MNOP3456",
+    "bibtex_key": "kim2021unscented",
+    "zotero_collection": "Vehicle Dynamics",
+    "zotero_tags": [
+      "UKF",
+      "nonlinear",
+      "vehicle-dynamics",
+      "key-paper"
+    ],
+    "indexed_fulltext_available": true
+  },
+  {
+    "id": "zotero-QRST7890",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_metadata",
+    "read_depth": "abstract_toc",
+    "structure_confidence": "medium",
+    "title": "Deep Learning Approaches for Vehicle State Prediction",
+    "author": "Zhang W.",
+    "year": 2022,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": "Tsinghua University",
+    "abstract": "This work explores LSTM-based neural networks for predicting future vehicle states from historical sensor data. The approach is compared with traditional Kalman filter methods and shows superior performance in complex traffic scenarios.",
+    "keywords": [
+      "deep learning",
+      "LSTM",
+      "vehicle state prediction",
+      "neural networks"
+    ],
+    "toc": [],
+    "methods": [
+      "LSTM",
+      "deep learning",
+      "neural networks"
+    ],
+    "validation_type": "comparative_analysis",
+    "zotero_item_key": "QRST7890",
+    "bibtex_key": "zhang2022deep",
+    "zotero_collection": "Machine Learning",
+    "zotero_tags": [
+      "ML",
+      "deep-learning",
+      "LSTM",
+      "comparison"
+    ],
+    "indexed_fulltext_available": false
+  },
+  {
+    "id": "zotero-UVWX1234",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_metadata",
+    "read_depth": "abstract_toc",
+    "structure_confidence": "medium",
+    "title": "Kalman Filter Tuning for Automotive Applications: A Review",
+    "author": "",
+    "year": 2019,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": null,
+    "abstract": "Review paper covering Kalman filter tuning strategies for automotive state estimation. Covers process noise covariance tuning, measurement noise characterization, and adaptive methods.",
+    "keywords": [
+      "Kalman filter",
+      "tuning",
+      "automotive",
+      "review"
+    ],
+    "toc": [],
+    "methods": [
+      "Kalman filter tuning",
+      "adaptive filtering"
+    ],
+    "validation_type": null,
+    "zotero_item_key": "UVWX1234",
+    "bibtex_key": "unknown2019kalman",
+    "zotero_collection": "Literature Reviews",
+    "zotero_tags": [
+      "review",
+      "kalman",
+      "tuning"
+    ],
+    "indexed_fulltext_available": false
+  },
+  {
+    "id": "zotero-YZAB5678",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_indexed_fulltext",
+    "read_depth": "fulltext",
+    "structure_confidence": "high",
+    "title": "Particle Filter-Based Vehicle State Estimation with Road Grade Information",
+    "author": "Müller T., Schmidt R.",
+    "year": 2020,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": "RWTH Aachen University",
+    "abstract": "A particle filter approach for vehicle state estimation that incorporates road grade information from digital maps. The method demonstrates robustness against sensor failures and shows estimation accuracy comparable to UKF with better handling of multi-modal distributions.",
+    "keywords": [
+      "particle filter",
+      "vehicle state",
+      "road grade",
+      "digital map",
+      "Monte Carlo"
+    ],
+    "toc": [
+      "Introduction",
+      "Related Work",
+      "Particle Filter Formulation",
+      "Road Grade Integration",
+      "Experimental Results",
+      "Discussion"
+    ],
+    "methods": [
+      "particle filter",
+      "Monte Carlo estimation",
+      "map matching"
+    ],
+    "validation_type": "simulation_then_field",
+    "zotero_item_key": "YZAB5678",
+    "bibtex_key": "muller2020particle",
+    "zotero_collection": "PhD References",
+    "zotero_tags": [
+      "particle-filter",
+      "map-aided",
+      "robust-estimation"
+    ],
+    "indexed_fulltext_available": true
+  },
+  {
+    "id": "zotero-CDEF9012",
+    "source_name": "zotero",
+    "source_url": null,
+    "source_access": "zotero_metadata",
+    "read_depth": "abstract_toc",
+    "structure_confidence": "medium",
+    "title": "Методы оценки параметров автомобиля на основе датчиков ABS",
+    "author": "Сидоров П.Н.",
+    "year": null,
+    "degree_type": null,
+    "specialty_code": null,
+    "specialty_name": null,
+    "institution": null,
+    "abstract": "Рассматривается возможность использования стандартных датчиков ABS для оценки скорости вращения колес и определения коэффициента сцепления шины с дорожным покрытием.",
+    "keywords": [
+      "ABS",
+      "датчики",
+      "скорость вращения колес",
+      "коэффициент сцепления"
+    ],
+    "toc": [],
+    "methods": [
+      "фильтрация Калмана",
+      "анализ сигналов ABS"
+    ],
+    "validation_type": "simulation_only",
+    "zotero_item_key": "CDEF9012",
+    "bibtex_key": "sidorov_unknown_abs",
+    "zotero_collection": "Vehicle Dynamics",
+    "zotero_tags": [
+      "ABS",
+      "sensors",
+      "russian"
+    ],
+    "indexed_fulltext_available": false
+  }
+]

@@ -1,0 +1,680 @@
+{
+  "_meta": {
+    "schema_version": "5.4.0",
+    "description": "Sample Dissertation Landscape analysis result",
+    "topic": "Vehicle state estimation and identification using Kalman filtering methods",
+    "generated_for": "phd-thesis-butler v5.4.0 demo",
+    "note": "All data is fabricated for demonstration purposes."
+  },
+  "topic": "Vehicle state estimation and identification using Kalman filtering methods",
+  "user_direction": "Developing a novel adaptive Kalman filtering approach for real-time vehicle state estimation using multi-sensor fusion on commercial vehicles",
+  "records_count": 18,
+  "source_summary": {
+    "dissercat": 10,
+    "zotero": 8,
+    "elibrary": 0,
+    "cyberleninka": 0,
+    "openalex": 0,
+    "semantic_scholar": 0
+  },
+  "read_depth_summary": {
+    "title_only": 2,
+    "abstract_toc": 11,
+    "full_metadata": 3,
+    "fulltext": 2,
+    "partial_fulltext": 0
+  },
+  "theme_clusters": [
+    {
+      "cluster_id": "vehicle_dynamics_estimation",
+      "label": "Vehicle Dynamics State Estimation",
+      "size": 6,
+      "avg_year": 2020,
+      "trend": "growing",
+      "representative_keywords": [
+        "vehicle state",
+        "dynamics",
+        "estimation",
+        "EKF",
+        "UKF"
+      ],
+      "record_ids": [
+        "dc-001",
+        "dc-002",
+        "dc-003",
+        "dc-008",
+        "dc-010",
+        "zotero-ABCD1234"
+      ],
+      "gap_description": "Most focus on passenger vehicles with standard sensor configurations; limited work on commercial vehicles with heterogeneous sensor suites"
+    },
+    {
+      "cluster_id": "machine_learning_diagnostics",
+      "label": "Machine Learning for Vehicle Diagnostics",
+      "size": 4,
+      "avg_year": 2021,
+      "trend": "growing",
+      "representative_keywords": [
+        "neural networks",
+        "machine learning",
+        "XGBoost",
+        "deep learning",
+        "diagnostics"
+      ],
+      "record_ids": [
+        "dc-004",
+        "dc-005",
+        "zotero-QRST7890",
+        "zotero-YZAB5678"
+      ],
+      "gap_description": "ML approaches used for component diagnostics but rarely integrated with traditional Kalman-based state estimation frameworks"
+    },
+    {
+      "cluster_id": "navigation_positioning",
+      "label": "Navigation and Positioning for Autonomous Vehicles",
+      "size": 3,
+      "avg_year": 2021,
+      "trend": "growing",
+      "representative_keywords": [
+        "navigation",
+        "GNSS",
+        "inertial",
+        "LiDAR",
+        "autonomous"
+      ],
+      "record_ids": [
+        "dc-006",
+        "zotero-MNOP3456",
+        "zotero-YZAB5678"
+      ],
+      "gap_description": "Navigation focus with limited attention to vehicle body dynamics estimation; opportunity to bridge navigation and dynamics estimation"
+    },
+    {
+      "cluster_id": "component_degradation",
+      "label": "Component Degradation and Remaining Life Estimation",
+      "size": 2,
+      "avg_year": 2018,
+      "trend": "stable",
+      "representative_keywords": [
+        "residual life",
+        "degradation",
+        "statistical analysis",
+        "telematics"
+      ],
+      "record_ids": [
+        "dc-007",
+        "dc-004"
+      ],
+      "gap_description": "Traditional statistical approaches dominate; no integration with real-time state estimation methods"
+    },
+    {
+      "cluster_id": "kalman_filter_comparison",
+      "label": "Kalman Filter Variants Comparison and Tuning",
+      "size": 3,
+      "avg_year": 2018,
+      "trend": "stable",
+      "representative_keywords": [
+        "EKF",
+        "UKF",
+        "comparison",
+        "tuning",
+        "adaptive"
+      ],
+      "record_ids": [
+        "dc-010",
+        "zotero-EFGH5678",
+        "zotero-UVWX1234"
+      ],
+      "gap_description": "Comparative studies exist but lack systematic framework for method selection based on vehicle type and operating conditions"
+    }
+  ],
+  "structure_patterns": [
+    {
+      "pattern_id": "standard_ru_5ch",
+      "label": "Standard Russian 5-Chapter (Introduction + Review + Methods + Experiments + Conclusion)",
+      "frequency": 0.45,
+      "chapters": [
+        "introduction",
+        "literature_review",
+        "methodology",
+        "chapter_results",
+        "conclusion"
+      ],
+      "typical_institutions": [
+        "МАДИ",
+        "Баумана",
+        "Политех"
+      ],
+      "notes": "Most common structure for Russian engineering candidate dissertations in vehicle dynamics"
+    },
+    {
+      "pattern_id": "extended_ru_6ch",
+      "label": "Extended Russian 6-Chapter (with separate Theory chapter)",
+      "frequency": 0.3,
+      "chapters": [
+        "introduction",
+        "literature_review",
+        "theory",
+        "methodology",
+        "chapter_results",
+        "conclusion"
+      ],
+      "typical_institutions": [
+        "Баумана",
+        "СПбПУ"
+      ],
+      "notes": "Common when mathematical modeling is a significant contribution; separates theoretical foundations from algorithm development"
+    },
+    {
+      "pattern_id": "international_6ch",
+      "label": "International 6-Chapter (with Discussion chapter)",
+      "frequency": 0.15,
+      "chapters": [
+        "introduction",
+        "literature_review",
+        "methodology",
+        "chapter_results",
+        "discussion",
+        "conclusion"
+      ],
+      "typical_institutions": [
+        "TU Munich",
+        "KAIST",
+        "RWTH Aachen"
+      ],
+      "notes": "Western-style structure with explicit discussion chapter; found in Zotero-collected international theses"
+    },
+    {
+      "pattern_id": "minimal_4ch",
+      "label": "Minimal 4-Chapter (Review + Methods + Results + Conclusion)",
+      "frequency": 0.1,
+      "chapters": [
+        "literature_review",
+        "methodology",
+        "chapter_results",
+        "conclusion"
+      ],
+      "typical_institutions": [
+        "Regional technical universities"
+      ],
+      "notes": "Compressed structure; often signals narrower scope or shorter dissertations"
+    }
+  ],
+  "methodology_patterns": [
+    {
+      "method_id": "kalman_filtering",
+      "label": "Kalman Filtering Variants (EKF, UKF, PF)",
+      "frequency": 0.65,
+      "sub_methods": [
+        "Extended Kalman Filter",
+        "Unscented Kalman Filter",
+        "Particle Filter",
+        "adaptive Kalman filter",
+        "fuzzy Kalman filter"
+      ],
+      "often_combined_with": [
+        "simulation",
+        "experimental_testing"
+      ],
+      "trend": "established",
+      "typical_validation": "simulation_then_field"
+    },
+    {
+      "method_id": "simulation_modeling",
+      "label": "Computational Simulation (MATLAB/Simulink/CarSim)",
+      "frequency": 0.75,
+      "sub_methods": [
+        "MATLAB/Simulink",
+        "CarSim",
+        "Adams",
+        "numerical integration"
+      ],
+      "often_combined_with": [
+        "kalman_filtering",
+        "experimental_testing"
+      ],
+      "trend": "established",
+      "typical_validation": "simulation_then_field"
+    },
+    {
+      "method_id": "machine_learning",
+      "label": "Machine Learning Methods",
+      "frequency": 0.25,
+      "sub_methods": [
+        "CNN",
+        "LSTM",
+        "XGBoost",
+        "gradient boosting"
+      ],
+      "often_combined_with": [
+        "statistical_analysis",
+        "experimental_testing"
+      ],
+      "trend": "emerging",
+      "typical_validation": "experimental_only"
+    },
+    {
+      "method_id": "experimental_testing",
+      "label": "Physical Experimental Validation",
+      "frequency": 0.55,
+      "sub_methods": [
+        "test bench",
+        "real vehicle tests",
+        "dynamometer",
+        "track testing"
+      ],
+      "often_combined_with": [
+        "simulation_modeling",
+        "kalman_filtering"
+      ],
+      "trend": "established",
+      "typical_validation": "simulation_then_bench"
+    },
+    {
+      "method_id": "statistical_analysis",
+      "label": "Statistical and Regression Analysis",
+      "frequency": 0.2,
+      "sub_methods": [
+        "regression analysis",
+        "Bayesian inference",
+        "hypothesis testing",
+        "ANOVA"
+      ],
+      "often_combined_with": [
+        "experimental_testing"
+      ],
+      "trend": "stable",
+      "typical_validation": "statistical_validation"
+    },
+    {
+      "method_id": "sensor_fusion",
+      "label": "Multi-Sensor Fusion Architectures",
+      "frequency": 0.35,
+      "sub_methods": [
+        "IMU+GPS fusion",
+        "camera+LiDAR",
+        "adaptive noise estimation",
+        "complementary filtering"
+      ],
+      "often_combined_with": [
+        "kalman_filtering",
+        "simulation_modeling"
+      ],
+      "trend": "growing",
+      "typical_validation": "simulation_then_field"
+    }
+  ],
+  "validation_patterns": [
+    {
+      "pattern_id": "simulation_then_field",
+      "label": "Simulation → Real Vehicle Validation",
+      "frequency": 0.4,
+      "description": "Algorithm development and initial validation via MATLAB/Simulink or CarSim simulation, followed by real vehicle testing with data acquisition systems",
+      "expected_chapters": [
+        "methodology",
+        "chapter_results"
+      ],
+      "strength": "high",
+      "typical_claims": "Method achieves X% accuracy improvement over baseline on real vehicle data"
+    },
+    {
+      "pattern_id": "simulation_then_bench",
+      "label": "Simulation → Test Bench Validation",
+      "frequency": 0.25,
+      "description": "Simulation-based development followed by validation on a hardware-in-the-loop test bench or vehicle component test stand",
+      "expected_chapters": [
+        "methodology",
+        "chapter_results"
+      ],
+      "strength": "medium-high",
+      "typical_claims": "Bench results confirm simulation predictions within X% deviation"
+    },
+    {
+      "pattern_id": "simulation_only",
+      "label": "Simulation-Only Validation",
+      "frequency": 0.15,
+      "description": "All validation conducted via numerical simulation; no physical experiments",
+      "expected_chapters": [
+        "chapter_results"
+      ],
+      "strength": "medium",
+      "typical_claims": "Algorithm converges within X iterations with Y% accuracy in simulation"
+    },
+    {
+      "pattern_id": "experimental_only",
+      "label": "Purely Experimental Validation",
+      "frequency": 0.1,
+      "description": "Method developed and validated entirely through physical experiments without prior simulation",
+      "expected_chapters": [
+        "chapter_results"
+      ],
+      "strength": "medium",
+      "typical_claims": "Experimental classification/recognition accuracy of X%"
+    },
+    {
+      "pattern_id": "comparative_analysis",
+      "label": "Comparative Algorithm Analysis",
+      "frequency": 0.1,
+      "description": "Systematic comparison of multiple algorithms under identical conditions",
+      "expected_chapters": [
+        "methodology",
+        "chapter_results"
+      ],
+      "strength": "medium-high",
+      "typical_claims": "Algorithm A outperforms Algorithm B by X% under condition Y"
+    }
+  ],
+  "positioning_gaps": [
+    {
+      "gap_id": "commercial_vehicle_underrepresented",
+      "type": "population_gap",
+      "description": "Only 1 of 18 analyzed dissertations focuses on commercial/heavy vehicles; the overwhelming majority address passenger cars",
+      "novelty_potential": "high",
+      "recommendation": "Position thesis around heavy commercial vehicle state estimation — underrepresented and practically important"
+    },
+    {
+      "gap_id": "adaptive_kf_with_ml",
+      "type": "methodology_gap",
+      "description": "Kalman filtering and ML are used separately; no dissertation combines adaptive KF tuning with ML-based process noise estimation",
+      "novelty_potential": "high",
+      "recommendation": "Develop hybrid KF+ML approach where ML optimizes KF parameters in real-time"
+    },
+    {
+      "gap_id": "real_time_implementation",
+      "type": "validation_gap",
+      "description": "Most dissertations validate offline; few demonstrate real-time embedded implementation on vehicle ECUs",
+      "novelty_potential": "medium",
+      "recommendation": "Include embedded system implementation and real-time performance analysis"
+    },
+    {
+      "gap_id": "multi_operating_conditions",
+      "type": "scope_gap",
+      "description": "Most validation is under normal driving conditions; extreme conditions (ice, heavy rain, off-road) are rarely addressed",
+      "novelty_potential": "medium",
+      "recommendation": "Test under diverse operating conditions including adverse weather and road surfaces"
+    }
+  ],
+  "borrowable_moves": [
+    {
+      "move_id": "industry_statistics_opening",
+      "type": "opening_move",
+      "description": "Open the introduction with industry statistics on road safety / accident rates, then narrow to the specific technical gap that the thesis addresses",
+      "example_sources": [
+        "dc-001",
+        "dc-003"
+      ],
+      "applicability": "high",
+      "chapter": "introduction"
+    },
+    {
+      "move_id": "method_comparison_table",
+      "type": "method_justification",
+      "description": "Include a comparison table of candidate methods with criteria (accuracy, computational cost, robustness, implementation complexity) to justify the chosen approach",
+      "example_sources": [
+        "dc-010",
+        "zotero-UVWX1234"
+      ],
+      "applicability": "high",
+      "chapter": "literature_review"
+    },
+    {
+      "move_id": "convergence_analysis",
+      "type": "result_presentation",
+      "description": "Present algorithm convergence plots (estimation error vs. time) as the primary result metric before discussing absolute accuracy",
+      "example_sources": [
+        "dc-002",
+        "zotero-EFGH5678"
+      ],
+      "applicability": "high",
+      "chapter": "chapter_results"
+    },
+    {
+      "move_id": "error_budget_analysis",
+      "type": "result_presentation",
+      "description": "Decompose total estimation error into sensor noise contribution, model mismatch contribution, and algorithmic error to show which dominates",
+      "example_sources": [
+        "zotero-ABCD1234",
+        "dc-008"
+      ],
+      "applicability": "medium",
+      "chapter": "chapter_results"
+    },
+    {
+      "move_id": "novelty_triple_statement",
+      "type": "contribution_statement",
+      "description": "State contributions in a numbered list of 3 items: (1) new mathematical model, (2) new algorithm, (3) experimental validation with quantified improvements",
+      "example_sources": [
+        "dc-001",
+        "dc-003",
+        "dc-006"
+      ],
+      "applicability": "high",
+      "chapter": "introduction"
+    }
+  ],
+  "risk_warnings": [
+    {
+      "risk_id": "methodology_saturation",
+      "severity": "medium",
+      "description": "Kalman filtering (EKF/UKF) is used in 65% of dissertations in this domain. Pure KF application without novelty may be seen as insufficient contribution.",
+      "mitigation": "Differentiate through hybrid KF+ML approach, adaptive tuning, or application to an underrepresented vehicle class (commercial vehicles)"
+    },
+    {
+      "risk_id": "validation_standard_rising",
+      "severity": "medium",
+      "description": "The field increasingly expects both simulation AND real vehicle validation. Simulation-only validation may be viewed as insufficient by reviewers.",
+      "mitigation": "Plan for real vehicle testing from the start; budget time for experimental validation"
+    },
+    {
+      "risk_id": "passenger_vehicle_overlap",
+      "severity": "high",
+      "description": "Topic is very close to 5+ recent dissertations focused on passenger vehicles. Risk of being perceived as incremental work.",
+      "mitigation": "Explicitly differentiate by focusing on commercial vehicles, novel sensor configurations, or real-time embedded implementation"
+    },
+    {
+      "risk_id": "scope_too_broad",
+      "severity": "low",
+      "description": "Covering all vehicle states (longitudinal, lateral, yaw, roll, pitch) plus all Kalman variants may be too broad for a single dissertation.",
+      "mitigation": "Focus on 2–3 key states and 1–2 KF variants; save others for future work"
+    }
+  ],
+  "recommended_outline": [
+    {
+      "chapter_number": 1,
+      "title": "Обзор современных методов оценки состояния транспортных средств. Постановка задачи исследования",
+      "planning_layer_type": "literature_review",
+      "rationale": "Standard first chapter in 90% of Russian engineering dissertations; addresses positioning gap by surveying the field and stating the problem",
+      "structure_confidence": 0.9,
+      "evidence_layer_route": true
+    },
+    {
+      "chapter_number": 2,
+      "title": "Математическая модель динамики коммерческого транспортного средства",
+      "planning_layer_type": "theory",
+      "rationale": "Theory chapter present in 75% of corpus; needed to establish the vehicle dynamics model used throughout the thesis",
+      "structure_confidence": 0.85,
+      "evidence_layer_route": false
+    },
+    {
+      "chapter_number": 3,
+      "title": "Адаптивный алгоритм оценки состояния на основе гибридного KF-ML подхода",
+      "planning_layer_type": "methodology",
+      "rationale": "Core contribution chapter; the hybrid KF+ML method addresses the methodology gap identified in the landscape",
+      "structure_confidence": 0.9,
+      "evidence_layer_route": true
+    },
+    {
+      "chapter_number": 4,
+      "title": "Имитационное моделирование и анализ сходимости алгоритма",
+      "planning_layer_type": "chapter_results",
+      "rationale": "Simulation results chapter; addresses convergence analysis borrowable move; expected by 85% of corpus",
+      "structure_confidence": 0.85,
+      "evidence_layer_route": true
+    },
+    {
+      "chapter_number": 5,
+      "title": "Экспериментальная верификация на реальном коммерческом транспортном средстве",
+      "planning_layer_type": "chapter_results",
+      "rationale": "Experimental validation chapter; addresses validation gap (most dissertations use simulation only for commercial vehicles); differentiates thesis",
+      "structure_confidence": 0.9,
+      "evidence_layer_route": true
+    },
+    {
+      "chapter_number": 6,
+      "title": "Заключение и направления дальнейших исследований",
+      "planning_layer_type": "conclusion",
+      "rationale": "Standard final chapter; present in 100% of corpus",
+      "structure_confidence": 0.95,
+      "evidence_layer_route": false
+    }
+  ],
+  "evidence_layer_routes": [
+    {
+      "chapter_number": 1,
+      "chapter_title": "Literature Review and Problem Statement",
+      "planning_layer_type": "literature_review",
+      "evidence_needed": [
+        "Systematic comparison table of existing methods with quantitative metrics",
+        "Statistics on commercial vehicle accidents/state estimation needs",
+        "Gap analysis supported by citation count data"
+      ],
+      "evidence_sources": [
+        "dissercat_corpus",
+        "zotero_corpus",
+        "openalex_search"
+      ]
+    },
+    {
+      "chapter_number": 3,
+      "chapter_title": "Adaptive Hybrid KF-ML Algorithm",
+      "planning_layer_type": "methodology",
+      "evidence_needed": [
+        "Convergence proof or analysis for the proposed algorithm",
+        "Computational complexity analysis",
+        "Comparison with baseline methods on benchmark scenarios"
+      ],
+      "evidence_sources": [
+        "simulation_results",
+        "mathematical_derivation"
+      ]
+    },
+    {
+      "chapter_number": 4,
+      "chapter_title": "Simulation Results",
+      "planning_layer_type": "chapter_results",
+      "evidence_needed": [
+        "Simulation result tables and plots",
+        "Statistical significance tests for improvement claims",
+        "Sensitivity analysis results"
+      ],
+      "evidence_sources": [
+        "matlab_simulink_output",
+        "carsim_data"
+      ]
+    },
+    {
+      "chapter_number": 5,
+      "chapter_title": "Experimental Verification",
+      "planning_layer_type": "chapter_results",
+      "evidence_needed": [
+        "Real vehicle test data with sensor specifications",
+        "Comparison tables: simulation vs. experimental results",
+        "Error analysis and uncertainty quantification",
+        "Embedded system performance metrics (latency, memory usage)"
+      ],
+      "evidence_sources": [
+        "vehicle_test_data",
+        "embedded_system_logs",
+        "bench_test_results"
+      ]
+    }
+  ],
+  "planning_layer_routes": [
+    {
+      "chapter_id": "ch01",
+      "title": "Введение",
+      "planning_layer_cluster": "ENGINEERING_CONTROL",
+      "evidence_layer_categories": [
+        "INTRO"
+      ],
+      "evidence_roles_needed": [
+        "background_context",
+        "research_gap",
+        "contribution_positioning"
+      ],
+      "binding_status": "needs_binding"
+    },
+    {
+      "chapter_id": "ch02",
+      "title": "Обзор литературы",
+      "planning_layer_cluster": "ENGINEERING_CONTROL",
+      "evidence_layer_categories": [
+        "SURVEY"
+      ],
+      "evidence_roles_needed": [
+        "method_basis",
+        "method_comparison",
+        "research_gap"
+      ],
+      "binding_status": "needs_binding"
+    },
+    {
+      "chapter_id": "ch03",
+      "title": "Математическая модель и метод оценки",
+      "planning_layer_cluster": "ENGINEERING_CONTROL",
+      "evidence_layer_categories": [
+        "MODEL",
+        "METHOD"
+      ],
+      "evidence_roles_needed": [
+        "definition",
+        "method_basis",
+        "method_comparison"
+      ],
+      "binding_status": "needs_binding"
+    },
+    {
+      "chapter_id": "ch04",
+      "title": "Экспериментальная верификация",
+      "planning_layer_cluster": "ENGINEERING_CONTROL",
+      "evidence_layer_categories": [
+        "EXPERIMENT",
+        "RESULT"
+      ],
+      "evidence_roles_needed": [
+        "benchmark",
+        "empirical_support",
+        "validation_standard"
+      ],
+      "binding_status": "needs_binding"
+    },
+    {
+      "chapter_id": "ch05",
+      "title": "Анализ результатов и обсуждение",
+      "planning_layer_cluster": "ENGINEERING_CONTROL",
+      "evidence_layer_categories": [
+        "RESULT",
+        "DISCUSSION"
+      ],
+      "evidence_roles_needed": [
+        "empirical_support",
+        "contradiction",
+        "contribution_positioning"
+      ],
+      "binding_status": "needs_binding"
+    },
+    {
+      "chapter_id": "ch06",
+      "title": "Заключение",
+      "planning_layer_cluster": "ENGINEERING_CONTROL",
+      "evidence_layer_categories": [
+        "CONCLUSION"
+      ],
+      "evidence_roles_needed": [
+        "contribution_positioning",
+        "structure_reference"
+      ],
+      "binding_status": "needs_binding"
+    }
+  ]
+}
