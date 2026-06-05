@@ -8,8 +8,6 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 
 ## 中文
 
-### 一句话说明
-
 **PhD Thesis Butler 是一个开源俄语论文写作 Skill，可供 Codex、Hermes、Claude Code、Antigravity 等智能体调用，用于论文结构规划、文献证据检查和俄语学术润色。**
 
 它面向正在写俄语 кандидат наук / PhD / 博士论文、俄语期刊论文、开题报告、章节草稿和文献综述的人。它的目标是帮助用户把研究想法变成结构清晰、证据更稳、表达更像俄罗斯学术写作的论文文本。
