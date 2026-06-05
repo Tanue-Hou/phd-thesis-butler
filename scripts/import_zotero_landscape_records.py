@@ -73,9 +73,43 @@ def zotero_request(path, params=None, timeout=ZOTERO_API_TIMEOUT):
 
 
 def check_zotero_status():
-    """Check if Zotero Local API is accessible."""
-    success, data = zotero_request("/connector/ping")
-    return success
+    """Check if Zotero Local API is accessible.
+    
+    Uses the real JSON API endpoint /api/users/0/items/top?limit=1
+    instead of /connector/ping (which returns HTML, not JSON).
+    Returns (status_code, details) where status_code is:
+      'AVAILABLE' — API is usable
+      'APP_RUNNING' — connector responds but items endpoint failed
+      'UNAVAILABLE' — nothing responds
+    """
+    
+    # First check if the Zotero connector is running at all
+    try:
+        req = urllib.request.Request(ZOTERO_API_BASE + "/connector/ping", method="GET")
+        with urllib.request.urlopen(req, timeout=ZOTERO_API_TIMEOUT) as resp:
+            body = resp.read().decode("utf-8", errors="replace")
+            connector_alive = resp.status == 200 or "Zotero" in body
+    except Exception:
+        connector_alive = False
+    
+    # Now check if the actual API endpoint works
+    api_ok = False
+    try:
+        top_params = urllib.parse.urlencode({"limit": "1"})
+        api_url = f"{ZOTERO_API_BASE}/api/users/0/items/top?{top_params}"
+        req = urllib.request.Request(api_url, headers={"Zotero-API-Version": "3"})
+        with urllib.request.urlopen(req, timeout=ZOTERO_API_TIMEOUT) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            api_ok = isinstance(data, list) or isinstance(data, dict)
+    except Exception:
+        api_ok = False
+    
+    if api_ok:
+        return "AVAILABLE", "Zotero API is accessible and responding"
+    elif connector_alive:
+        return "APP_RUNNING", "Zotero connector is running but API endpoint not responding (check permissions/profile)"
+    else:
+        return "UNAVAILABLE", "Could not connect to Zotero (ensure it is running with Local API enabled)"
 
 
 def extract_authors(item_data):
@@ -192,12 +226,13 @@ def zotero_item_to_landscape_record(item):
         "url": url if url else None,
         "keywords_ru": keywords,
         "abstract_ru": abstract if abstract else None,
+        "source_name": "zotero",
         "source_platform": "zotero",
         "source": "zotero_local_api",
         "discipline_cluster": detect_discipline_cluster(data),
         "evidence_role": ["literature_pool"],
-        "read_depth": "imported",
-        "source_access": "zotero_local",
+        "read_depth": "metadata_only",
+        "source_access": "zotero_metadata",
         "structure_confidence": 0.5,
     }
 
@@ -217,13 +252,12 @@ def zotero_item_to_landscape_record(item):
 
 def cmd_status(args):
     """Check Zotero Local API availability."""
-    if check_zotero_status():
-        print("Zotero API: AVAILABLE")
+    status, detail = check_zotero_status()
+    print(f"Zotero API: {status}")
+    print(f"  {detail}")
+    if status == "AVAILABLE":
         return 0
     else:
-        print("Zotero API: UNAVAILABLE")
-        print(f"  (Could not connect to {ZOTERO_API_BASE})")
-        print("  Make sure Zotero is running with the Local API enabled.")
         return 0  # Exit 0 even on failure (no crash)
 
 
@@ -234,7 +268,8 @@ def cmd_search(args):
     output_path = args.output
 
     # Check API first
-    if not check_zotero_status():
+    status, _ = check_zotero_status()
+    if status != "AVAILABLE":
         print("ERROR: Zotero API is not available.", file=sys.stderr)
         print(f"  Cannot connect to {ZOTERO_API_BASE}", file=sys.stderr)
         print("  Make sure Zotero is running with the Local API enabled.", file=sys.stderr)

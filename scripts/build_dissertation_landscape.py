@@ -109,21 +109,48 @@ VALIDATION_LABELS = {
 
 
 def get_field(rec, *names, default=""):
-    """Get first non-empty field value from a list of alternative names."""
+    """Get first non-empty field value."""
     for name in names:
         val = rec.get(name)
-        if val:
+        if val is not None and val != "":
             return val
     return default
 
 
 def get_field_list(rec, *names, default=None):
-    """Get first non-empty list field from alternative names. Ensures result is a list."""
+    """Get first non-empty list field from alternatives."""
     for name in names:
         val = rec.get(name)
         if val is not None:
             return safe_list(val)
     return default or []
+
+
+def normalize_confidence(val, default=0.5):
+    """Normalize structure_confidence to float. Accepts string, float, int, None."""
+    if val is None:
+        return default
+    if isinstance(val, (int, float)):
+        return float(val)
+    if isinstance(val, str):
+        val_lower = val.lower().strip()
+        mapping = {"high": 0.9, "medium": 0.6, "low": 0.3}
+        if val_lower in mapping:
+            return mapping[val_lower]
+        try:
+            return float(val_lower)
+        except (ValueError, TypeError):
+            return default
+    return default
+
+
+def safe_str(val, default="unknown"):
+    """Safely convert value to string, handling None."""
+    if val is None:
+        return default
+    if isinstance(val, str):
+        return val if val.strip() else default
+    return str(val)
 
 
 def log(msg):
@@ -302,7 +329,7 @@ def analyze_methodology_patterns(records):
         patterns.append({
             "method_id": f"MP{i:02d}",
             "methodology_type": mt,
-            "label": METHODOLOGY_LABELS.get(mt, mt.replace("_", " ").title()),
+            "label": METHODOLOGY_LABELS.get(mt, safe_str(mt).replace("_", " ").title()),
             "frequency": count,
             "example_record_ids": [r["id"] for r in records if r.get("methodology_type") == mt][:3],
         })
@@ -317,6 +344,8 @@ def analyze_validation_patterns(records):
 
     for rec in records:
         vt = rec.get("validation_type", "unknown")
+        if vt is None or (isinstance(vt, str) and not vt.strip()):
+            vt = "unknown"
         val_counter[vt] += 1
         if vt not in val_examples:
             val_examples[vt] = rec["id"]
@@ -326,7 +355,7 @@ def analyze_validation_patterns(records):
         patterns.append({
             "validation_id": f"VP{i:02d}",
             "validation_type": vt,
-            "label": VALIDATION_LABELS.get(vt, vt.replace("_", " ").title()),
+            "label": VALIDATION_LABELS.get(vt, safe_str(vt).replace("_", " ").title()),
             "frequency": count,
             "example_record_ids": [r["id"] for r in records if r.get("validation_type") == vt][:3],
         })
@@ -469,7 +498,7 @@ def generate_risk_warnings(records, topic):
         })
 
     # Check for stale references
-    old_years = sum(1 for r in records if r.get("year", 2025) < 2018)
+    old_years = sum(1 for r in records if (r.get("year") or 2025) < 2018)
     if old_years > total * 0.3:
         warnings.append({
             "risk_type": "currency",
@@ -489,7 +518,7 @@ def generate_risk_warnings(records, topic):
         })
 
     # Check confidence
-    low_conf = sum(1 for r in records if (r.get("structure_confidence", 1.0)) < 0.7)
+    low_conf = sum(1 for r in records if normalize_confidence(r.get("structure_confidence", 1.0)) < 0.7)
     if low_conf > 0:
         warnings.append({
             "risk_type": "data_quality",
@@ -611,7 +640,10 @@ def generate_source_summary(records):
     platforms = Counter()
     years = []
     for rec in records:
-        platforms[rec.get("source_platform", "unknown")] += 1
+        # Priority: source_name > source_platform > source > unknown
+        source = rec.get("source_name") or rec.get("source_platform") or rec.get("source") or "unknown"
+        source = safe_str(source).lower().replace("_local_api", "").replace("_local", "")
+        platforms[source] += 1
         if rec.get("year"):
             years.append(rec["year"])
 

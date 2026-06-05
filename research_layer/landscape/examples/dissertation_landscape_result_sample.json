@@ -18,11 +18,9 @@
     "semantic_scholar": 0
   },
   "read_depth_summary": {
-    "title_only": 2,
-    "abstract_toc": 11,
-    "full_metadata": 3,
-    "fulltext": 2,
-    "partial_fulltext": 0
+    "metadata_only": 2,
+    "abstract_toc": 14,
+    "fulltext_local": 2
   },
   "theme_clusters": [
     {

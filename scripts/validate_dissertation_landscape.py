@@ -111,6 +111,12 @@ RECORD_QUALITY_FIELDS = [
     "structure_confidence",
 ]
 
+# Valid enum values for read_depth and source_access
+VALID_READ_DEPTH = {"metadata_only", "abstract_toc", "zotero_indexed_fulltext", "fulltext_local"}
+VALID_SOURCE_ACCESS = {"public_page", "zotero_metadata", "zotero_indexed_fulltext", "user_provided_pdf", "manual"}
+VALID_CONFIDENCE = {"high", "medium", "low"}
+
+
 # The 12 required Markdown sections
 MD_SECTIONS = [
     "1. Research Direction",
@@ -185,12 +191,31 @@ def validate_sample_input():
             check(f"  Record '{rec_id}' has '{field}'", field in rec,
                   f"missing field '{field}'")
 
-        # Check structure_confidence is a float between 0 and 1
+        # Check structure_confidence (accepts string or numeric)
         sc = rec.get("structure_confidence")
         if sc is not None:
-            check(f"  Record '{rec_id}' structure_confidence in {{high,medium,low}}",
-                  sc in ("high", "medium", "low"),
-                  f"got {sc}")
+            if isinstance(sc, str):
+                ok = sc.lower().strip() in VALID_CONFIDENCE
+                check(f"  Record '{rec_id}' structure_confidence in {VALID_CONFIDENCE}",
+                      ok, f"got '{sc}'")
+            elif isinstance(sc, (int, float)):
+                ok = 0.0 <= float(sc) <= 1.0
+                check(f"  Record '{rec_id}' structure_confidence in [0,1]",
+                      ok, f"got {sc}")
+        
+        # Check read_depth enum
+        rd = rec.get("read_depth")
+        if rd is not None:
+            check(f"  Record '{rec_id}' read_depth in VALID_READ_DEPTH",
+                  rd in VALID_READ_DEPTH,
+                  f"got '{rd}'")
+        
+        # Check source_access enum
+        sa = rec.get("source_access")
+        if sa is not None:
+            check(f"  Record '{rec_id}' source_access in VALID_SOURCE_ACCESS",
+                  sa in VALID_SOURCE_ACCESS,
+                  f"got '{sa}'")
 
         # Check for large verbatim text
         abstract = rec.get("abstract_ru", "")
@@ -408,6 +433,8 @@ def main():
     # Deep validation
     if args.deep:
         deep_validate()
+        validate_e2e_build()
+        validate_e2e_build()
 
     # Summary
     print("\n" + "=" * 60)
@@ -422,6 +449,98 @@ def main():
     print("=" * 60)
 
     return 0 if failed == 0 else 1
+
+
+
+
+def validate_e2e_build():
+    """End-to-end: run builder on raw sample inputs and verify output."""
+    import subprocess
+    import tempfile
+    
+    print(f"\n--- End-to-End Build Test ---")
+    
+    test_cases = [
+        ("dissercat", "dissercat_landscape_input_sample.json", "vehicle state estimation"),
+        ("zotero", "zotero_landscape_input_sample.json", "vehicle state estimation from Zotero"),
+    ]
+    
+    all_pass = True
+    for name, sample_file, topic in test_cases:
+        sample_path = os.path.join(EXAMPLES_DIR, sample_file)
+        if not os.path.exists(sample_path):
+            print(f"  {FAIL} {name}: sample not found: {sample_path}")
+            all_pass = False
+            continue
+        
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f_json:
+            json_path = f_json.name
+        with tempfile.NamedTemporaryFile(suffix=".md", delete=False, mode="w") as f_md:
+            md_path = f_md.name
+        
+        try:
+            result = subprocess.run(
+                [sys.executable, BUILD_SCRIPT,
+                 "--input", sample_path,
+                 "--output-json", json_path,
+                 "--output-md", md_path,
+                 "--topic", topic],
+                capture_output=True, text=True, timeout=60
+            )
+            if result.returncode != 0:
+                print(f"  {FAIL} {name}: builder crashed (rc={result.returncode})")
+                print(f"    stderr: {result.stderr[:200]}")
+                all_pass = False
+                continue
+            
+            with open(json_path) as f:
+                output = json.load(f)
+            
+            required_keys = ["topic", "records_count", "theme_clusters", "structure_patterns",
+                             "methodology_patterns", "validation_patterns", "recommended_outline",
+                             "source_summary", "read_depth_summary", "positioning_gaps",
+                             "borrowable_moves", "risk_warnings", "planning_layer_routes",
+                             "evidence_layer_routes"]
+            missing = [k for k in required_keys if k not in output]
+            
+            platforms = output.get("source_summary", {}).get("platforms", {})
+            all_unknown = all(k == "unknown" for k in platforms)
+            
+            with open(md_path) as f:
+                md_content = f.read()
+            md_sections = sum(1 for line in md_content.split("\n") if line.strip().startswith("## ") and len(line) > 3 and line[3].isdigit())
+            
+            has_zotero_paths = "/Users/" in md_content and "Zotero" in md_content
+            
+            errors = []
+            if missing:
+                errors.append(f"missing {missing}")
+            if all_unknown:
+                errors.append(f"source_summary all unknown: {platforms}")
+            if md_sections < 12:
+                errors.append(f"only {md_sections}/12 sections")
+            if has_zotero_paths:
+                errors.append(f"contains Zotero local paths")
+            
+            if errors:
+                print(f"  {FAIL} {name}: {'; '.join(errors)}")
+                all_pass = False
+            else:
+                print(f"  {PASS} {name}: JSON {len(required_keys)-len(missing)}/{len(required_keys)} fields \u2713 platforms={platforms} \u2713 MD {md_sections}/12 \u2713")
+        except subprocess.TimeoutExpired:
+            print(f"  {FAIL} {name}: builder timed out")
+            all_pass = False
+        except Exception as e:
+            print(f"  {FAIL} {name}: {e}")
+            all_pass = False
+        finally:
+            for p in [json_path, md_path]:
+                try:
+                    os.unlink(p)
+                except OSError:
+                    pass
+    
+    return all_pass
 
 
 if __name__ == "__main__":
