@@ -25,6 +25,17 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 | **③ 文献调研与论文对比** | 需要查文献、找同方向俄罗斯论文、对比结构/方法/验证、用 Zotero 私有库 | research_layer + landscape/ + dissercat/elibrary |
 | **④ 证据检查与引用修复** | 已有章节草稿，需要检查哪些论断缺引用、文献该放哪一章 | evidence_layer + binding/gap scripts |
 
+### 核心亮点
+
+| 亮点 | 说明 |
+|:-----|:------|
+| 🔍 **俄罗斯学位论文搜索** | 直接检索 **DisserCat**（俄罗斯学位论文库）、**eLIBRARY / RINC**（俄罗斯核心期刊）、**CyberLeninka**（开放获取）等俄罗斯本土文献源，不仅仅是国际数据库 |
+| 📚 **Zotero 私有库直连** | 支持读取本地 Zotero 文献库的元数据、标签、集合、已索引全文，按条件搜索筛选后直接进入论文对比分析——**不需要手动导出** |
+| 🏗 **同方向论文结构对比** | 从公开来源或 Zotero 获取 10-30 篇同方向论文，自动聚类主题、对比章节结构模式、方法论路线和验证方式，生成 12 节结构化报告 + 推荐大纲 |
+| 📝 **16,722 条俄语学术句式** | 从 2,118 篇俄罗斯学位论文中蒸馏出的俄语原生句式模板，覆盖引言、综述、模型、方法、实验、结果、讨论、结论等全部章节，三层回退检索 |
+| 🧩 **论文全流程规划** | 6 大学科大类 × 5 种结构模式 × 方法论指南 × 实验设计指南 × 逻辑闭环检查，从研究方向直接生成章节蓝图 |
+| ✅ **引用缺口检测** | 逐句检测章节草稿中的论断是否缺引用，12 种证据角色，自动标注 covered / missing / not_needed
+
 ### 典型使用场景
 
 #### 1. 从想法到论文框架
@@ -288,13 +299,14 @@ PhD Thesis Butler 是科研写作辅助工具。它可以帮助规划、检索�
 | **③ Поиск литературы и анализ диссертаций** | Нужно найти диссертации по теме — **DisserCat**, **eLIBRARY**, **CyberLeninka**, **OpenAlex**; сравнить структуры, методы; подключить **личную Zotero-библиотеку** | research_layer + landscape/ |
 | **④ Проверка цитирования** | Есть черновик главы, нужно проверить, какие утверждения требуют ссылок | evidence_layer + bind/detect/render scripts |
 
-Ключевые возможности:
-- 🔍 **Поиск по российским диссертационным базам**: DisserCat, eLIBRARY / RINC, CyberLeninka
-- 📚 **Интеграция с Zotero**: чтение локальной библиотеки, поиск по названию/автору/тегам
-- 🏗 **Сравнение структур глав**: выявление общих паттернов (Введение → Обзор → Модель → Эксперимент → Результаты)
-- 🧪 **Анализ методологий**: Калмановская фильтрация, машинное обучение, сенсорное слияние, численное моделирование и др.
-- 📋 **Рекомендация плана диссертации**: автоматически сгенерированный outline, совместимый с planning_layer
-- 🧩 **Работа с доказательной базой**: привязка литературы к главам, проверка citation gaps
+| Ключевая возможность | Описание |
+|:---------------------|:----------|
+| 🔍 **Поиск по российским базам** | **DisserCat**, **eLIBRARY / RINC**, **CyberLeninka**, **OpenAlex** — российские диссертации и журналы |
+| 📚 **Интеграция с Zotero** | Чтение метаданных, тегов, коллекций, индексированного полного текста — **без ручного экспорта** |
+| 🏗 **Сравнение структур диссертаций** | Автоматическая кластеризация 10–30 диссертаций по теме, сравнение структуры глав, методологий и типов валидации — отчёт из 12 разделов + рекомендуемый план |
+| 📝 **16 722 русских академических шаблона** | Дистиллированы из 2 118 диссертаций (МГТУ/МГУ/СПбГУ), покрытие всех глав от ВВЕДЕНИЯ до ЗАКЛЮЧЕНИЯ |
+| 🧩 **Полное планирование диссертации** | 6 дисциплинарных кластеров × 5 структурных паттернов × руководства по методологии, экспериментам и логике |
+| ✅ **Проверка цитирования** | Пословный анализ утверждений, 12 ролей источников, автоматическая маркировка covered / missing / not_needed |
 
 Это не генератор диссертаций. Skill помогает автору планировать, искать, проверять и улучшать уже написанный текст.
 
@@ -380,6 +392,17 @@ It is not a one-click dissertation generator. It helps authors structure real re
 | **② Thesis planning** | You have a topic/idea and need full structure, chapters, methodology, experiments | planning_layer + discipline assets |
 | **③ Literature & dissertation landscape** | You need to search the literature, find comparative Russian dissertations, compare structures/methods, use your Zotero library | research_layer + landscape/ |
 | **④ Evidence & citation audit** | You have a chapter draft and need to check which claims lack citations, which sources support which chapter | evidence_layer + binding/gap scripts |
+
+### Key Highlights
+
+| Feature | Description |
+|:--------|:------------|
+| 🔍 **Russian dissertation search** | Direct search across **DisserCat**, **eLIBRARY / RINC**, **CyberLeninka**, **OpenAlex** — Russian-language sources, not just international databases |
+| 📚 **Zotero direct integration** | Read local Zotero metadata, tags, collections, indexed full text — search and feed directly into comparative analysis. **No manual export needed.** |
+| 🏗 **Comparative landscape analysis** | Collect 10-30 similar-topic dissertations from public sources or Zotero, auto-cluster themes, compare chapter structures, methodology routes, and validation patterns — generates a 12-section structured report + recommended outline |
+| 📝 **16,722 Russian sentence templates** | Distilled from 2,118 Russian dissertations (BMSTU/MSU/SPbSU), covers INTRO through CONCLUSION, 3-layer fallback retrieval |
+| 🧩 **Full thesis planning** | 6 discipline clusters × 5 structure patterns × methodology guides × experiment design guides × logic closure checks |
+| ✅ **Citation gap detection** | Sentence-level claim analysis, 12 evidence roles, automatic covered/missing/not_needed annotation |
 
 ### Typical Prompts
 
