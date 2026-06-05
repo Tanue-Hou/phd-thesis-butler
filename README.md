@@ -16,15 +16,15 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 
 ### 最核心能做什么
 
-优先级从高到低：
+核心能力概览：
 
-| 优先级 | 能力 | 适合什么时候用 |
-|---:|---|---|
-| 1 | **论文结构规划** | 只有研究方向、题目、方法想法或导师要求时，生成论文结构、章节顺序、研究问题、目标、任务和逻辑链。 |
-| 2 | **文献调研路径设计** | 需要围绕 eLIBRARY、DisserCat、CyberLeninka、OpenAlex 等来源规划检索式、标准化文献记录、生成参考文献调研 brief。 |
-| 3 | **证据绑定与引用缺口检查** | 已经有章节或草稿时，检查哪些论断缺引用、哪些文献适合放到引言/综述/方法/实验/结论。 |
-| 4 | **俄语学术润色** | 已经写出俄语段落、章节或全文时，在不改变作者意思的前提下优化学术表达、段落衔接和机器化痕迹；可能有助于降低文本的 AI 味，但暂未做全量验证。 |
-| 5 | **私有扩展基础** | 未来用户可以把自己的领域论文、Zotero 文献或私有材料脱敏后接入扩展层。 |
+| 能力 | 适合什么时候用 |
+|---|---|
+| **俄语学术润色** | 已经写出俄语段落、章节或全文时，在不改变作者意思的前提下优化学术表达、段落衔接和机器化痕迹；可能有助于降低文本的 AI 味，但暂未做全量验证。 |
+| **论文结构规划** | 只有研究方向、题目、方法想法或导师要求时，生成论文结构、章节顺序、研究问题、目标、任务和逻辑链。 |
+| **文献调研路径设计** | 需要围绕 eLIBRARY、DisserCat、CyberLeninka、OpenAlex 等来源规划检索式、标准化文献记录、生成参考文献调研 brief。 |
+| **证据绑定与引用缺口检查** | 已经有章节或草稿时，检查哪些论断缺引用、哪些文献适合放到引言/综述/方法/实验/结论。 |
+| **私有扩展基础** | 未来用户可以把自己的领域论文、Zotero 文献或私有材料脱敏后接入扩展层。 |
 
 ### 典型使用场景
 
@@ -262,13 +262,13 @@ PhD Thesis Butler 是科研写作辅助工具。它可以帮助规划、检索�
 
 ### Главные возможности
 
-| Приоритет | Возможность | Когда использовать |
-|---:|---|---|
-| 1 | **Планирование диссертации** | Тема, идея, метод или требования руководителя уже есть, но нужна структура глав и логика исследования. |
-| 2 | **Литературный поиск** | Нужно спланировать поиск по eLIBRARY, DisserCat, CyberLeninka, OpenAlex и нормализовать метаданные. |
-| 3 | **Evidence-aware writing** | Нужно понять, какие утверждения требуют ссылок и какие источники подходят к главам. |
-| 4 | **Русская академическая полировка** | Черновик уже написан, нужно улучшить стиль, связность и научную формулировку; это может помочь снизить машинный оттенок текста, но пока не проверено на полномасштабной оценке. |
-| 5 | **Частное расширение** | Пользователь хочет позже подключить собственный корпус или Zotero-библиотеку. |
+| Возможность | Когда использовать |
+|---|---|
+| **Русская академическая полировка** | Черновик уже написан, нужно улучшить стиль, связность и научную формулировку; это может помочь снизить машинный оттенок текста, но пока не проверено на полномасштабной оценке. |
+| **Планирование диссертации** | Тема, идея, метод или требования руководителя уже есть, но нужна структура глав и логика исследования. |
+| **Литературный поиск** | Нужно спланировать поиск по eLIBRARY, DisserCat, CyberLeninka, OpenAlex и нормализовать метаданные. |
+| **Evidence-aware writing** | Нужно понять, какие утверждения требуют ссылок и какие источники подходят к главам. |
+| **Частное расширение** | Пользователь хочет позже подключить собственный корпус или Zotero-библиотеку. |
 
 ### Типовые задачи
 
@@ -339,13 +339,13 @@ It is not a one-click dissertation generator. It helps authors structure real re
 
 ### Core Capabilities
 
-| Priority | Capability | Use it when |
-|---:|---|---|
-| 1 | **Dissertation planning** | You have a topic, idea, method, or supervisor requirement and need chapter structure and research logic. |
-| 2 | **Literature research workflow** | You need search paths for eLIBRARY, DisserCat, CyberLeninka, OpenAlex, metadata normalization, and review briefs. |
-| 3 | **Evidence-aware revision** | You need to know which claims need citations and which sources support which chapter. |
-| 4 | **Russian academic polishing** | You already have a Russian draft and want stronger academic style without changing meaning; it may help reduce machine-like phrasing, but this has not been fully validated at scale. |
-| 5 | **Private extension base** | You want to later connect your own papers, Zotero library, or local corpus. |
+| Capability | Use it when |
+|---|---|
+| **Russian academic polishing** | You already have a Russian draft and want stronger academic style without changing meaning; it may help reduce machine-like phrasing, but this has not been fully validated at scale. |
+| **Dissertation planning** | You have a topic, idea, method, or supervisor requirement and need chapter structure and research logic. |
+| **Literature research workflow** | You need search paths for eLIBRARY, DisserCat, CyberLeninka, OpenAlex, metadata normalization, and review briefs. |
+| **Evidence-aware revision** | You need to know which claims need citations and which sources support which chapter. |
+| **Private extension base** | You want to later connect your own papers, Zotero library, or local corpus. |
 
 ### Typical Prompts
 
