@@ -24,7 +24,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 | **论文结构规划** | 只有研究方向、题目、方法想法或导师要求时，生成论文结构、章节顺序、研究问题、目标、任务和逻辑链。 |
 | **文献调研路径设计** | 需要围绕 eLIBRARY、DisserCat、CyberLeninka、OpenAlex 等来源规划检索式、标准化文献记录、生成参考文献调研 brief。 |
 | **证据绑定与引用缺口检查** | 已经有章节或草稿时，检查哪些论断缺引用、哪些文献适合放到引言/综述/方法/实验/结论。 |
-| **论文景观对比 🆕** | 想知道同方向俄罗斯博士论文怎么写——通过 DisserCat/eLIBRARY 公开搜索和 Zotero 私有文献库，对比章节结构、方法论路线、验证方式，反推自己的论文结构。 |
+| **同方向论文对比分析 🆕** | 想知道同方向俄罗斯博士论文怎么写——通过 DisserCat/eLIBRARY 公开搜索和 Zotero 私有文献库，对比章节结构、方法论路线、验证方式，反推自己的论文结构。 |
 | **私有扩展基础** | 未来用户可以把自己的领域论文、Zotero 文献或私有材料脱敏后接入扩展层。 |
 
 ### 典型使用场景
@@ -43,7 +43,7 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 - 问题、目标、任务、方法、实验、结论之间的闭环；
 - 哪些章节需要模型、实验、对比、消融或案例论证。
 
-#### 2. 论文景观对比 🆕
+#### 2. 同方向论文对比分析 🆕
 
 ```text
 我研究车辆状态估计，帮我找同方向俄罗斯博士论文，看看别人怎么写结构。
@@ -165,7 +165,7 @@ chapter_writing_rules
 User request
   ├─ 论文规划 / 开题 / 章节设计
   │    └─ planning_layer/
-  ├─ 论文景观对比 / 同方向论文结构分析 🆕
+  ├─ 同方向论文对比 / 结构方法比对 🆕
   │    └─ research_layer/landscape/ + build_dissertation_landscape.py
   ├─ 学科范式 / 方法论 / 逻辑闭环
   │    └─ assets/references/disciplines/
@@ -208,7 +208,7 @@ phd-thesis-butler/
 │       └── schemas/             # 公开 schema
 ├── planning_layer/              # 论文规划、方法论、实验设计、逻辑闭环
 ├── research_layer/              # 文献调研来源、检索策略、示例
-│   └── landscape/               # 论文景观对比：结构化对比分析与 Zotero 私有文献接入 (v5.4)
+│   └── landscape/               # 同方向论文对比：结构化对比、方法分析、Zotero 私有文献接入 (v5.4)
 ├── evidence_layer/              # 证据角色、章节绑定、引用缺口检测
 ├── extension_layer/             # 用户私有扩展入口
 └── scripts/                     # 检索、调研、证据、验证脚本
@@ -245,7 +245,7 @@ bash scripts/smoke_test.sh
 | v5.1 | 五大学科资产、结构/方法论/逻辑链增强，不重新训练。 |
 | v5.2 | Research Layer：俄语与国际文献调研路径、元数据标准化、综述 brief。 |
 | v5.3 | Evidence-Aware Writing：章节证据绑定、引用缺口检测、可读报告。 |
-| v5.4 | **Dissertation Landscape**：智能论文景观对比、DisserCat/eLIBRARY 公开搜索、Zotero 私有文献库接入、结构/方法论/验证模式对比、推荐论文大纲 → planning_layer。 |
+| v5.4 | **同方向论文对比分析**：DisserCat/eLIBRARY 公开搜索、Zotero 私有文献库接入、结构/方法论/验证模式对比、推荐论文大纲 → planning_layer。 |
 
 完整记录见 [CHANGELOG.md](CHANGELOG.md)。
 

@@ -77,7 +77,7 @@ Analyze the landscape of dissertations similar to the user's topic — from publ
 Activate when the user mentions:
 - 同方向论文 / похожие диссертации
 - 看看别人怎么写 / как другие пишут
-- 论文景观 / dissertation landscape
+- 同方向论文对比 / dissertation landscape
 - 结构对比 / сравнение структур
 - 方法路线对比 / сравнение методологий
 - 从我的Zotero找 / поиск в Zotero
