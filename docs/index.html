@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhD Thesis Butler — 俄语论文写作助手</title>
+<style>
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: #181825;
+  --bg-hover: #1e1e30;
+  --border: #2a2a3e;
+  --text-primary: #e8e8f0;
+  --text-secondary: #9090a8;
+  --text-muted: #606080;
+  --accent: #7c6ff0;
+  --accent-dim: #5a4fc0;
+  --accent-glow: rgba(124, 111, 240, 0.15);
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", system-ui, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Navigation */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.nav-brand svg { width: 22px; height: 22px; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 13px;
+}
+
+.nav-links a { color: var(--text-secondary); }
+.nav-links a:hover { color: var(--text-primary); }
+
+/* Hero */
+.hero {
+  padding: 120px 24px 80px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 100px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(124,111,240,0.25);
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 24px;
+  letter-spacing: 0.3px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #e8e8f0 0%, #7c6ff0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 32px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--accent-dim);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+/* Stats bar */
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 40px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.stat-item { text-align: center; }
+.stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Section */
+.section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.section-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+
+/* Workflow cards */
+.workflows {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .workflows { grid-template-columns: 1fr; }
+}
+
+.workflow-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+.workflow-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+}
+
+.wf-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent-glow);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.wf-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.wf-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.wf-layers {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+
+/* Highlights grid */
+.highlights {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .highlights { grid-template-columns: 1fr; }
+}
+
+.hl-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.2s;
+}
+
+.hl-card:hover { border-color: var(--accent); }
+
+.hl-icon {
+  font-size: 20px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.hl-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.hl-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Data sources */
+.source-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .source-list { grid-template-columns: 1fr; }
+}
+
+.source-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.source-card:hover { border-color: var(--accent); }
+
+.source-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.source-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Version timeline */
+.timeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.version-tag {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  min-width: 120px;
+  flex: 1;
+}
+
+.version-tag:hover { border-color: var(--accent); }
+
+.v-number {
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.v-desc {
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+footer a { color: var(--text-secondary); }
+
+/* Glow effect for hero */
+.hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(124,111,240,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      <path d="M8 7h8M8 11h6M8 15h4"/>
+    </svg>
+    PhD Thesis Butler
+  </div>
+  <div class="nav-links">
+    <a href="#workflows">工作流</a>
+    <a href="#highlights">能力</a>
+    <a href="#sources">数据源</a>
+    <a href="#versions">版本</a>
+    <a href="https://github.com/Tanue-Hou/phd-thesis-butler" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">v5.4.1 · 开源 · 供 AI 智能体调用</div>
+  <h1>俄语论文写作助手</h1>
+  <p>四个工作流覆盖论文全流程：从结构规划到文献搜索，从证据检查到俄语润色。面向正在写俄语 кандидат наук / PhD / 博士论文的研究者。</p>
+  <div class="hero-actions">
+    <a href="https://github.com/Tanue-Hou/phd-thesis-butler" class="btn btn-primary" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub 仓库
+    </a>
+    <a href="#workflows" class="btn btn-secondary">了解能力</a>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-number">16,722</div>
+    <div class="stat-label">俄语句式模板</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">2,118</div>
+    <div class="stat-label">论文来源</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">679</div>
+    <div class="stat-label">深度分析</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">6</div>
+    <div class="stat-label">学科大类</div>
+  </div>
+</div>
+
+<div class="section" id="workflows">
+  <h2 class="section-title">四个工作流</h2>
+  <p class="section-sub">从研究方向到俄语论文，覆盖论文写作全流程</p>
+  <div class="workflows">
+    <div class="workflow-card">
+      <div class="wf-num">①</div>
+      <div class="wf-name">俄语润色与表达优化</div>
+      <div class="wf-desc">已有俄语段落或全文时，优化学术表达、段落衔接、降低机器感。16,722 条句式模板从 2,118 篇俄罗斯学位论文蒸馏而来，三层回退检索确保命中。</div>
+      <div class="wf-layers">assets + retrieve_templates.py</div>
+    </div>
+    <div class="workflow-card">
+      <div class="wf-num">②</div>
+      <div class="wf-name">论文规划与结构设计</div>
+      <div class="wf-desc">从研究方向自动生成完整论文结构：章节设计（6大学科×5种模式）、方法论路线选择、实验方案设计、各章节写作功能定义——不只是大纲，而是每章该写什么、怎么展开、如何闭环。</div>
+      <div class="wf-layers">planning_layer + discipline assets</div>
+    </div>
+    <div class="workflow-card">
+      <div class="wf-num">③</div>
+      <div class="wf-name">文献调研与论文对比</div>
+      <div class="wf-desc">搜索 DisserCat、eLIBRARY、CyberLeninka、OpenAlex 等俄罗斯本土文献源；支持直连本地 Zotero 库（无需手动导出）；自动对比 10-30 篇同方向论文的结构、方法、验证方式，生成 12 节报告 + 推荐大纲。</div>
+      <div class="wf-layers">research_layer + landscape/</div>
+    </div>
+    <div class="workflow-card">
+      <div class="wf-num">④</div>
+      <div class="wf-name">证据检查与引用修复</div>
+      <div class="wf-desc">逐句检测章节草稿中的论断是否缺引用，12 种证据角色（background、research gap、benchmark 等），自动标注 covered / missing / not_needed，推荐补充文献类型。</div>
+      <div class="wf-layers">evidence_layer + binding/gap scripts</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="highlights">
+  <h2 class="section-title">核心能力</h2>
+  <p class="section-sub">不只是句式库，而是一套完整的论文写作智能体系统</p>
+  <div class="highlights">
+    <div class="hl-card">
+      <span class="hl-icon">🔍</span>
+      <div class="hl-title">俄罗斯学位论文搜索</div>
+      <div class="hl-desc">直连 <strong>DisserCat</strong>（俄罗斯学位论文库）、<strong>eLIBRARY / RINC</strong>（核心期刊）、<strong>CyberLeninka</strong>（开放获取），全方位覆盖俄罗斯本土文献。</div>
+    </div>
+    <div class="hl-card">
+      <span class="hl-icon">📚</span>
+      <div class="hl-title">Zotero 私有库直连</div>
+      <div class="hl-desc">通过本地 API 读取 Zotero 元数据、标签、集合、已索引全文，按条件搜索后直接进入论文对比分析——不需要手动导出文献。</div>
+    </div>
+    <div class="hl-card">
+      <span class="hl-icon">🏗</span>
+      <div class="hl-title">同方向论文结构对比</div>
+      <div class="hl-desc">从公开来源或 Zotero 获取同方向论文，自动聚类主题、对比章节结构模式、方法论路线和验证方式，输出结构化报告 + 推荐大纲（可直接进入规划工作流）。</div>
+    </div>
+    <div class="hl-card">
+      <span class="hl-icon">📝</span>
+      <div class="hl-title">16,722 条俄语句式模板</div>
+      <div class="hl-desc">从 МГТУ / МГУ / СПбГУ 2,118 篇学位论文中蒸馏出的原生俄语句式，覆盖引言到结论全部章节，DISCIPLINE → CLUSTER → GLOBAL 三层回退检索。</div>
+    </div>
+    <div class="hl-card">
+      <span class="hl-icon">🧩</span>
+      <div class="hl-title">论文全流程规划</div>
+      <div class="hl-desc">从研究方向生成完整论文结构：整体章节设计（6 大学科 × 5 种模式）、方法论路线、实验方案、各章节写作功能定义和输入输出、逻辑闭环检查。</div>
+    </div>
+    <div class="hl-card">
+      <span class="hl-icon">✅</span>
+      <div class="hl-title">引用缺口检测</div>
+      <div class="hl-desc">逐句分析章节草稿中每个论断的引用状态，12 种证据角色自动分类，生成可读报告指出现有证据缺口并推荐补充文献类型。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="sources">
+  <h2 class="section-title">数据来源</h2>
+  <p class="section-sub">基于真实的俄罗斯学位论文语料库构建</p>
+  <div class="source-list">
+    <div class="source-card">
+      <div class="source-name">МГТУ им. Баумана</div>
+      <div class="source-desc">325 篇学位论文</div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">МГУ им. Ломоносова</div>
+      <div class="source-desc">1,197 篇学位论文</div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">СПбГУ</div>
+      <div class="source-desc">744 篇学位论文</div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">DisserCat</div>
+      <div class="source-desc">俄罗斯学位论文门户 · 景观搜索</div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">eLIBRARY / RINC</div>
+      <div class="source-desc">俄罗斯核心期刊 · 文献调研</div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">CyberLeninka</div>
+      <div class="source-desc">开放获取 · 学术文献</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="versions">
+  <h2 class="section-title">版本路线</h2>
+  <p class="section-sub">从句式库到完整的俄语论文写作智能平台</p>
+  <div class="timeline">
+    <div class="version-tag">
+      <span class="v-number">v5.4.1</span>
+      <span class="v-desc">工作流路由收敛 · 四流统一入口</span>
+    </div>
+    <div class="version-tag">
+      <span class="v-number">v5.4</span>
+      <span class="v-desc">文献调研与论文对比 · Zotero 直连</span>
+    </div>
+    <div class="version-tag">
+      <span class="v-number">v5.3</span>
+      <span class="v-desc">证据绑定 · 引用缺口检测</span>
+    </div>
+    <div class="version-tag">
+      <span class="v-number">v5.2</span>
+      <span class="v-desc">Research Layer · 文献调研管线</span>
+    </div>
+    <div class="version-tag">
+      <span class="v-number">v5.0</span>
+      <span class="v-desc">范式资产 · 五大学科</span>
+    </div>
+    <div class="version-tag">
+      <span class="v-number">v4.0</span>
+      <span class="v-desc">规划层 · 结构/方法论/实验</span>
+    </div>
+    <div class="version-tag">
+      <span class="v-number">v3.3</span>
+      <span class="v-desc">稳定句式库基线</span>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="text-align:center; padding-top:40px;">
+  <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">
+    PhD Thesis Butler 是开源俄语论文写作 Skill，可供 Codex、Hermes、Claude Code、Antigravity 等智能体调用。<br>
+    它不是代写工具，不替代作者贡献、导师判断、事实核验或学术伦理责任。
+  </p>
+  <a href="https://github.com/Tanue-Hou/phd-thesis-butler" class="btn btn-primary" target="_blank" style="font-size:15px; padding:12px 32px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+    打开 GitHub 仓库
+  </a>
+</div>
+
+<footer>
+  <p>PhD Thesis Butler · 开源 MIT License · <a href="https://github.com/Tanue-Hou/phd-thesis-butler" target="_blank">Tanue-Hou/phd-thesis-butler</a></p>
+</footer>
+
+</body>
+</html>
