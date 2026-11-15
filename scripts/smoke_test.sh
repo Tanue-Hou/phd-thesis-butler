@@ -30,28 +30,28 @@ echo "========================================"
 # ─────────────────────────────────────────
 # T1: retrieve_templates.py returns results
 # ─────────────────────────────────────────
-run_test "T1" "retrieve_templates.py — must return ≥1 result"
+run_test "T1" "retrieve_templates.py — lexical relevance and record-label contract"
 _t1_tmp=$(mktemp)
 python3 "$BASE/scripts/retrieve_templates.py" \
     --category MODEL \
     --cluster TECH_LIFE \
     --query "модель метод эксперимент" \
     --limit 3 >"$_t1_tmp" 2>/dev/null || true
-_t1_count=$(python3 -c "
+if python3 - "$_t1_tmp" <<'PYTEST'
 import json, sys
-try:
-    with open(sys.argv[1]) as f:
-        data = json.load(f)
-    print(len(data))
-except:
-    print(0)
-" "$_t1_tmp" 2>/dev/null || echo 0)
-rm -f "$_t1_tmp"
-if [ "$_t1_count" -gt 0 ]; then
-    pass "retrieve_templates returned $_t1_count results"
+rows = json.load(open(sys.argv[1]))
+assert rows, "expected a lexical match"
+assert all(r['hit_layer'] in ('CLUSTER', 'GLOBAL') for r in rows)
+assert all(r['v5_cluster'] == 'SCI_TECH' for r in rows), "record-label consistency only"
+assert all(r['lexical_score'] > 0 for r in rows)
+assert all(r['classification_status'] == 'unverified_source_label' for r in rows)
+PYTEST
+then
+    pass "retrieval hit layer, lexical gate and record-label consistency"
 else
-    fail "retrieve_templates returned 0 results"
+    fail "retrieval contract failed"
 fi
+rm -f "$_t1_tmp"
 
 # ─────────────────────────────────────────
 # T2: planning_layer validator passes
@@ -165,6 +165,34 @@ if [ -f "$_gf" ] && [ -s "$_gf" ]; then
     pass "GLOBAL MASTER.jsonl: $_gc lines"
 else
     fail "GLOBAL MASTER.jsonl missing or empty"
+fi
+
+run_test "T8" "Synthetic retrieval regressions (not semantic certification)"
+if python3 -m unittest discover -s "$BASE/scripts" -p 'test_retrieval_phase0.py'; then
+    pass "retrieval regressions"
+else
+    fail "retrieval regressions"
+fi
+for validator in validate_evidence_layer validate_research_layer; do
+    run_test "$validator" "Existing validator"
+    if python3 "$BASE/scripts/$validator.py"; then
+        pass "$validator"
+    else
+        fail "$validator"
+    fi
+done
+
+run_test "T11" "Landscape sample build and validation in a temporary directory"
+_landscape_tmp=$(mktemp -d)
+trap 'rm -rf "$_landscape_tmp"' EXIT
+if python3 "$BASE/scripts/build_dissertation_landscape.py" \
+    --input "$BASE/research_layer/landscape/examples/dissercat_landscape_input_sample.json" \
+    --output-json "$_landscape_tmp/result.json" --output-md "$_landscape_tmp/report.md" \
+    && python3 "$BASE/scripts/validate_dissertation_landscape.py" \
+    --output-json "$_landscape_tmp/result.json" --output-md "$_landscape_tmp/report.md"; then
+    pass "sample build and landscape validator"
+else
+    fail "sample build or landscape validator"
 fi
 
 # ═════════════════════════════════════════

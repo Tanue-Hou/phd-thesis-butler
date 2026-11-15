@@ -409,12 +409,19 @@ def deep_validate():
 
 
 def main():
+    global LANDSCAPE_JSON_OUTPUT, LANDSCAPE_MD_OUTPUT
     parser = argparse.ArgumentParser(
         description="Validate dissertation landscape inputs and outputs."
     )
     parser.add_argument("--deep", action="store_true",
                         help="Run full deep validation")
+    parser.add_argument("--output-json", help="Validate an explicit generated JSON (default unchanged)")
+    parser.add_argument("--output-md", help="Validate an explicit generated report (default unchanged)")
     args = parser.parse_args()
+    if args.output_json:
+        LANDSCAPE_JSON_OUTPUT = os.path.abspath(args.output_json)
+    if args.output_md:
+        LANDSCAPE_MD_OUTPUT = os.path.abspath(args.output_md)
 
     print("=" * 60)
     print("Dissertation Landscape Validator (v5.4.0)")

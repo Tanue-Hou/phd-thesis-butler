@@ -331,28 +331,21 @@ Confirm the semantic understanding from Step 1 — determine which **category** 
 - Contextual cues from the conversation history (Layer 2 — Context Pattern)
 - The `assets/references/subtype_mapping_v3.3.json` mapping table
 
-**Step 2b — Three-layer retrieval with semantic matching**
-Search using the semantically understood subtype across the three layers:
+**Step 2b — Record-label-filtered lexical retrieval**
+Use `scripts/retrieve_templates.py` with an explicit canonical `v5_cluster` label and category.
+It scans existing quality JSONL files across storage directories, filters the record label,
+and ranks lexical overlap then quality. Directory names are not trustworthy taxonomy.
+`hit_layer` records the asset storage layer, not proof of discipline or source rights.
+No lexical match returns `[]`; an empty query explicitly browses the selected category.
+Use `--cluster GLOBAL` only for intentional cross-cluster browsing. Do not silently broaden an empty result.
+Legacy aliases follow `assets/references/cluster_mapping.json` and are reported as lossy.
+Planning clusters are not automatically equivalent to corpus labels. Existing labels can be
+semantically wrong; inspect the template before reuse. A label-consistency test is not semantic validation.
 
-| **L2 DISCIPLINE:** Search `assets/discipline/{discipline_name}.jsonl` — read entries, **understand** which templates match the user's situation best. Do NOT require exact subtype-name matching. Use your understanding of the user's intent to select the most relevant templates.
-| - Prioritize `quality_score=2`, then `quality_score=1`
-| - If no templates match the exact semantic nuance, try broader conceptual match within the same category
-|
-| **L1 CLUSTER:** If L2 < 3 relevant results, search `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl`
-| - Process: load the file → read entries → understand which templates fit the user's rhetorical goal → select best matches
-| - Same semantic approach: understand first, match second
-|
-| **L0 GLOBAL:** If L1 < 3 results, search `assets/global/quality/QUALITY2_{CATEGORY}.jsonl`
-
-**Step 2c — Data fallback**
-If three-layer retrieval < 3 results, fall back to `data/curated/quality/` flat files:
-```
-data/curated/quality/QUALITY2_SELECTION_DIS.jsonl  (or _AREF / _UTILS)
-```
-For deeper fallback, use the full sentencebank:
-```
-data/curated/master/MASTER_SENTENCEBANK_DIS.jsonl  (or _AREF / _UTILS)
-```
+Discipline context lives in `assets/references/disciplines/*.json`; these are aggregate profiles,
+not sentence banks and do not produce a `DISCIPLINE` retrieval hit. The legacy `--discipline`
+argument is retained for caller compatibility but does not filter sentence membership.
+This CLI uses lexical matching, not multilingual semantic search; inflections/synonyms can yield false negatives.
 
 ### Step 3: Present templates
 Format each template as follows:
@@ -450,7 +443,7 @@ All paths are relative to the skill installation directory (`~/.hermes/skills/ph
 
 | File | Contents | Priority |
 |---|---|---|
-| `assets/discipline/{discipline}.jsonl` | 34 discipline files (10,045 templates) | ⭐⭐⭐ L2 |
+| `assets/references/disciplines/*.json` | Aggregate planning profiles, not sentence retrieval data | Context only |
 | `assets/cluster/{CLUSTER}/quality/QUALITY2_{CATEGORY}.jsonl` | TECH_LIFE / HUM_SOC quality-split files | ⭐⭐⭐ L1 |
 | `assets/cluster/{CLUSTER}/master/MASTER.jsonl` | Full cluster corpus (TECH_LIFE=5,635, HUM_SOC=4,031) | ⭐⭐ L1 fallback |
 | `assets/global/quality/QUALITY2_{CATEGORY}.jsonl` | 185 quality=2 cross-discipline templates | ⭐⭐⭐ L0 |
