@@ -232,25 +232,13 @@ def keyword_overlap(set_a, set_b):
 
 
 def classify_strength(overlap_count, has_role_match):
-    """Classify evidence_strength based on keyword overlap and role match."""
-    if overlap_count >= 4 and has_role_match:
-        return "strong"
-    elif overlap_count >= 2 and has_role_match:
-        return "medium"
-    elif has_role_match:
-        return "weak"
-    else:
-        return "none"
+    """Return only unverified candidate strength (legacy schema enum)."""
+    return "weak" if has_role_match or overlap_count >= 2 else "none"
 
 
 def classify_gap_status(has_source, strength):
-    """Classify gap_status: covered / partial / missing."""
-    if not has_source:
-        return "missing"
-    if strength in ("strong", "medium"):
-        return "covered"
-    # strength == "weak" with a source → partial
-    return "partial"
+    """Automatic role/keyword matching never proves factual coverage."""
+    return "partial" if has_source else "missing"
 
 
 # ─── Core binding logic ─────────────────────────────────────────────────────
@@ -266,13 +254,22 @@ def find_candidates(role, literature, outline_kws):
     search_kws = outline_kws | r_kws
 
     candidates = []
+    seen_ids, seen_dois = set(), set()
     for src in literature:
+        source_id = str(src.get("id") or src.get("source_id") or "").strip()
+        doi = str(src.get("doi") or "").strip().lower()
+        doi = re.sub(r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", "", doi)
+        if not source_id or source_id in seen_ids or (doi and doi in seen_dois):
+            continue
         src_roles = set(src.get("evidence_role", []))
         has_role = role in src_roles
         src_kws = extract_source_keywords(src)
         overlap = keyword_overlap(search_kws, src_kws)
         if has_role or overlap >= 2:
             candidates.append((src, overlap, has_role))
+            seen_ids.add(source_id)
+            if doi:
+                seen_dois.add(doi)
 
     # Sort by (has_role desc, overlap desc, year desc)
     candidates.sort(key=lambda c: (c[2], c[1], c[0].get("year") or 0), reverse=True)
@@ -313,7 +310,7 @@ def generate_binding_records(chapter, literature, outline_text):
 
         if candidates:
             best_src, overlap, has_role = candidates[0]
-            matched_ids = [best_src.get("id", best_src.get("source_id", ""))]
+            matched_ids = [best_src.get("id") or best_src.get("source_id", "")]
             evidence_strength = classify_strength(overlap, has_role)
             gap_status = classify_gap_status(True, evidence_strength)
             # If strength is "none" even with a source, treat as partial
@@ -334,7 +331,7 @@ def generate_binding_records(chapter, literature, outline_text):
             action_template = ROLE_GAP_ACTION.get(role, "Find a source for {topic}")
             action = action_template.format(topic=topic)
         elif gap_status == "partial":
-            action = f"Strengthen '{role}' evidence for {topic} with additional sources"
+            action = f"Review the exact source passage for '{role}' and {topic}; role/keyword matching does not verify support"
         else:
             action = f"Verify relevance of source {matched_ids[0]} for '{role}'"
 
@@ -354,6 +351,8 @@ def generate_binding_records(chapter, literature, outline_text):
             "matched_source_ids": matched_ids,
             "evidence_strength": evidence_strength,
             "gap_status": gap_status,
+            "verification_status": "candidate_unverified" if matched_ids else "not_verified",
+            "match_basis": "role_or_lexical_overlap" if matched_ids else "none",
             "recommended_action": action,
             "created_at": ts,
             "updated_at": ts,
@@ -381,6 +380,8 @@ def build_chapter_evidence_map(chapter, bindings, topic):
             "evidence_role": b["required_evidence_roles"][0],
             "evidence_strength": b["evidence_strength"],
             "gap_status": b["gap_status"],
+            "verification_status": b.get("verification_status", "not_verified"),
+            "match_basis": b.get("match_basis", "none"),
             "recommended_action": b["recommended_action"],
         }
         bound_records.append(record)

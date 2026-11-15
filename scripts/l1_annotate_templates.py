@@ -1,191 +1,98 @@
 #!/usr/bin/env python3
-"""
-L1: 元数据标注 — 给16,722个模板添加v5.0学科聚类标签。
+"""Annotate copies using an explicitly reviewed source-identity manifest.
 
-方法: 通过 (source, discipline) 建立模板 pdf_id → Layer 3 paper_id → cluster 映射。
-最大并行: 按JSONL文件分片，每文件独立进程处理。
+Discipline/source similarity is NOT work identity. Legacy ordered/fuzzy joins
+are intentionally disabled. Existing assets are never modified by this CLI.
+A manifest records human review, not an independent rights certification.
 """
-
-import json, os, sys, re, time, subprocess
+import argparse
+import json
+import sys
 from pathlib import Path
-from collections import defaultdict
 
 BASE = Path(__file__).resolve().parent.parent
-ASSETS = BASE / "assets"
-L3_DIR = BASE / ".phd_build" / "layer3"
-MAPPING_OUT = BASE / ".phd_build" / "pdf_cluster_mapping.json"
+ASSETS = BASE / 'assets'
+CLUSTERS = {'AUTOMATION_CONTROL', 'SCI_TECH', 'AGRI_MED', 'ARTS_SPORTS', 'HUM_POL_ECON'}
 
 
-def norm_disc(d):
-    """标准化学科名用于匹配"""
-    d = d.lower().strip().replace('_', ' ').replace('-', ' ')
-    return re.sub(r'\s+', ' ', d)
+def build_mapping(manifest=None):
+    """Load reviewed exact (source, pdf_id) joins, reject conflicts/weak joins.
 
-
-def build_mapping():
-    """构建 pdf_id → (paper_id, v5_cluster) 映射"""
-    print("Building pdf_id → cluster mapping...")
-    
-    # Step 1: Collect all template pdf_ids with their source+discipline
-    tpl_entries = []  # (source, norm_disc, pdf_id)
-    for root, dirs, files in os.walk(ASSETS):
-        for f in files:
-            if not f.endswith('.jsonl'): continue
-            with open(os.path.join(root, f)) as fh:
-                for line in fh:
-                    if not line.strip(): continue
-                    t = json.loads(line)
-                    pid = t.get('pdf_id', '')
-                    if pid:
-                        tpl_entries.append((
-                            t.get('source', ''),
-                            norm_disc(t.get('_discipline', '')),
-                            pid
-                        ))
-    
-    unique_entries = list(set(tpl_entries))
-    unique_entries.sort(key=lambda x: (x[0], x[1], x[2]))
-    print(f"  Unique template pdf_ids: {len(unique_entries)}")
-    
-    # Step 2: Collect Layer 3 papers sorted by (source, discipline, paper_id)
-    l3_papers = []
-    for f in sorted(L3_DIR.glob("*.json")):
-        p = json.load(open(f))
-        pid = p.get('paper_id', f.stem)
-        src = p.get('source', '')
-        rd = norm_disc(p.get('raw_discipline', ''))
-        cl = p.get('a1_cluster', 'UNKNOWN')
-        l3_papers.append((src, rd, pid, cl))
-    
-    print(f"  Layer 3 papers: {len(l3_papers)}")
-    
-    # Step 3: Match by (source, discipline)
-    # Group L3 papers by (source, norm_disc)
-    l3_groups = defaultdict(list)
-    for src, rd, pid, cl in l3_papers:
-        l3_groups[(src, rd)].append((pid, cl))
-    
-    # For each template pdf_id, find matching L3 paper
+    Manifest: a JSON list with source, pdf_id, paper_id, cluster,
+    identity_evidence (nonempty locator/hash/review reference), reviewed=true.
+    No fallback on discipline, filenames, sequence or directory labels.
+    """
+    if manifest is None:
+        raise ValueError('A reviewed identity manifest is required; ordered/fuzzy joins are disabled')
+    records = json.loads(Path(manifest).read_text(encoding='utf-8'))
+    if not isinstance(records, list):
+        raise ValueError('Identity manifest must be a list')
     mapping = {}
-    used_papers = set()
-    unmatched_tpl = 0
-    
-    for src, disc, pdf_id in unique_entries:
-        # Find matching group
-        group_key = (src, disc)
-        avail = [p for p in l3_groups.get(group_key, []) if p[0] not in used_papers]
-        
-        if avail:
-            # Take first available
-            paper_id, cluster = avail[0]
-            used_papers.add(paper_id)
-            mapping[pdf_id] = {"paper_id": paper_id, "cluster": cluster}
-        else:
-            # Try fuzzy match: find L3 group that contains this discipline
-            fuzzy_match = None
-            for (l3_src, l3_disc), papers in l3_groups.items():
-                if l3_src == src and (disc in l3_disc or l3_disc in disc):
-                    avail = [p for p in papers if p[0] not in used_papers]
-                    if avail:
-                        fuzzy_match = (l3_disc, avail[0])
-                        break
-            
-            if fuzzy_match:
-                paper_id, cluster = fuzzy_match[1]
-                used_papers.add(paper_id)
-                mapping[pdf_id] = {"paper_id": paper_id, "cluster": cluster, "match_type": "fuzzy"}
-            else:
-                unmatched_tpl += 1
-                # Fallback: use _layer from template
-                mapping[pdf_id] = {"cluster": "UNKNOWN", "match_type": "fallback"}
-    
-    # Save mapping
-    with open(MAPPING_OUT, "w") as fh:
-        json.dump(mapping, fh, ensure_ascii=False, indent=2)
-    
-    # Stats
-    clusters = defaultdict(int)
-    for v in mapping.values():
-        clusters[v.get("cluster", "UNKNOWN")] += 1
-    
-    print(f"\n  Mapped: {len(mapping)}")
-    print(f"  Unmatched (fallback): {unmatched_tpl}")
-    print(f"  Cluster distribution:")
-    for c, n in sorted(clusters.items(), key=lambda x:-x[1]):
-        print(f"    {c}: {n}")
-    
+    for row in records:
+        if not isinstance(row, dict) or row.get('reviewed') is not True:
+            raise ValueError('Every mapping must explicitly record reviewed=true')
+        for field in ('source', 'pdf_id', 'paper_id', 'identity_evidence'):
+            if not isinstance(row.get(field), str) or not row[field].strip():
+                raise ValueError(f'Missing identity field: {field}')
+        if row.get('cluster') not in CLUSTERS:
+            raise ValueError('Unsupported cluster in reviewed mapping')
+        key = (row['source'], row['pdf_id'])
+        if key in mapping and mapping[key] != row:
+            raise ValueError(f'Conflicting source identity: {key}')
+        mapping[key] = row
+    if not mapping:
+        raise ValueError('Empty manifest: no reviewed identities')
     return mapping
 
 
-def main():
-    chunk_total = int(sys.argv[sys.argv.index("--chunks") + 1]) if "--chunks" in sys.argv else 1
-    chunk_idx = int(sys.argv[sys.argv.index("--chunk") + 1]) if "--chunk" in sys.argv else 0
-    
-    if chunk_idx == 0:
-        # Build mapping once (only chunk 0 does this)
-        mapping = build_mapping()
+def annotate_record(record, mapping):
+    result = dict(record)
+    match = mapping.get((record.get('source'), record.get('pdf_id')))
+    if match:
+        if 'v5_cluster' in record:
+            result.setdefault('legacy_v5_cluster', record['v5_cluster'])
+        result.update(v5_cluster=match['cluster'],
+                      v5_cluster_status='reviewed_identity_mapping',
+                      mapped_paper_id=match['paper_id'],
+                      identity_evidence=match['identity_evidence'])
     else:
-        # Wait for mapping to exist
-        while not MAPPING_OUT.exists():
-            time.sleep(1)
-        mapping = json.load(open(MAPPING_OUT))
-    
-    print(f"Chunk {chunk_idx}/{chunk_total}: annotating templates...")
-    
-    # Collect all JSONL files
-    all_files = []
-    for root, dirs, files in os.walk(ASSETS):
-        for f in files:
-            if f.endswith('.jsonl'):
-                all_files.append(os.path.join(root, f))
-    
-    all_files.sort()
-    total = len(all_files)
-    
-    # Assign files to this chunk
-    chunk_files = [f for i, f in enumerate(all_files) if i % chunk_total == chunk_idx]
-    
-    print(f"  {len(chunk_files)}/{total} JSONL files assigned")
-    
-    stats = {"processed": 0, "annotated": 0, "skipped": 0}
-    
-    for filepath in chunk_files:
-        rel = filepath.replace(str(BASE), '')
-        lines = []
-        annotated = 0
-        with open(filepath) as fh:
-            for line in fh:
-                if not line.strip(): continue
-                t = json.loads(line)
-                stats["processed"] += 1
-                
-                pdf_id = t.get('pdf_id', '')
-                if pdf_id and pdf_id in mapping:
-                    t['v5_cluster'] = mapping[pdf_id].get('cluster', 'UNKNOWN')
-                    annotated += 1
-                elif '_layer' in t:
-                    # Fallback: old layer → new cluster
-                    layer_map = {
-                        'HUM_SOC': 'HUM_POL_ECON',
-                        'TECH_LIFE': 'SCI_TECH',
-                        'GLOBAL': 'GLOBAL',
-                        'MATH_PHYS': 'SCI_TECH',
-                    }
-                    t['v5_cluster'] = layer_map.get(t.get('_layer', ''), 'GLOBAL')
-                else:
-                    t['v5_cluster'] = 'GLOBAL'
-                
-                lines.append(json.dumps(t, ensure_ascii=False))
-        
-        # Write back
-        with open(filepath, "w") as fh:
-            fh.write('\n'.join(lines) + '\n')
-        
-        stats["annotated"] += annotated
-        print(f"  ✅ {rel}: {annotated} annotated")
-    
-    print(f"Chunk {chunk_idx}: {stats['processed']} templates, {stats['annotated']} annotated")
+        # Keep existing labels/data as history, do not fabricate a new label.
+        result['v5_cluster_status'] = 'legacy_unverified' if record.get('v5_cluster') else 'unmapped'
+    return result
 
 
-if __name__ == "__main__":
-    main()
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--verified-map', required=True, type=Path)
+    parser.add_argument('--input-dir', default=ASSETS, type=Path)
+    parser.add_argument('--output-dir', required=True, type=Path,
+                        help='New, nonexistent output directory; never the source assets')
+    args = parser.parse_args()
+    try:
+        mapping = build_mapping(args.verified_map)
+        source, destination = args.input_dir.resolve(), args.output_dir.resolve()
+        if destination.exists() or source == destination or source in destination.parents or destination in source.parents:
+            raise ValueError('Output must be a new directory outside the input tree')
+        files = sorted(source.rglob('*.jsonl'))
+        if not files:
+            raise ValueError('No input JSONL files')
+        # Validate all inputs before creating any output; no stale partial success.
+        parsed = [(p.relative_to(source), [json.loads(line) for line in p.read_text(encoding='utf-8').splitlines() if line.strip()]) for p in files]
+        if any(not isinstance(row, dict) for _, rows in parsed for row in rows):
+            raise ValueError('JSONL records must be objects')
+        destination.mkdir(parents=True)
+        for relative, rows in parsed:
+            output = destination / relative
+            output.parent.mkdir(parents=True, exist_ok=True)
+            with output.open('x', encoding='utf-8') as stream:
+                for row in rows:
+                    stream.write(json.dumps(annotate_record(row, mapping), ensure_ascii=False) + '\n')
+        print(f'Wrote {len(files)} annotated copies. Source assets unchanged; unmatched labels remain unverified.')
+        return 0
+    except (ValueError, OSError, TypeError) as exc:
+        print(f'ERROR: {exc}', file=sys.stderr)
+        return 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

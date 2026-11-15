@@ -13,7 +13,7 @@ v5.1新格式: typical_structures / chapter_sequence / research_question_types /
   - noisy_or_failed 占比高 → 说明数据质量问题
 """
 
-import json, os, sys
+import json, os, sys, hashlib, tempfile
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
@@ -26,8 +26,17 @@ CLUSTERS = ["AUTOMATION_CONTROL", "SCI_TECH", "AGRI_MED", "ARTS_SPORTS", "HUM_PO
 def load_schema():
     """加载 schema 用于验证"""
     if SCHEMA_PATH.exists():
-        return json.load(open(SCHEMA_PATH))
+        return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     return None
+
+
+ASSET_FIELDS = ["typical_structures", "chapter_sequence", "research_question_types",
+                "methodology_routes", "logic_chains", "validation_patterns", "chapter_writing_rules"]
+
+
+def stable_id(cluster, kind, value):
+    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return f"{cluster.lower()}_{kind}_{hashlib.sha256(payload.encode('utf-8')).hexdigest()}"
 
 
 def convert(cluster_name, dry_run=False):
@@ -37,7 +46,20 @@ def convert(cluster_name, dry_run=False):
         print(f"  ❌ {cluster_name}.json not found")
         return False
     
-    old = json.load(open(path))
+    original = path.read_bytes()
+    old = json.loads(original)
+    if not isinstance(old, dict):
+        print("  ERROR: Expected a JSON object; source left unchanged")
+        return False
+    if any(field in old for field in ASSET_FIELDS):
+        if not all(isinstance(old.get(field), list) for field in ASSET_FIELDS):
+            print("  ERROR: Mixed or incomplete target format; refusing destructive conversion")
+            return False
+        print("  Already converted: source left byte-for-byte unchanged (not a data-quality certification)")
+        return True
+    if not all(isinstance(old.get(field), dict) for field in ("structure", "methodology", "logic_chain", "writing_patterns")):
+        print("  ERROR: Unrecognized legacy schema; source left unchanged")
+        return False
     print(f"\n  Processing: {cluster_name}.json...")
     
     # --- 提取旧数据 ---
@@ -76,7 +98,7 @@ def convert(cluster_name, dry_run=False):
         skeleton = sk.get("skeleton", [])
         if skeleton:
             chapter_sequence.append({
-                "id": f"{cluster_name.lower()}_seq_{'_'.join(skeleton[:3])}",
+                "id": stable_id(cluster_name, "seq", skeleton),
                 "sequence": skeleton,
                 "frequency": sk.get("frequency", 0),
                 "evidence_count": sk.get("frequency", 0),
@@ -87,7 +109,7 @@ def convert(cluster_name, dry_run=False):
     research_question_types = []
     for meth_type, freq in list(top_meth.items())[:8]:
         research_question_types.append({
-            "id": f"{cluster_name.lower()}_rq_{meth_type[:15]}",
+            "id": stable_id(cluster_name, "rq", meth_type),
             "type": meth_type,
             "frequency": freq,
             "evidence_count": freq,
@@ -99,7 +121,7 @@ def convert(cluster_name, dry_run=False):
     methodology_routes = []
     for method, freq in list(deep_methods.items())[:8]:
         methodology_routes.append({
-            "id": f"{cluster_name.lower()}_meth_{method[:15]}",
+            "id": stable_id(cluster_name, "meth", method),
             "method": method,
             "frequency": freq,
             "evidence_count": freq,
@@ -109,7 +131,7 @@ def convert(cluster_name, dry_run=False):
         # Fallback to top_methodology_hints
         for hint, freq in list(top_meth.items())[:5]:
             methodology_routes.append({
-                "id": f"{cluster_name.lower()}_meth_{hint[:15]}",
+                "id": stable_id(cluster_name, "meth", hint),
                 "method": hint,
                 "frequency": freq,
                 "evidence_count": freq,
@@ -142,7 +164,7 @@ def convert(cluster_name, dry_run=False):
     validation_patterns = []
     for etype, freq in list(exp_types.items())[:6]:
         validation_patterns.append({
-            "id": f"{cluster_name.lower()}_val_{etype[:15]}",
+            "id": stable_id(cluster_name, "val", etype),
             "validation_type": etype,
             "frequency": freq,
             "evidence_count": freq,
@@ -156,7 +178,7 @@ def convert(cluster_name, dry_run=False):
     # From writing patterns
     for pat, freq in list(deep_patterns.items())[:8]:
         chapter_writing_rules.append({
-            "id": f"{cluster_name.lower()}_rule_{pat[:15]}",
+            "id": stable_id(cluster_name, "rule", pat),
             "pattern": pat,
             "frequency": freq,
             "evidence_count": freq,
@@ -216,13 +238,38 @@ def convert(cluster_name, dry_run=False):
             "recommendation": "Use toc_clean papers only for structural analysis",
         })
     
+    # Validate before any write; duplicate semantics require review, not silent dropping.
+    ids = [entry["id"] for field in ASSET_FIELDS for entry in new[field]]
+    if len(ids) != len(set(ids)) or not validate_schema(new, load_schema()):
+        print("  ERROR: Invalid or duplicate generated IDs; source left unchanged")
+        return False
+
     # Write output
     if dry_run:
         print(f"  [DRY RUN] Would write {sum(len(v) for k,v in new.items() if k.startswith(('typical','chapter','research','methodology','logic','validation','_conversion')))} new asset entries")
         return True
     
-    with open(path, "w") as fh:
-        json.dump(new, fh, ensure_ascii=False, indent=2)
+    # Preserve all original fields in an immutable byte-for-byte sidecar.
+    backup = path.with_suffix(path.suffix + ".pre-v5.1.bak")
+    if backup.exists():
+        if backup.read_bytes() != original:
+            print("  ERROR: Existing backup differs; refusing overwrite")
+            return False
+    else:
+        with backup.open("xb") as fh:
+            fh.write(original)
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                         prefix=path.name + ".", suffix=".tmp", delete=False) as fh:
+            temp_path = Path(fh.name)
+            json.dump(new, fh, ensure_ascii=False, indent=2)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(temp_path, path)
+    finally:
+        if temp_path is not None and temp_path.exists():
+            temp_path.unlink()
     
     # Stats
     total_new = sum(len(v) for k, v in new.items() 

@@ -19,6 +19,8 @@ Zotero Local API: http://127.0.0.1:23119
 """
 
 import argparse
+import hashlib
+import tempfile
 import json
 import sys
 import os
@@ -118,6 +120,9 @@ def extract_authors(item_data):
     authors = []
     for c in creators:
         if c.get("creatorType") == "author":
+            if c.get("name"):
+                authors.append(str(c["name"]).strip())
+                continue
             first = c.get("firstName", "")
             last = c.get("lastName", "")
             if first and last:
@@ -215,7 +220,7 @@ def zotero_item_to_landscape_record(item):
     pub_type = type_map.get(publication_type, "other")
 
     record = {
-        "id": f"zotero_{key}" if key else f"zotero_{hash(title) % 100000:05d}",
+        "id": f"zotero_{key}" if key else "zotero_" + hashlib.sha256(json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest(),
         "title_ru": title,
         "title_en": title,
         "authors": authors if authors else ["Unknown"],
@@ -258,7 +263,7 @@ def cmd_status(args):
     if status == "AVAILABLE":
         return 0
     else:
-        return 0  # Exit 0 even on failure (no crash)
+        return 1  # Unavailable is not a successful check
 
 
 def cmd_search(args):
@@ -273,7 +278,7 @@ def cmd_search(args):
         print("ERROR: Zotero API is not available.", file=sys.stderr)
         print(f"  Cannot connect to {ZOTERO_API_BASE}", file=sys.stderr)
         print("  Make sure Zotero is running with the Local API enabled.", file=sys.stderr)
-        sys.exit(0)  # Exit 0, not crash
+        return 1
 
     # Search items
     log(f"Searching Zotero for: '{query}' (limit={limit})")
@@ -289,12 +294,15 @@ def cmd_search(args):
     success, data = zotero_request("/api/users/0/items", params, timeout=10)
     if not success:
         print(f"ERROR: Zotero search failed: {data}", file=sys.stderr)
-        sys.exit(0)  # Exit 0, not crash
+        return 1
 
     if not isinstance(data, list):
         print(f"ERROR: Unexpected response format from Zotero API", file=sys.stderr)
-        sys.exit(0)
+        return 1
 
+    if any(not isinstance(item, dict) or not isinstance(item.get("data", item), dict) for item in data):
+        log("ERROR: Malformed Zotero item; output not written")
+        return 1
     log(f"Received {len(data)} items from Zotero")
 
     # Convert to landscape records
@@ -309,19 +317,22 @@ def cmd_search(args):
 
     log(f"Converted {len(records)} records ({skipped} skipped as notes/attachments/empty)")
 
-    if not records:
-        print("No valid records found. Try a different search query.")
-        # Write empty array
-        os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump([], f, ensure_ascii=False, indent=2)
-        print(f"Empty result written to: {output_path}")
-        return 0
-
-    # Write output
-    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(records, f, ensure_ascii=False, indent=2)
+    ids = [r["id"] for r in records]
+    if len(ids) != len(set(ids)):
+        log("ERROR: Duplicate Zotero identity; output not written")
+        return 1
+    # A successful empty search deliberately replaces stale output with [].
+    target = os.path.abspath(output_path)
+    os.makedirs(os.path.dirname(target), exist_ok=True)
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=os.path.dirname(target), delete=False) as f:
+            temp_path = f.name
+            json.dump(records, f, ensure_ascii=False, indent=2)
+        os.replace(temp_path, target)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.unlink(temp_path)
 
     print(f"Written {len(records)} landscape records to: {output_path}")
 

@@ -122,7 +122,9 @@ def get_field_list(rec, *names, default=None):
     for name in names:
         val = rec.get(name)
         if val is not None:
-            return safe_list(val)
+            items = safe_list(val)
+            if items:
+                return items
     return default or []
 
 
@@ -171,6 +173,10 @@ def extract_chapter_roles(chapter_titles):
     """Map chapter titles to standardized roles."""
     roles = []
     for title in chapter_titles:
+        if isinstance(title, dict):
+            title = title.get("title") or title.get("heading") or ""
+        if not isinstance(title, str) or not title.strip():
+            continue
         title_lower = title.lower()
         matched = False
         for keyword, role in CHAPTER_ROLE_MAP.items():
@@ -260,6 +266,8 @@ def analyze_structure_patterns(records):
         if not chapters:
             continue
         roles = extract_chapter_roles(chapters)
+        if not roles:
+            continue
         pattern_key = " → ".join(roles)
         pattern_counter[pattern_key] += 1
         if pattern_key not in pattern_examples:
@@ -267,7 +275,7 @@ def analyze_structure_patterns(records):
                 "roles": roles,
                 "example_id": rec["id"],
                 "example_title": get_field(rec, "title", "title_ru", "name"),
-                "chapter_count": len(chapters),
+                "chapter_count": len(roles),
             }
 
     patterns = []
@@ -363,13 +371,18 @@ def analyze_validation_patterns(records):
     return patterns
 
 
-def find_positioning_gaps(records, topic):
+def find_positioning_gaps(records, topic, reference_year=None):
     """Identify gaps in the dissertation landscape."""
     gaps = []
     all_meth = set(r.get("methodology_type", "") for r in records)
     all_val = set(r.get("validation_type", "") for r in records)
-    all_years = [r.get("year", 0) for r in records if r.get("year")]
-    recent = [y for y in all_years if y >= 2020]
+    from datetime import date
+    reference_year = reference_year if reference_year is not None else date.today().year
+    recent_since = reference_year - 5
+    all_years = [r.get("year") for r in records
+                 if isinstance(r.get("year"), int) and not isinstance(r.get("year"), bool)
+                 and 1 <= r["year"] <= reference_year]
+    recent = [y for y in all_years if y >= recent_since]
 
     # Check methodology gaps
     known_meth = {"signal_processing", "experimental_materials", "machine_learning",
@@ -378,24 +391,24 @@ def find_positioning_gaps(records, topic):
     if missing_meth:
         gaps.append({
             "gap_type": "methodology",
-            "description": f"No dissertations found using: {', '.join(m.replace('_', ' ') for m in sorted(missing_meth)[:3])}",
-            "opportunity": "Potential novel contribution using underrepresented methodology",
+            "description": f"Not observed in the current input sample: {', '.join(m.replace('_', ' ') for m in sorted(missing_meth)[:3])}",
+            "opportunity": "Search and review broader literature before inferring a research gap; sample absence is not novelty evidence",
         })
 
     # Check temporal gaps
     if len(recent) < len(all_years) * 0.5:
         gaps.append({
             "gap_type": "temporal",
-            "description": f"Only {len(recent)}/{len(all_years)} dissertations from 2020+",
-            "opportunity": "Field may benefit from updated recent perspective",
+            "description": f"Only {len(recent)}/{len(all_years)} sample records from {recent_since}+",
+            "opportunity": "Broaden this sample with recent sources; this does not establish a field-wide temporal gap",
         })
 
     # Check validation gaps
     if "industrial_pilot" not in all_val and "experimental_bench" in all_val:
         gaps.append({
             "gap_type": "validation_scale",
-            "description": "Most validations are bench-level; no industrial pilot deployments found",
-            "opportunity": "Industrial-scale validation could be a differentiator",
+            "description": "Bench validation occurs in this sample; industrial pilots were not observed",
+            "opportunity": "Check full texts and broader sources before making a differentiation claim",
         })
 
     return gaps
@@ -498,13 +511,16 @@ def generate_risk_warnings(records, topic):
         })
 
     # Check for stale references
-    old_years = sum(1 for r in records if (r.get("year") or 2025) < 2018)
+    from datetime import date
+    recent_since = date.today().year - 5
+    old_years = sum(1 for r in records if isinstance(r.get("year"), int)
+                    and not isinstance(r.get("year"), bool) and 1 <= r["year"] < recent_since)
     if old_years > total * 0.3:
         warnings.append({
             "risk_type": "currency",
             "severity": "low",
-            "description": f"{old_years}/{total} references predate 2018",
-            "mitigation": "Supplement with recent publications from 2022+",
+            "description": f"{old_years}/{total} references predate {recent_since}",
+            "mitigation": f"Review relevant publications from {recent_since}+",
         })
 
     # Check access limitations

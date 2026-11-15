@@ -13,14 +13,13 @@ L2: 学科专用润色规则生成 — 从 Layer 4 深度分析数据中提取�
   - logic_chain → 逻辑完整性规则
 """
 
-import json, os
+import json, os, sys
 from pathlib import Path
 from collections import Counter, defaultdict
 
 BASE = Path(__file__).resolve().parent.parent
 L4_DIR = BASE / ".phd_build" / "layer4"
 OUT_DIR = BASE / "assets" / "references"
-OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 CLUSTERS = ["AUTOMATION_CONTROL", "SCI_TECH", "AGRI_MED", "ARTS_SPORTS", "HUM_POL_ECON"]
 
@@ -84,6 +83,9 @@ def extract_polishing_rules():
             if present:
                 c["chapter_roles"][role] += 1
     
+    missing = sorted(set(CLUSTERS) - set(clusters))
+    if not total or missing:
+        raise ValueError("Layer 4 input incomplete; no output written. Missing clusters: " + ", ".join(missing))
     print(f"Loaded {total} deep analysis papers")
     
     # Build per-cluster polishing rules
@@ -232,9 +234,14 @@ def main():
     print("=" * 60)
     print("L2: 学科专用润色规则生成")
     print("=" * 60)
-    extract_polishing_rules()
+    try:
+        extract_polishing_rules()
+    except (ValueError, OSError, TypeError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
     print("L2 complete!")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

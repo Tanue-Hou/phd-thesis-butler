@@ -14,6 +14,9 @@ Pure standard library — no external dependencies.
 """
 
 import argparse
+import hashlib
+import os
+import tempfile
 import json
 import re
 import sys
@@ -222,6 +225,9 @@ def _map_specialty_to_cluster(code, keywords=None):
 def _generate_id(record, record_type):
     """Generate a unique ID for the record."""
     platform = _norm_platform(record.get("platform", record.get("source_platform", record.get("source", ""))))
+    # Preserve caller identity; content hashes are fallback identifiers, not verified works.
+    if record.get("id"):
+        return str(record["id"])
     # Try existing identifiers
     if record.get("elibrary_article_id"):
         return f"elibrary_{record['elibrary_article_id']}"
@@ -232,9 +238,9 @@ def _generate_id(record, record_type):
     if record.get("rsl_id"):
         return f"rsl_{record['rsl_id']}"
     # Generate from title hash
-    title = record.get("title", record.get("title_ru", ""))
-    title_hash = str(abs(hash(title)) % 10**8)
-    return f"{platform}_{title_hash}"
+    payload = json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    digest = hashlib.sha256((record_type + "\n" + payload).encode("utf-8")).hexdigest()
+    return f"{platform}_{digest}"
 
 
 def _title_similarity(t1, t2):
@@ -336,38 +342,21 @@ def normalize_dissertation(record):
 # ---------------------------------------------------------------------------
 
 def deduplicate(records):
-    """Remove duplicates based on DOI or title similarity."""
-    seen_dois = {}
+    """Remove exact duplicates only; fuzzy titles and DOI equality are not lossless merges.
+
+    Different metadata for the same DOI is retained for explicit reconciliation.
+    A similar title is only a possible duplicate, never permission to drop a work.
+    """
+    seen = set()
     unique = []
     dupes = 0
-
     for rec in records:
-        doi = rec.get("doi")
-        title = rec.get("title_ru", "")
-
-        # DOI-based dedup
-        if doi and doi in seen_dois:
+        fingerprint = json.dumps(rec, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        if fingerprint in seen:
             dupes += 1
-            log(f"  [dedup] Duplicate DOI: {doi}")
             continue
-
-        # Title similarity dedup
-        is_dupe = False
-        for existing in unique:
-            existing_title = existing.get("title_ru", "")
-            if _title_similarity(title, existing_title) >= TITLE_SIMILARITY_THRESHOLD:
-                is_dupe = True
-                dupes += 1
-                log(f"  [dedup] Similar title: '{title[:50]}...' ≈ '{existing_title[:50]}...'")
-                break
-
-        if is_dupe:
-            continue
-
-        if doi:
-            seen_dois[doi] = True
+        seen.add(fingerprint)
         unique.append(rec)
-
     return unique, dupes
 
 
@@ -460,11 +449,12 @@ def main():
     error_counts = 0
 
     for i, raw in enumerate(raw_records):
-        rec_type = detect_record_type(raw)
-        type_counts[rec_type] += 1
-        platform_counts[_norm_platform(raw.get("platform", raw.get("source_platform", raw.get("source", ""))))] += 1
-
         try:
+            if not isinstance(raw, dict):
+                raise ValueError("Record must be an object")
+            rec_type = detect_record_type(raw)
+            type_counts[rec_type] += 1
+            platform_counts[_norm_platform(raw.get("platform", raw.get("source_platform", raw.get("source", ""))))] += 1
             if rec_type == "dissertation":
                 norm = normalize_dissertation(raw)
             else:
@@ -502,10 +492,25 @@ def main():
                     log(f"  [validation] {rec.get('id', '?')}: {e}")
         log(f"Validation: {validation_errors} error(s)")
 
-    # Write output
+    # Fail closed: never replace a prior artifact with a partial/invalid result.
+    if error_counts or validation_errors:
+        log("ERROR: Output not written; correct rejected records before retrying.")
+        sys.exit(1)
+    ids = [r.get("id") for r in deduped]
+    if len(ids) != len(set(ids)):
+        log("ERROR: Conflicting records share an ID; output not written.")
+        sys.exit(1)
     log(f"Writing output: {args.output}")
-    with open(args.output, "w", encoding="utf-8") as f:
-        json.dump(deduped, f, ensure_ascii=False, indent=2)
+    target = os.path.abspath(args.output)
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=os.path.dirname(target), delete=False) as f:
+            temp_path = f.name
+            json.dump(deduped, f, ensure_ascii=False, indent=2)
+        os.replace(temp_path, target)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.unlink(temp_path)
 
     # Summary to stderr
     log("")

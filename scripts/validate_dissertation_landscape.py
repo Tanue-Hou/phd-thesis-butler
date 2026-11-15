@@ -410,6 +410,7 @@ def deep_validate():
 
 def main():
     global LANDSCAPE_JSON_OUTPUT, LANDSCAPE_MD_OUTPUT
+    results.clear()
     parser = argparse.ArgumentParser(
         description="Validate dissertation landscape inputs and outputs."
     )
@@ -440,8 +441,7 @@ def main():
     # Deep validation
     if args.deep:
         deep_validate()
-        validate_e2e_build()
-        validate_e2e_build()
+        check("End-to-end sample builds", validate_e2e_build())
 
     # Summary
     print("\n" + "=" * 60)

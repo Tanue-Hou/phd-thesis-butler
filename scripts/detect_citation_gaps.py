@@ -424,7 +424,7 @@ def risk_for_claim(claim_type, chapter):
 def match_literature(text, literature):
     """Match a sentence against known literature records.
 
-    Returns (gap_status, matched_source_ids) where gap_status ∈ {covered, partial, missing}.
+    Returns (gap_status, candidate_source_ids): partial or missing, never verified coverage.
     If literature is None/empty and a citation is needed, returns ('missing', []).
     """
     if not literature:
@@ -435,24 +435,31 @@ def match_literature(text, literature):
     keywords = set(re.findall(r"\b\w{4,}\b", lower))
 
     matched_sources = []
+    seen_ids, seen_dois = set(), set()
     for rec in literature:
+        # Anonymous records cannot provide a traceable source binding. A DOI is
+        # a stronger duplicate key than a local import ID, but neither is proof
+        # that the source supports this particular claim.
+        source_id = str(rec.get("id") or rec.get("source_id") or "").strip()
+        doi = str(rec.get("doi") or "").strip().lower()
+        doi = re.sub(r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", "", doi)
+        if not source_id or source_id in seen_ids or (doi and doi in seen_dois):
+            continue
         title = (rec.get("title_ru", "") or "").lower()
         abstract = (rec.get("abstract_ru", "") or "").lower()
         keywords_field = " ".join(rec.get("keywords_ru", [])).lower()
         text_to_match = f"{title} {abstract} {keywords_field}"
-
-        if not text_to_match.strip():
-            continue
-
         source_keywords = set(re.findall(r"\b\w{4,}\b", text_to_match))
-        overlap = keywords & source_keywords
-        if len(overlap) >= 2:
-            matched_sources.append(rec.get("id", ""))
+        if len(keywords & source_keywords) >= 2:
+            matched_sources.append(source_id)
+            seen_ids.add(source_id)
+            if doi:
+                seen_dois.add(doi)
 
-    if matched_sources:
-        # Heuristic: ≥2 sources → covered, 1 source → partial
-        return ("covered", matched_sources) if len(matched_sources) >= 2 else ("partial", matched_sources)
-    return "missing", []
+    # Lexical retrieval cannot establish entailment, direction, page-level
+    # support, or source independence. Keep legacy enums for consumers while
+    # never upgrading any number of candidates to verified coverage.
+    return ("partial", matched_sources) if matched_sources else ("missing", [])
 
 
 def generate_recommended_query(text):
@@ -542,17 +549,18 @@ def detect_gaps(input_path, literature):
         else:
             claim["matched_source_id"] = None
 
-        # Evidence strength heuristic (with source ID invariant)
-        if gap_status == "covered" and matched_source is not None:
-            claim["evidence_strength"] = "strong"
-        elif gap_status == "covered" and matched_source is None:
-            claim["evidence_strength"] = "medium"
-        elif gap_status == "partial":
-            claim["evidence_strength"] = "weak"
-        elif gap_status == "not_needed":
-            claim["evidence_strength"] = "none"
-        else:
-            claim["evidence_strength"] = "none"
+        claim["matched_source_ids"] = matched_ids
+        claim["verification_status"] = "candidate_unverified" if matched_ids else "not_verified"
+        claim["match_basis"] = "lexical_overlap" if matched_ids else "none"
+        # "weak" is retained solely for schema compatibility: it denotes an
+        # unverified retrieval candidate, not weak factual confirmation.
+        claim["evidence_strength"] = "weak" if matched_ids else "none"
+        if gap_status == "partial":
+            claim["recommended_action"] = (
+                "Review the source text and exact passage for claim direction, "
+                "scope and limitations; lexical overlap or an inline citation "
+                "does not verify support."
+            )
 
         # recommended_action for missing claims
         if gap_status == "missing":
