@@ -14,6 +14,28 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 
 > 它不是代写工具。它不替代作者贡献、导师判断、事实核验或学术伦理责任。
 
+### 2026-11-15：已合入的可靠性修复与下一步
+
+当前版本标识仍为 **v5.4.1**。以下三批代码已进入 `main`，不代表 v5.4.2 全部完成，也不代表历史语料已完成清洗、来源验真或授权核验。
+
+| 已合入提交 | 本次提交了什么 | 边界 |
+|---|---|---|
+| [`31a2273`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/31a227378339bbf86c5f7a60f7c199cbdfc88b2c) | 修复失效检索路径；按记录内 `v5_cluster` 跨目录筛选；非空查询没有词汇重合时不再返回无关结果；补充命中层、别名与未验证标签说明和检索回归。 | 按标签过滤不等于标签正确；旧别名映射可能损失语义。 |
+| [`4ad61ab`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/4ad61abc9ac1788a086213e06db97df21d6b823d) | 停止启发式来源错配；L1 改为显式经审阅映射及独立输出；转换重跑保护、备份与稳定 ID；元数据无损去重和错误退出；引用候选不再自动判为充分证据；修复 Zotero 导入失败/空结果、章节解析和 deep 检查退出行为。 | 修复防止继续产生错误，不会自动恢复历史作品身份；词汇/角色匹配仍需查原文。 |
+| [`93da703`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/93da703db9a2207c57a8725916d46901d55b2017) | 新增 `preview_asset_repairs.py`、14 项测试和隔离预览说明；拒绝重复 JSON 键、非有限数、键/ID 冲突及已有输出目录，生成逐文件哈希和精确变更清单。 | **仅合入工具、测试与说明，真实 `assets/` 未迁移。** 1,405 行损坏键及 13 组、41 条重复 ID 的修复仅在隔离副本验证，3 处歧义键仍保留。 |
+
+**已记录的云端离线验证：**首批 16 项、第二批 41 项、第三批 14 项回归通过；smoke 11/11、planning 22/22、research 17/17、evidence 27/27、临时样例 deep 229/229 通过。skill 检查仍提示缺少可选 `evals/`。Zotero 使用 mock/本地样例，不是实际服务验收；这些结果不是 GitHub CI 或生产端到端认证。
+
+**剩余 bug 修复纳入下一阶段，与扩库准备一并推进：**
+
+1. **来源与分类：**先恢复旧构建的最小来源索引，逐条核对作品身份、`v5_cluster` 和依据；不能由旧标签倒造作者、机构或来源。
+2. **可确定数据修复：**审阅隔离预览清单，核对仓库外的旧 ID 引用、保留快照后再采用；不整目录覆盖新工作。合法 `[...]` 槽位及中文说明不作一刀切删除。
+3. **统计与引用：**用实际资产重建 `BUILD_INFO` 统计口径；章节统计回查真实目录，不按任意章数阈值冒充验真；补充引用语义反例和原文支持核验。
+4. **可靠性与权利链：**完善 L1 部分输出、L2 原子写入和验证器临时文件并发隔离；核对来源许可、私有内容边界和撤销链。脱敏不等于获得使用或公开发布授权。
+5. **30,000 篇扩库准备：**在可追溯来源、分类和质量基线之上，按文章类别蒸馏知识与场景化学术表达，建立独立评测和小批校准；当前未执行扩库或外部模型蒸馏。
+
+细节见 [第二批修复记录](REMAINING_REPAIRS.md) 与 [资产修复隔离预览](ASSET_REPAIR_PREVIEW.md)。两份记录中的“候选/未推送”为当时打包状态；上述提交现已合入，但资产迁移和未解决项仍未完成。
+
 ### 最核心能做什么
 
 核心能力概览：
@@ -32,9 +54,9 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 | 🔍 **俄罗斯学位论文搜索** | 直接检索 **DisserCat**（俄罗斯学位论文库）、**eLIBRARY / RINC**（俄罗斯核心期刊）、**CyberLeninka**（开放获取）等俄罗斯本土文献源，不仅仅是国际数据库 |
 | 📚 **Zotero 私有库直连** | 支持读取本地 Zotero 文献库的元数据、标签、集合、已索引全文，按条件搜索筛选后直接进入论文对比分析——**不需要手动导出** |
 | 🏗 **同方向论文结构对比** | 从公开来源或 Zotero 获取 10-30 篇同方向论文，自动聚类主题、对比章节结构模式、方法论路线和验证方式，生成 12 节结构化报告 + 推荐大纲 |
-| 📝 **16,722 条俄语学术句式** | 从 2,118 篇俄罗斯学位论文中蒸馏出的俄语原生句式模板，覆盖引言、综述、模型、方法、实验、结果、讨论、结论等全部章节，三层回退检索 |
+| 📝 **16,722 条俄语学术句式** | 从 2,118 篇俄罗斯学位论文中蒸馏出的俄语原生句式模板，历史构建覆盖引言至结论；当前句式从实际 JSONL 检索，学科画像独立读取 |
 | 🧩 **论文全流程规划** | 从研究方向自动生成完整论文结构：整体章节设计（6大学科×5种结构模式）、方法论路线选择、实验方案设计、各章节写作功能定义和输入输出——不是只给大纲框架，而是每章该写什么、怎么展开、和前后章节如何闭环 |
-| ✅ **引用缺口检测** | 逐句检测章节草稿中的论断是否缺引用，12 种证据角色，自动标注 covered / missing / not_needed
+| ✅ **引用缺口检测** | 逐句检测章节草稿中的论断是否缺引用，12 种证据角色，输出候选与缺口状态；词汇匹配只标为 `partial/weak`、`candidate_unverified`，不自动证明引用支持 |
 
 ### 典型使用场景
 
@@ -135,7 +157,9 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 
 ### 核心资产
 
-公开仓库只包含脱敏和蒸馏后的知识资产，不包含原始 PDF、全文语料、作者可追溯信息、私有 LLM 调用记录或 `.phd_build/` 构建缓存。
+公开仓库的设计范围是脱敏、蒸馏后的知识资产，不应包含原始 PDF、全文语料、私有 LLM 调用记录或 `.phd_build/` 构建缓存；历史来源、许可和隐私边界仍待逐项核验，不能据此宣称全库已合规。
+
+下表 16,722 / 2,118 / 679 等为历史构建口径，尚未重新核实。当前快照有 30,952 条 JSONL 物理记录、16,958 条不同完整记录、14,851 个不同模板文本，均不是已验真论文篇数；跨文件重复也不直接等于错误。
 
 | 资产层 | 数量 / 状态 | 作用 |
 |---|---:|---|
@@ -285,6 +309,14 @@ PhD Thesis Butler 是科研写作辅助工具。它可以帮助规划、检索�
 
 ## Русский
 
+### Обновление надёжности — 15.11.2026
+
+В `main` включены три пакета: [`31a2273`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/31a227378339bbf86c5f7a60f7c199cbdfc88b2c) — пути поиска, фильтрация по `v5_cluster` записи и регрессии; [`4ad61ab`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/4ad61abc9ac1788a086213e06db97df21d6b823d) — защита идентичности источников, преобразования, метаданных и проверки цитат; [`93da703`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/93da703db9a2207c57a8725916d46901d55b2017) — строгий предварительный просмотр исправлений активов, тесты и манифест изменений.
+
+Версия остаётся **v5.4.1**; завершение v5.4.2 не заявляется. Реальные `assets/` не изменены: исправления 1 405 строк и 41 записи с повторяющимися ID проверены только в изолированной копии. Три неоднозначных ключа оставлены без изменений. Зафиксированы 16 + 41 + 14 успешных офлайн-регрессий и проверки существующих слоёв; это не GitHub CI и не проверка рабочего Zotero.
+
+Следующий этап объединяет оставшиеся ошибки с подготовкой расширения до 30 000 работ: восстановление происхождения, проверка классификации и прав, проверяемая миграция, пересчёт статистики, семантические проверки цитат и защита записи. Расширение ещё не выполнено. Числа 16 722 / 2 118 / 679 ниже — исторические показатели сборки, а не вновь подтверждённые объёмы; 30 952 физических строки JSONL также не означают 30 952 работы. Совпадение слов даёт `candidate_unverified`, а не доказанную поддержку утверждения. См. [подробности исправлений](REMAINING_REPAIRS.md) и [границы предварительного просмотра](ASSET_REPAIR_PREVIEW.md).
+
 ### Кратко
 
 **PhD Thesis Butler — это open-source skill для AI-ассистентов, таких как Codex, Hermes, Claude Code и Antigravity. Он помогает планировать структуру русской диссертации, проверять доказательную базу и редактировать академический русский текст.**
@@ -307,7 +339,7 @@ PhD Thesis Butler 是科研写作辅助工具。它可以帮助规划、检索�
 | 🏗 **Сравнение структур диссертаций** | Автоматическая кластеризация 10–30 диссертаций по теме, сравнение структуры глав, методологий и типов валидации — отчёт из 12 разделов + рекомендуемый план |
 | 📝 **16 722 русских академических шаблона** | Дистиллированы из 2 118 диссертаций (МГТУ/МГУ/СПбГУ), покрытие всех глав от ВВЕДЕНИЯ до ЗАКЛЮЧЕНИЯ |
 | 🧩 **Полное планирование диссертации** | От направления исследования → полная структура: проектирование глав (6 кластеров × 5 паттернов), выбор методологии, дизайн экспериментов, функции каждой главы и её ввод/вывод — не просто план, а что писать в каждой главе, как её развивать и как главы связаны |
-| ✅ **Проверка цитирования** | Пословный анализ утверждений, 12 ролей источников, автоматическая маркировка covered / missing / not_needed |
+| ✅ **Проверка цитирования** | Пословный анализ утверждений, 12 ролей источников, маркировка кандидатов и пробелов; совпадения слов остаются partial/weak и candidate_unverified |
 
 Это не генератор диссертаций. Skill помогает автору планировать, искать, проверять и улучшать уже написанный текст.
 
@@ -379,6 +411,14 @@ Skill не заменяет автора, научного руководите�
 
 ## English
 
+### Reliability update — 2026-11-15
+
+Three batches are merged into `main`: [`31a2273`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/31a227378339bbf86c5f7a60f7c199cbdfc88b2c) fixes retrieval paths, record-level cluster filtering and regression coverage; [`4ad61ab`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/4ad61abc9ac1788a086213e06db97df21d6b823d) adds source-mapping, conversion, metadata and citation safety; [`93da703`](https://github.com/Tanue-Hou/phd-thesis-butler/commit/93da703db9a2207c57a8725916d46901d55b2017) adds strict asset-repair preview tooling, tests and a change manifest.
+
+The version remains **v5.4.1**; v5.4.2 is not declared complete. Actual `assets/` have **not** been migrated: repairs affecting 1,405 rows and 41 duplicate-ID records were verified only in an isolated copy; three ambiguous keys remain untouched. Recorded offline validation includes 16 + 41 + 14 regression tests and existing layer checks, not GitHub CI or live Zotero acceptance.
+
+Remaining bugs are part of the next phase alongside preparation for 30,000 works: recover source provenance, verify classification and rights, review migration and external ID references, rebuild statistics, test semantic citation support, and harden output writes. Expansion has not run. The 16,722 / 2,118 / 679 figures below are historical build claims, not newly verified corpus sizes; 30,952 physical JSONL rows are not 30,952 papers either. Lexical matches remain `candidate_unverified`, not proven support. See [repair details](REMAINING_REPAIRS.md) and [preview boundaries](ASSET_REPAIR_PREVIEW.md).
+
 ### In One Sentence
 
 **PhD Thesis Butler is an open-source skill for AI assistants such as Codex, Hermes, Claude Code, and Antigravity. It helps with Russian dissertation planning, evidence-aware revision, and academic polishing.**
@@ -401,9 +441,9 @@ It is not a one-click dissertation generator. It helps authors structure real re
 | 🔍 **Russian dissertation search** | Direct search across **DisserCat**, **eLIBRARY / RINC**, **CyberLeninka**, **OpenAlex** — Russian-language sources, not just international databases |
 | 📚 **Zotero direct integration** | Read local Zotero metadata, tags, collections, indexed full text — search and feed directly into comparative analysis. **No manual export needed.** |
 | 🏗 **Comparative landscape analysis** | Collect 10-30 similar-topic dissertations from public sources or Zotero, auto-cluster themes, compare chapter structures, methodology routes, and validation patterns — generates a 12-section structured report + recommended outline |
-| 📝 **16,722 Russian sentence templates** | Distilled from 2,118 Russian dissertations (BMSTU/MSU/SPbSU), covers INTRO through CONCLUSION, 3-layer fallback retrieval |
+| 📝 **16,722 Russian sentence templates** | Distilled from 2,118 Russian dissertations (BMSTU/MSU/SPbSU), covers INTRO through CONCLUSION, JSONL retrieval with separate discipline profiles |
 | 🧩 **Full thesis planning** | From research direction → complete thesis structure: whole-chapter design (6 clusters × 5 patterns), methodology route selection, experiment design, per-chapter writing function and input/output — not just an outline, but what each chapter should cover, how to develop it, and how chapters connect |
-| ✅ **Citation gap detection** | Sentence-level claim analysis, 12 evidence roles, automatic covered/missing/not_needed annotation |
+| ✅ **Citation gap detection** | Sentence-level claim analysis, 12 evidence roles, candidate and gap annotation; lexical matches remain partial/weak and candidate_unverified |
 
 ### Typical Prompts
 
