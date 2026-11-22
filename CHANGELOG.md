@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-23 — P0 retrieval and dissertation comparison baseline
+
+- The skill and workflow router require an authorship check on every invocation: decline direct manuscript drafting, including chapter-by-chapter requests. Planning, evidence checks and editing an author-written draft remain available.
+- Results report the match reason and storage layer. Callers can explicitly select an installed local discipline sentence file. Canonical cluster labels, legacy alias metadata, explicit cross-cluster browsing, and lexical empty results remain available. Generic fallback records are marked in the response.
+- Chapter comparisons use explicit top-level headings and omit numbered subsections. Reports show the number of usable records, the dominant pattern’s support within that subset, and whether an outline comes from a default template. PDF page anchors remain unverified.
+- Run `python3 -B tests/test_p0_baseline.py` for retrieval and structural regression cases. Run `python3 -X utf8 -B scripts/validate_dissertation_landscape.py --samples --deep` to build and validate the bundled examples in temporary directories. Historical manifest counts describe the original v5.4.1 build.
+
 ## v5.4.1 — Unified Workflow Router (2026-06-05)
 
 ### Changed

@@ -20,6 +20,7 @@ Pure standard library — no external dependencies.
 
 import argparse
 import json
+import re
 import sys
 import os
 from collections import Counter, OrderedDict
@@ -251,18 +252,57 @@ def cluster_themes(records, topic=""):
     return clusters
 
 
+def chapter_headings(record):
+    """Use usable top-level headings. Flat OCR/TOC lines are not chapter counts."""
+    if "structure_confidence" in record and normalize_confidence(record["structure_confidence"], default=0) < 0.6:
+        return []
+    for field in ("chapter_titles", "chapter_structure", "toc"):
+        headings = []
+        explicit_chapters = []
+        structured_titles = []
+        for item in safe_list(record.get(field)):
+            level = None
+            structured = isinstance(item, dict)
+            if structured:
+                level = item.get("level")
+                if level is not None and str(level).strip() != "1":
+                    continue
+                item = item.get("title") or item.get("heading")
+            if not isinstance(item, str) or not item.strip():
+                continue
+            title = item.strip()
+            if re.match(r"^(?:(?:глава|chapter|§)\s*)?\d+(?:\.\d+)+\b", title, re.IGNORECASE):
+                continue
+            headings.append(title)
+            if field == "chapter_structure" and structured:
+                structured_titles.append(title)
+            if level is not None:
+                explicit_chapters.append(title)
+        if explicit_chapters:
+            return explicit_chapters
+        numbered = []
+        for title in headings:
+            match = re.match(r"^(?:глава|chapter)\s+(\d+)\b(?!\.\d)", title, re.IGNORECASE)
+            if match:
+                numbered.append((int(match.group(1)), title))
+        if numbered:
+            if [number for number, _ in numbered] == list(range(1, len(numbered) + 1)):
+                return [title for _, title in numbered]
+            continue
+        if field == "chapter_structure":
+            headings = structured_titles
+        if field in ("chapter_titles", "chapter_structure") and headings and len(set(headings)) == len(headings):
+            return headings
+    return []
+
+
 def analyze_structure_patterns(records):
     """Identify common chapter structure patterns."""
     pattern_counter = Counter()
     pattern_examples = {}
 
     for rec in records:
-        chapters = get_field_list(rec, "chapter_titles", "toc", "chapter_structure")
-        if not chapters:
-            # Try extracting titles from chapter_structure objects
-            cs = rec.get("chapter_structure")
-            if isinstance(cs, list) and all(isinstance(c, dict) for c in cs):
-                chapters = [c.get("title", c.get("heading", "")) for c in cs if c.get("title") or c.get("heading")]
+        chapters = chapter_headings(rec)
         if not chapters:
             continue
         roles = extract_chapter_roles(chapters)
@@ -422,12 +462,7 @@ def generate_borrowable_moves(records):
     has_intro_survey = 0
     has_exp_impl = 0
     for rec in records:
-        chapters = get_field_list(rec, "chapter_titles", "toc", "chapter_structure")
-        # Also try extracting from chapter_structure objects
-        if not chapters:
-            cs = rec.get("chapter_structure")
-            if isinstance(cs, list) and all(isinstance(c, dict) for c in cs):
-                chapters = [c.get("title", c.get("heading", "")) for c in cs if c.get("title") or c.get("heading")]
+        chapters = chapter_headings(rec)
         roles = extract_chapter_roles(chapters)
         if "INTRODUCTION" in roles and "LITERATURE_REVIEW" in roles:
             has_intro_survey += 1
@@ -698,6 +733,11 @@ def build_landscape_json(records, topic, user_direction=""):
         "read_depth_summary": generate_read_depth_summary(records),
         "theme_clusters": theme_clusters,
         "structure_patterns": structure_patterns,
+        "structure_coverage": {
+            "records_with_usable_headings": sum(bool(chapter_headings(rec)) for rec in records),
+            "total_records": len(records),
+            "page_anchors_verified": False,
+        },
         "methodology_patterns": methodology_patterns,
         "validation_patterns": validation_patterns,
         "positioning_gaps": positioning_gaps,
@@ -791,6 +831,13 @@ def build_markdown_report(landscape_data):
     # Section 5: Chapter Structure Comparison
     lines.append("## 5. Chapter Structure Comparison")
     lines.append("")
+    coverage = landscape_data.get("structure_coverage")
+    if coverage:
+        lines.append(
+            f"Usable chapter headings: {coverage['records_with_usable_headings']}/"
+            f"{coverage['total_records']} records. Page anchors are unverified."
+        )
+        lines.append("")
     for sp in structures:
         lines.append(f"### Pattern {sp['pattern_id']} (frequency: {sp['frequency']})")
         lines.append(f"- **Chapter count:** {sp['chapter_count']}")
@@ -860,7 +907,22 @@ def build_markdown_report(landscape_data):
     # Section 11: Recommended Thesis Outline
     lines.append("## 11. Recommended Thesis Outline")
     lines.append("")
-    lines.append(f"Based on analysis of {records} comparable dissertations, the following outline is recommended:")
+    if not structures:
+        lines.append("This outline uses the default template because no record has usable chapter headings.")
+    elif coverage:
+        usable = coverage["records_with_usable_headings"]
+        total = coverage["total_records"]
+        support = structures[0]["frequency"]
+        lines.append(
+            f"This outline follows the most common observed chapter pattern "
+            f"({support}/{usable} records with usable chapter headings). "
+            f"Structure coverage was {usable}/{total} records."
+        )
+    else:
+        lines.append(
+            "This outline follows the most common observed chapter pattern. "
+            "The number of records with usable chapter headings is unavailable."
+        )
     lines.append("")
     for ch in outline:
         lines.append(f"### {ch['chapter_id']}: {ch['title']}")

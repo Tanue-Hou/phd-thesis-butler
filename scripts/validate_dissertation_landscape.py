@@ -12,10 +12,11 @@ Validates:
 
 Usage:
     python3 scripts/validate_dissertation_landscape.py
-    python3 scripts/validate_dissertation_landscape.py --deep
+    python3 scripts/validate_dissertation_landscape.py --samples
+    python3 scripts/validate_dissertation_landscape.py --output-json FILE --output-md FILE
 
-Default mode: quick check (sample input + output).
---deep mode: full check of examples and output integrity.
+By default, validate the existing .phd_build outputs. --samples builds and
+validates the bundled examples in a temporary directory.
 
 Pure standard library — no external dependencies.
 """
@@ -226,10 +227,10 @@ def validate_sample_input():
     return data
 
 
-def validate_landscape_output():
+def validate_landscape_output(path):
     """Validate the landscape JSON output."""
     print("\n--- Landscape Output Validation ---")
-    data, ok = validate_json_file(LANDSCAPE_JSON_OUTPUT, "landscape_output.json")
+    data, ok = validate_json_file(path, "landscape_output.json")
     if not ok:
         return None
 
@@ -264,15 +265,15 @@ def validate_landscape_output():
     return data
 
 
-def validate_markdown_report():
+def validate_markdown_report(path):
     """Validate the Markdown report has all 12 sections."""
     print("\n--- Markdown Report Validation ---")
 
-    if not os.path.isfile(LANDSCAPE_MD_OUTPUT):
+    if not os.path.isfile(path):
         check("landscape_report.md exists", False, "file not found")
         return False
 
-    with open(LANDSCAPE_MD_OUTPUT, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         content = f.read()
 
     check("Markdown report is non-empty", len(content) > 0)
@@ -337,7 +338,7 @@ def validate_no_large_verbatim_text(data):
                      "may contain verbatim text")
 
 
-def deep_validate():
+def deep_validate(check_local_zotero):
     """Run deep validation checks."""
     print("\n" + "=" * 60)
     print("DEEP VALIDATION")
@@ -386,62 +387,48 @@ def deep_validate():
                               field in rec)
 
     # Check .phd_build/zotero/ if it exists
-    if os.path.isdir(ZOTERO_DIR):
+    if check_local_zotero and os.path.isdir(ZOTERO_DIR):
         json_files = [f for f in os.listdir(ZOTERO_DIR) if f.endswith(".json")]
         for fname in json_files:
             fpath = os.path.join(ZOTERO_DIR, fname)
             validate_json_file(fpath, f".phd_build/zotero/{fname}")
 
-    # Cross-validate: if output exists, check records_count matches input
-    if os.path.isfile(LANDSCAPE_JSON_OUTPUT) and os.path.isfile(SAMPLE_INPUT):
-        with open(LANDSCAPE_JSON_OUTPUT, "r", encoding="utf-8") as f:
-            output = json.load(f)
-        with open(SAMPLE_INPUT, "r", encoding="utf-8") as f:
-            input_records = json.load(f)
-        check("Output records_count matches input length",
-              output.get("records_count") == len(input_records),
-              f"output={output.get('records_count')}, input={len(input_records)}")
-
-
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
 
 
 def main():
-    global LANDSCAPE_JSON_OUTPUT, LANDSCAPE_MD_OUTPUT
     results.clear()
     parser = argparse.ArgumentParser(
         description="Validate dissertation landscape inputs and outputs."
     )
     parser.add_argument("--deep", action="store_true",
                         help="Run full deep validation")
-    parser.add_argument("--output-json", help="Validate an explicit generated JSON (default unchanged)")
-    parser.add_argument("--output-md", help="Validate an explicit generated report (default unchanged)")
+    parser.add_argument("--samples", action="store_true",
+                        help="Build and validate bundled examples in isolated temporary directories")
+    parser.add_argument("--output-json", help="Path to the generated landscape JSON")
+    parser.add_argument("--output-md", help="Path to the generated landscape Markdown")
     args = parser.parse_args()
-    if args.output_json:
-        LANDSCAPE_JSON_OUTPUT = os.path.abspath(args.output_json)
-    if args.output_md:
-        LANDSCAPE_MD_OUTPUT = os.path.abspath(args.output_md)
+    explicit_output = bool(args.output_json or args.output_md)
+    if args.samples and explicit_output:
+        parser.error("--samples cannot be combined with existing outputs")
 
-    print("=" * 60)
-    print("Dissertation Landscape Validator (v5.4.0)")
-    print(f"Project root: {PROJECT_ROOT}")
-    print("=" * 60)
-
-    # Quick validation (always runs)
+    print("Dissertation Landscape Validator")
     sample_data = validate_sample_input()
-    output_data = validate_landscape_output()
-    validate_markdown_report()
     validate_no_zotero_paths_in_examples()
-
     if sample_data:
         validate_no_large_verbatim_text(sample_data)
 
-    # Deep validation
+    if not args.samples:
+        output_data = validate_landscape_output(args.output_json or LANDSCAPE_JSON_OUTPUT)
+        validate_markdown_report(args.output_md or LANDSCAPE_MD_OUTPUT)
+        if args.deep and not explicit_output and output_data and sample_data:
+            check("Output records_count matches input length",
+                  output_data.get("records_count") == len(sample_data))
+
     if args.deep:
-        deep_validate()
-        check("End-to-end sample builds", validate_e2e_build())
+        deep_validate(check_local_zotero=not (args.samples or explicit_output))
+    if args.samples or args.deep:
+        if validate_e2e_build() is False:
+            check("End-to-end sample builds", False)
 
     # Summary
     print("\n" + "=" * 60)
@@ -472,82 +459,35 @@ def validate_e2e_build():
         ("zotero", "zotero_landscape_input_sample.json", "vehicle state estimation from Zotero"),
     ]
     
-    all_pass = True
     for name, sample_file, topic in test_cases:
         sample_path = os.path.join(EXAMPLES_DIR, sample_file)
-        if not os.path.exists(sample_path):
-            print(f"  {FAIL} {name}: sample not found: {sample_path}")
-            all_pass = False
+        if not check(f"{name}: sample exists", os.path.isfile(sample_path)):
             continue
-        
-        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f_json:
-            json_path = f_json.name
-        with tempfile.NamedTemporaryFile(suffix=".md", delete=False, mode="w") as f_md:
-            md_path = f_md.name
-        
-        try:
-            result = subprocess.run(
-                [sys.executable, BUILD_SCRIPT,
-                 "--input", sample_path,
-                 "--output-json", json_path,
-                 "--output-md", md_path,
-                 "--topic", topic],
-                capture_output=True, text=True, timeout=60
-            )
-            if result.returncode != 0:
-                print(f"  {FAIL} {name}: builder crashed (rc={result.returncode})")
-                print(f"    stderr: {result.stderr[:200]}")
-                all_pass = False
+        with tempfile.TemporaryDirectory(prefix="ptb-landscape-") as directory:
+            json_path = os.path.join(directory, "landscape.json")
+            md_path = os.path.join(directory, "landscape.md")
+            try:
+                result = subprocess.run(
+                    [sys.executable, "-X", "utf8", BUILD_SCRIPT,
+                     "--input", sample_path, "--output-json", json_path,
+                     "--output-md", md_path, "--topic", topic],
+                    capture_output=True, encoding="utf-8", timeout=60
+                )
+            except subprocess.TimeoutExpired:
+                check(f"{name}: builder finished", False, "timed out")
                 continue
-            
-            with open(json_path) as f:
-                output = json.load(f)
-            
-            required_keys = ["topic", "records_count", "theme_clusters", "structure_patterns",
-                             "methodology_patterns", "validation_patterns", "recommended_outline",
-                             "source_summary", "read_depth_summary", "positioning_gaps",
-                             "borrowable_moves", "risk_warnings", "planning_layer_routes",
-                             "evidence_layer_routes"]
-            missing = [k for k in required_keys if k not in output]
-            
-            platforms = output.get("source_summary", {}).get("platforms", {})
-            all_unknown = all(k == "unknown" for k in platforms)
-            
-            with open(md_path) as f:
-                md_content = f.read()
-            md_sections = sum(1 for line in md_content.split("\n") if line.strip().startswith("## ") and len(line) > 3 and line[3].isdigit())
-            
-            has_zotero_paths = "/Users/" in md_content and "Zotero" in md_content
-            
-            errors = []
-            if missing:
-                errors.append(f"missing {missing}")
-            if all_unknown:
-                errors.append(f"source_summary all unknown: {platforms}")
-            if md_sections < 12:
-                errors.append(f"only {md_sections}/12 sections")
-            if has_zotero_paths:
-                errors.append(f"contains Zotero local paths")
-            
-            if errors:
-                print(f"  {FAIL} {name}: {'; '.join(errors)}")
-                all_pass = False
-            else:
-                print(f"  {PASS} {name}: JSON {len(required_keys)-len(missing)}/{len(required_keys)} fields \u2713 platforms={platforms} \u2713 MD {md_sections}/12 \u2713")
-        except subprocess.TimeoutExpired:
-            print(f"  {FAIL} {name}: builder timed out")
-            all_pass = False
-        except Exception as e:
-            print(f"  {FAIL} {name}: {e}")
-            all_pass = False
-        finally:
-            for p in [json_path, md_path]:
-                try:
-                    os.unlink(p)
-                except OSError:
-                    pass
-    
-    return all_pass
+            if not check(f"{name}: builder finished", result.returncode == 0,
+                         result.stderr.strip()[:200]):
+                continue
+            output = validate_landscape_output(json_path)
+            validate_markdown_report(md_path)
+            if output:
+                with open(sample_path, encoding="utf-8") as sample:
+                    check(f"{name}: output records_count matches input",
+                          output.get("records_count") == len(json.load(sample)))
+                platforms = output.get("source_summary", {}).get("platforms", {})
+                check(f"{name}: source platforms identified",
+                      any(platform != "unknown" for platform in platforms))
 
 
 if __name__ == "__main__":

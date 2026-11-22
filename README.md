@@ -8,11 +8,13 @@ Russian dissertation planning, evidence-aware revision, and academic polishing s
 
 ## 中文
 
+**P0 基线更新（2026-11-23）。** 论文对比报告按一级标题统计章节，单列有效结构覆盖率与最常见模式的支持数。缺少可用结构时，大纲会标注为默认模板。检索结果带有命中层和原因；本机安装了可选学科句式文件时，可用 `--discipline` 显式检索。核对样例可运行 `python3 -X utf8 -B scripts/validate_dissertation_landscape.py --samples --deep`。[变更记录](CHANGELOG.md)
+
 **PhD Thesis Butler 是一个开源俄语论文写作 Skill，可供 Codex、Hermes、Claude Code、Antigravity 等智能体调用，用于论文结构规划、文献证据检查和俄语学术润色。**
 
 它面向正在写俄语 кандидат наук / PhD / 博士论文、俄语期刊论文、开题报告、章节草稿和文献综述的人。它的目标是帮助用户把研究想法变成结构清晰、证据更稳、表达更像俄罗斯学术写作的论文文本。
 
-> 它不是代写工具。它不替代作者贡献、导师判断、事实核验或学术伦理责任。
+> 每次调用先检查作者任务。请求直接生成学位论文、期刊论文或分章节代写时，PTB 会要求智能体拒绝。可以用它规划章节、核查证据、检索句式，以及润色或翻译作者自己的草稿。
 
 ### 2026-11-15：已合入的可靠性修复与下一步
 
@@ -251,7 +253,7 @@ python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
 python3 scripts/validate_research_layer.py
 python3 scripts/validate_evidence_layer.py
-python3 scripts/validate_dissertation_landscape.py
+python3 scripts/validate_dissertation_landscape.py --samples --deep
 bash scripts/smoke_test.sh
 ```
 
@@ -308,6 +310,8 @@ PhD Thesis Butler 是科研写作辅助工具。它可以帮助规划、检索�
 ---
 
 ## Русский
+
+Обновление P0: отчёт различает главы и подразделы, показывает покрытие выборки и помечает типовой план, когда надёжных заголовков нет. [История изменений](CHANGELOG.md)
 
 ### Обновление надёжности — 15.11.2026
 
@@ -399,7 +403,7 @@ python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
 python3 scripts/validate_research_layer.py
 python3 scripts/validate_evidence_layer.py
-python3 scripts/validate_dissertation_landscape.py
+python3 scripts/validate_dissertation_landscape.py --samples --deep
 bash scripts/smoke_test.sh
 ```
 
@@ -410,6 +414,8 @@ Skill не заменяет автора, научного руководите�
 ---
 
 ## English
+
+P0 reports distinguish chapters from subsections, show usable sample coverage, and identify default outlines when chapter evidence is unavailable. [Changelog](CHANGELOG.md)
 
 ### Reliability update — 2026-11-15
 
@@ -501,7 +507,7 @@ python3 scripts/validate_skill_assets.py --deep
 python3 scripts/validate_planning_assets.py
 python3 scripts/validate_research_layer.py
 python3 scripts/validate_evidence_layer.py
-python3 scripts/validate_dissertation_landscape.py
+python3 scripts/validate_dissertation_landscape.py --samples --deep
 bash scripts/smoke_test.sh
 ```
 

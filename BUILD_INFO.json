@@ -3,7 +3,7 @@
   "version": "5.4.1",
   "release_date": "2026-06-05",
   "schema_version": "5.4",
-  "description": "Corpus-distilled Russian dissertation writing intelligence platform. Aggregated from 2,118 Russian dissertations (3 universities), with 679 deep analyses across 5 discipline clusters.",
+  "description": "Corpus-distilled Russian dissertation writing intelligence platform. Historical v5.4.1 build from 2,118 source documents, with 679 deep analyses.",
   "templates": {
     "total": 16722,
     "DIS": 9876,
@@ -53,11 +53,12 @@
   },
   "retrieval": {
     "deterministic": true,
-    "index_based": true,
-    "fallback_strategy": "cluster→discipline→global",
+    "index_based": false,
+    "fallback_strategy": "discipline→cluster→global",
     "extension_compatible": false,
     "zotero_integration": true,
-    "zotero_status": "v5.4 Local API (status/search/builder pipeline)"
+    "zotero_status": "v5.4 Local API (status/search/builder pipeline)",
+    "matching": "Category filter and keyword overlap. Cluster results use record labels; a nonempty query with no lexical matches returns an empty array."
   },
   "pipeline": {
     "layer0_ingest": 2267,
@@ -75,5 +76,11 @@
     ],
     "corpus_size": 2118,
     "deep_analyzed": 679
+  },
+  "statistics_scope": {
+    "basis": "Historical v5.4.1 build manifest; not a live inventory of this installation.",
+    "templates": "Build records by DIS, AREF and UTILS. Shards, masters and aggregates overlap; filesystem rows, unique text and runtime-visible templates are different measures.",
+    "sources": "Build input documents; DIS and AREF may belong to the same thesis. Independent works and verified PDF links require the authoritative private index.",
+    "layers": "Historical build figures. Local discipline JSONL files are optional and may differ from the release checkout."
   }
 }

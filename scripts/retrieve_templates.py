@@ -1,21 +1,13 @@
 #!/usr/bin/env python3
-"""
-Deterministic lexical retrieval over quality JSONL assets.
-Record labels, not storage directories, define the requested cluster.
-Profiles are planning context, not sentence banks. Labels are not verified semantics.
+"""Retrieve Russian templates by discipline, cluster and global fallback.
 
-Usage:
-  python scripts/retrieve_templates.py \\
-    --category MODEL \\
-    --discipline "технические науки" \\
-    --cluster TECH_LIFE \\
-    --query "математическая модель допущение ограничения" \\
-    --limit 5
-
-Output: JSON array of matched templates with hit_layer and quality_score.
+Use --category and --query to search, or omit --query to browse by quality.
+Stdout contains a JSON array, including the layer and reason for each hit.
 """
 
-import json, sys, re
+import json
+import re
+import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
@@ -60,7 +52,7 @@ def entry_has_cjk(entry):
 def has_russian_template(entry):
     """Russian dissertation templates should contain Cyrillic in the template text."""
     t = entry.get("template", "") or entry.get("text", "")
-    return bool(CYRILLIC_RE.search(t))
+    return isinstance(t, str) and bool(CYRILLIC_RE.search(t))
 
 PLACEHOLDER_MARKERS = (
     "требуется ручной перевод",
@@ -86,13 +78,15 @@ def load_quality_jsonl(path, include_mixed=False):
     if not path.exists():
         return []
     result = []
-    with open(path) as f:
+    with path.open(encoding="utf-8-sig") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
             try:
                 e = json.loads(line)
+                if not isinstance(e, dict):
+                    continue
                 # Normal retrieval is Russian-first. Mixed/non-Russian templates
                 # are retained in the assets for auditability, but hidden unless
                 # the caller explicitly opts in.
@@ -107,7 +101,7 @@ def load_quality_jsonl(path, include_mixed=False):
     return result
 
 def semantic_score(template_text, query_words):
-    """Legacy function name: lexical substring/token overlap, not embeddings."""
+    """Simple semantic relevance score based on word overlap."""
     if not template_text or not query_words:
         return 0
     text_lower = template_text.lower()
@@ -123,114 +117,130 @@ def semantic_score(template_text, query_words):
                 score += 1
     return score
 
+def cluster_label(entry):
+    """Return a normalized record label. The directory is only a storage shard."""
+    label = entry.get("v5_cluster")
+    if label is None:
+        return ""
+    if not isinstance(label, str):
+        return None
+    label = label.strip().upper()
+    return "ARTS_SPORTS" if label == "ART_SPORT" else label
+
+
+def quality_entries(directory, category, include_mixed):
+    """Use the category shard or aggregate. Some installations only ship shards."""
+    # An ALL file may contain only a subset. Include matching shards as well.
+    aggregate = directory / "QUALITY2_ALL.jsonl"
+    if category:
+        shard = directory / f"QUALITY2_{category}.jsonl"
+        paths = [p for p in dict.fromkeys((shard, aggregate)) if p.is_file()]
+    else:
+        paths = sorted(directory.glob("QUALITY2_*.jsonl"))
+    for path in paths:
+        yield from load_quality_jsonl(path, include_mixed)
+
+
 def retrieve(args):
-    category = args.get("category", "").upper()
-    discipline = args.get("discipline", "технические науки")
-    cluster = args.get("cluster", "TECH_LIFE").upper()
-    query = args.get("query", "")
+    category = args.get("category", "").strip().upper()
+    discipline = "_".join(args.get("discipline", "").replace("_", " ").split())
+    cluster = args.get("cluster", "TECH_LIFE").strip().upper()
+    query = args.get("query", "").strip()
     limit = args.get("limit", 5)
     include_mixed = args.get("include_mixed", False)
-
-    query_words = query.split() if query else []
-    results = []  # list of (semantic_score, layer_name, entry)
-
-    if limit <= 0:
+    if limit <= 0 or any(sep in category for sep in ("/", '\\')):
         return []
-    mapping = json.loads((BASE / "assets/references/cluster_mapping.json").read_text(encoding="utf-8"))
+
+    assets = BASE / "assets"
+    mapping_path = assets / "references" / "cluster_mapping.json"
+    mapping = json.loads(mapping_path.read_text(encoding="utf-8"))
     canonical = set(mapping["canonical_labels"])
+    aliases = mapping["legacy_aliases"]
     if cluster == "GLOBAL":
-        allowed_labels = canonical | {"GLOBAL"}
+        allowed = canonical | {"GLOBAL"}
     elif cluster in canonical:
-        allowed_labels = {cluster}
-    elif cluster in mapping["legacy_aliases"]:
-        allowed_labels = set(mapping["legacy_aliases"][cluster])
+        allowed = {cluster}
+    elif cluster in aliases:
+        allowed = set(aliases[cluster])
+    elif cluster == "UNKNOWN":
+        allowed = set()
     else:
-        raise ValueError(f"Unknown or ambiguous cluster {cluster!r}; choose a canonical v5 label or GLOBAL")
-
-    # Discipline profiles describe a corpus, not per-record discipline membership.
-    # Preserve the legacy argument, without claiming a DISCIPLINE sentence hit.
-    seen_templates = set()
-
-    def try_add(entries, layer_name):
-        """Add entries from a layer, deduplicating by template text."""
-        for e in entries:
-            if category and e.get("category", "").upper() != category:
-                continue
-            if e.get("v5_cluster") not in allowed_labels:
-                continue
-            t = e.get("template", "") or e.get("text", "")
-            if not t or t in seen_templates:
-                continue
-            score = semantic_score(t, query_words)
-            if query.strip() and score <= 0:
-                continue
-            seen_templates.add(t)
-            results.append((score, layer_name, e))
-
-    # Scan all storage directories: their historical names are not taxonomy.
-    # ALL files may contain a single category; never assume they are complete.
-    for path in sorted((BASE / "assets/cluster").glob("*/quality/QUALITY2_*.jsonl")):
-        try_add(load_quality_jsonl(path, include_mixed=include_mixed), "CLUSTER")
-    for path in sorted((BASE / "assets/global/quality").glob("QUALITY2_*.jsonl")):
-        try_add(load_quality_jsonl(path, include_mixed=include_mixed), "GLOBAL")
-
-    layer_priority = {"CLUSTER": 2, "GLOBAL": 1}
-
-    # For English queries, boost global mixed templates
-    query_has_cyrillic = bool(CYRILLIC_RE.search(query)) if query else True
-
-    final = []
-    for score, layer_name, entry in results:
-        t = entry.get("template", entry.get("text", ""))
-        if entry_has_cjk(entry):
-            continue
-
-        # Calculate effective score
-        lang_boost = 0
-        if include_mixed and not query_has_cyrillic and layer_name == "GLOBAL" and entry.get('v5_lang') == 'mixed':
-            lang_boost = 5  # Boost English templates for English queries
-
-        effective_score = score + lang_boost
-        final.append((effective_score, layer_name, entry))
-
-    # Sort: -effective_score, -quality_score, -layer_priority
-    final.sort(key=lambda r: (-r[0], -r[2].get("quality_score", 0), -layer_priority.get(r[1], 0)))
-
-    # Deduplicate and limit
+        raise ValueError(f"Unknown or ambiguous cluster {cluster!r}; choose a canonical label or GLOBAL")
+    query_words = query.split()
+    query_has_cyrillic = bool(CYRILLIC_RE.search(query))
     seen = set()
     output = []
-    for score, layer_name, entry in final:
-        t = entry.get("template", entry.get("text", ""))
-        if t in seen:
-            continue
-        seen.add(t)
-        output.append({
-            "template": t,
-            "category": entry.get("category", ""),
-            "subtype": entry.get("subtype", ""),
-            "when_to_use": clean_visible_metadata(entry.get("when_to_use", "")),
-            "common_mistakes": clean_visible_metadata(entry.get("common_mistakes", [])),
-            "quality_score": entry.get("quality_score", 0),
-            "hit_layer": layer_name,
-            "v5_cluster": entry.get("v5_cluster"),
-            "classification_status": "unverified_source_label",
-            "requested_cluster": cluster,
-            "resolved_labels": sorted(allowed_labels),
-            "alias_resolution": "legacy_lossy_mapping" if cluster in mapping["legacy_aliases"] else "explicit_scope",
-            "lexical_score": semantic_score(t, query_words),
-        })
-        if len(output) >= limit:
-            break
 
-    return output[:limit]
+    def append_hits(entries, layer, reason, labels=None):
+        candidates = []
+        for entry in entries:
+            if category and str(entry.get("category", "")).upper() != category:
+                continue
+            label = cluster_label(entry)
+            if labels is not None and label not in labels:
+                continue
+            template = entry.get("template") or entry.get("text", "")
+            score = semantic_score(template, query_words)
+            if query and not score:
+                continue
+            if include_mixed and query and not query_has_cyrillic and layer == "GLOBAL" and entry.get("v5_lang") == "mixed":
+                score += 5
+            candidates.append((score, entry, template, label))
+
+        candidates.sort(key=lambda item: (-item[0], -item[1].get("quality_score", 0)))
+        for _, entry, template, label in candidates:
+            if template.strip() in seen:
+                continue
+            seen.add(template.strip())
+            output.append({
+                "template": template,
+                "category": entry.get("category", ""),
+                "subtype": entry.get("subtype", ""),
+                "when_to_use": clean_visible_metadata(entry.get("when_to_use", "")),
+                "common_mistakes": clean_visible_metadata(entry.get("common_mistakes", [])),
+                "quality_score": entry.get("quality_score", 0),
+                "hit_layer": layer,
+                "hit_reason": reason,
+                "v5_cluster": label or None,
+                "classification_status": "unverified_source_label",
+                "requested_cluster": cluster,
+                "resolved_labels": sorted(labels if labels is not None else allowed),
+                "alias_resolution": "legacy_lossy_mapping" if cluster in aliases else "explicit_scope",
+                "lexical_score": semantic_score(template, query_words),
+            })
+            if len(output) == limit:
+                return True
+        return False
+
+    if discipline and all(sep not in discipline for sep in ("/", '\\')):
+        entries = load_quality_jsonl(assets / "discipline" / f"{discipline}.jsonl", include_mixed)
+        if append_hits(entries, "DISCIPLINE", "discipline_file"):
+            return output
+
+    if allowed:
+        entries = (
+            entry for directory in sorted((assets / "cluster").glob("*/quality"))
+            for entry in quality_entries(directory, category, include_mixed)
+        )
+        reason = "legacy_cluster_label" if cluster in aliases else "cluster_label"
+        if append_hits(entries, "CLUSTER", reason, allowed):
+            return output
+
+    global_rows = list(quality_entries(assets / "global" / "quality", category, include_mixed))
+    if allowed and append_hits(global_rows, "GLOBAL", "global_label", allowed):
+        return output
+    if cluster != "GLOBAL":
+        append_hits(global_rows, "GLOBAL", "global_fallback", {"GLOBAL"})
+    return output
+
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Record-label-filtered lexical template retrieval")
+    parser = argparse.ArgumentParser(description="Template retrieval with 3-layer fallback")
     parser.add_argument("--category", "-c", default="", help="Category to filter")
-    parser.add_argument("--discipline", "-d", default="технические науки", help="Legacy planning context only; not a sentence-level filter")
+    parser.add_argument("--discipline", "-d", default="", help="Optional discipline name for local assets")
     parser.add_argument("--cluster", "-k", default="TECH_LIFE", help="Cluster name")
-    parser.add_argument("--query", "-q", default="", help="Lexical query; no lexical match returns []")
+    parser.add_argument("--query", "-q", default="", help="Semantic query text")
     parser.add_argument("--limit", "-l", type=int, default=5, help="Max results")
     parser.add_argument("--include-mixed", action="store_true", help="Include mixed/non-Russian templates for audit/debug use")
     args = parser.parse_args()
@@ -245,5 +255,6 @@ if __name__ == "__main__":
     }
 
     results = retrieve(params)
+    sys.stdout.reconfigure(encoding="utf-8")
     print(json.dumps(results, ensure_ascii=False, indent=2))
     print(f"\n--- {len(results)} results (limit={args.limit}) ---", file=sys.stderr)
