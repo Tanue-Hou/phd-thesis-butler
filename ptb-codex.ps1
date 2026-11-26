@@ -1,6 +1,6 @@
 # Windows Codex CLI. Run once with -Setup; subsequent runs need no key prompt.
 [CmdletBinding(PositionalBinding=$false)]
-param([switch]$Setup, [string]$Url, [Parameter(ValueFromRemainingArguments=$true)][string[]]$CodexArguments)
+param([switch]$Setup, [string]$Url = 'https://91.149.239.14:10443/mcp', [Parameter(ValueFromRemainingArguments=$true)][string[]]$CodexArguments)
 $ErrorActionPreference = 'Stop'
 $dir = Join-Path $env:LOCALAPPDATA 'PTB/harness'
 $file = Join-Path $dir 'access.dpapi'

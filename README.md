@@ -4,9 +4,9 @@ PhD Thesis Butler 向写作客户端提供结构、方法、表达与证据检�
 
 ## 从另一台电脑接入
 
-本仓库发布服务程序。VPS 地址和测试令牌由管理员单独提供，目前本 README 未公布已上线端点。
+云端服务已上线。Windows Codex CLI 用户运行 `.\ptb-codex.ps1 -Setup` 后输入管理员发放的个人密钥即可，脚本已内置 HTTPS 地址。
 
-1. 在支持 **Streamable HTTP** 的 MCP 客户端添加远程服务器。URL 填管理员提供的完整 HTTPS 地址，例如 `https://ptb.example.org/mcp`，认证头填 `Authorization: Bearer <独立测试令牌>`。将令牌保存在客户端的秘密配置中。
+1. 在支持 **Streamable HTTP** 的 MCP 客户端添加远程服务器。URL 填 `https://91.149.239.14:10443/mcp`，认证头填 `Authorization: Bearer <独立测试令牌>`。将令牌保存在客户端的秘密配置中。
 2. 将 [客户端 Skill](SKILL.md) 配置为该工具的调用指导，连接并刷新工具列表，应只出现 `ptb_lookup`。客户端电脑只需要地址和令牌。
 3. 首次调用前，客户端告知用户并取得同意。VPS 接收本轮实际指令、申报意图、材料类型、期望产物与 1–3 个场景标签。翻译和润色另发用户选定的原稿及源语言、目标语言。继续同一任务时发回任务句柄。服务器用固定规则独立核对字段，意图缺失时拒绝，含义不清时要求澄清。规则判断的是收到的请求，客户端应保留用户原话。
 
@@ -54,7 +54,7 @@ python3 access_keys.py usage
 
 支持凭证存储的 harness：在用户级 MCP 设置中保存 HTTPS 地址及 Bearer 密钥，启用记住凭证。业务调用时由客户端自动携带请求头。请勿在模型对话或共享工作区填写密钥。
 
-Windows Codex CLI 可在本地下载本仓库的 `ptb-codex.ps1`。首次运行 `.\ptb-codex.ps1 -Setup -Url https://你的地址/mcp` 并在隐藏输入框粘贴一次。以后用 `.\ptb-codex.ps1` 启动 Codex。脚本使用当前 Windows 用户的 DPAPI 加密保存密钥，只在启动进程时提供环境变量。每台新设备各配置一次。
+Windows Codex CLI 可在本地下载本仓库的 `ptb-codex.ps1`。首次运行 `.\ptb-codex.ps1 -Setup` 并在隐藏输入框粘贴一次。以后用 `.\ptb-codex.ps1` 启动 Codex。脚本使用当前 Windows 用户的 DPAPI 加密保存密钥，只在启动进程时提供环境变量。每台新设备各配置一次。
 
 
 回退时将服务切换到已验证的 MCP 提交及其兼容数据库，保留当前库备份，然后重启；首次部署若无可回退版本，先关闭测试端点。Git 保留旧 Skill 提交供历史查阅。
