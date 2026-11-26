@@ -4,7 +4,7 @@ PhD Thesis Butler 向写作客户端提供结构、方法、表达与证据检�
 
 ## 从另一台电脑接入
 
-云端服务已上线。Windows Codex CLI 用户运行 `.\ptb-codex.ps1 -Setup` 后输入管理员发放的个人密钥即可，脚本已内置 HTTPS 地址。
+云端服务已上线。可直接在 Codex、Claude Code、Antigravity 或 DeepSeek Harness 的个人配置中保存一次密钥。按所用客户端选择[原生接入步骤](docs/clients.md)。Windows Codex CLI 也可使用下文的加密保存脚本。
 
 1. 在支持 **Streamable HTTP** 的 MCP 客户端添加远程服务器。URL 填 `https://91.149.239.14:10443/mcp`，认证头填 `Authorization: Bearer <独立测试令牌>`。将令牌保存在客户端的秘密配置中。
 2. 将 [客户端 Skill](SKILL.md) 配置为该工具的调用指导，连接并刷新工具列表，应只出现 `ptb_lookup`。客户端电脑只需要地址和令牌。
