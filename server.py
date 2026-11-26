@@ -71,7 +71,9 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
             raise ValueError("PTB_PUBLIC_HOST must be an exact HTTPS authority")
         hosts.append(host)
         origins.append("https://" + host)
-    service = FastMCP("PTB", instructions="For a supported writing request, select ptb_lookup and build its arguments yourself. Before sending, briefly explain the scope and obtain consent if it has not already been given. Do not ask the author to name a tool, recite a consent formula or supply protocol fields. Continue the approved steps for that same task without requesting repeated consent. Ask again if the scope changes.",
+    skill = Path(__file__).with_name("SKILL.md").read_text(encoding="utf-8")
+    catalog = skill.split("<!-- ptb-catalog -->", 1)[1].split("<!-- /ptb-catalog -->", 1)[0].strip()
+    service = FastMCP("PTB", instructions="For a supported writing request, select ptb_lookup and build its arguments yourself. Before sending, briefly explain the scope and obtain consent if it has not already been given. Do not ask the author to name a tool, recite a consent formula or supply protocol fields. Continue the approved steps for that same task without requesting repeated consent. Ask again if the scope changes.\n\n" + catalog,
         json_response=True, stateless_http=True, max_request_body_size=65536, log_level="WARNING",
         transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=True,
                                                      allowed_hosts=hosts, allowed_origins=origins))
@@ -81,6 +83,8 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
     @service.tool()
     async def ptb_lookup(request: LookupRequest = None) -> dict[str, Any]:
         """Submit the user's actual instruction, intent, source_kind, requested_output and 1–3 client_tags.
+        Use the task catalog in the server instructions. The client selects the scene and evaluates each card's
+        prerequisites against the supplied material. The server performs rule checks and SQLite retrieval.
         Choose source_kind from none, draft, outline, data, prior_cards. Standalone questions use none,
         including references to results or A/B with no supplied material. For selected prose use draft;
         for supplied headings use outline; for provided measurements use data. Use prior_cards only
