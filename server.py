@@ -11,15 +11,26 @@ from contextlib import closing
 import time
 from hashlib import sha256
 from pathlib import Path
-from typing import Any
+from typing import Annotated, Any
+from pydantic import WithJsonSchema
 
 import uvicorn
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
 
-from policy import Gateway
+from policy import Gateway, OUTPUTS
 from make_demo import DEMO_ID
+
+# Publish the contract at tool discovery. Value validation stays in the gateway
+# so older clients receive an actionable repair rather than an opaque RPC error.
+INTENT_OUTPUTS = {**OUTPUTS, "workflow": "workflow"}
+OUTPUT_HELP = ", ".join(f"{k} -> {v}" for k, v in INTENT_OUTPUTS.items())
+LookupRequest = Annotated[Any, WithJsonSchema({
+    "description": "Task request, or continuation with workflow_id and stage.",
+    "properties": {"requested_output": {"description": "Use this exact intent mapping: " + OUTPUT_HELP}},
+    "x-ptb-intent-outputs": INTENT_OUTPUTS,
+})]
 
 VERSION = "0.1.0-beta.3"
 
@@ -57,7 +68,7 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
     gateways = {}
     db_version = sha256(database.read_bytes()).hexdigest()[:16]
     @service.tool()
-    async def ptb_lookup(request: Any = None) -> dict[str, Any]:
+    async def ptb_lookup(request: LookupRequest = None) -> dict[str, Any]:
         """Submit the user's actual instruction, intent, source_kind, requested_output and 1–3 client_tags.
         On repair.auto_retry=true, correct the indicated field using the existing authorized task and retry automatically.
         When replace_with exists, retry the same tool with that value at request[field].
@@ -68,7 +79,8 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         user_request, intent=workflow, source_kind=draft, requested_output=workflow, source_text=selected Chinese,
         source_lang=zh,target_lang=ru and client_tags. Automatically follow next_step via this same tool without
         re-prompting the user. In polish use editorial_guidance; cite actual rule URLs after the final text. Show glossary_guidance once at final delivery.
-        Single intents: translate, polish, plan, compare, check_evidence.
+        Exact intent -> requested_output: translate -> translation, polish -> revision, plan -> outline,
+        compare -> comparison, check_evidence -> evidence_feedback, workflow -> workflow.
         Never invent source text. Tag values: 篇章布局, 方法选择, 实验验证, 综述分歧, 结果与不确定性, 边界与归属, 目标与假设.
         """
         start = time.monotonic()

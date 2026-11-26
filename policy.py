@@ -19,7 +19,7 @@ TYPES = {
     "translate": {"俄语句式", "俄语语用"}, "polish": {"俄语句式", "俄语语用"},
     "plan": {"整篇布局", "双端依赖", "篇章衔接", "章间衔接", "论证步骤", "篇章布局", "顺序与计划"},
     "compare": {"比较边界", "民用比较", "替代与基线", "对照证据", "分层验证", "适用边界", "论证步骤"},
-    "check_evidence": {"必要证据", "民用证据", "对照证据", "分层验证", "适用边界", "结论限定", "论证步骤"},
+    "check_evidence": {"适用条件", "必要证据", "民用证据", "对照证据", "分层验证", "适用边界", "结论限定", "论证步骤"},
 }
 # Full-match the instruction. A pasted draft is data only when separately selected.
 GRAMMAR = {
@@ -90,8 +90,7 @@ def malformed(request):
     for key, value in request.items():
         if key != "client_tags" and not isinstance(value, str):
             return field_repair(key, "string_required", "使用字符串；无可选值时省略该字段。")
-    for key, choices in (("intent", OUTPUTS), ("source_kind", SOURCES),
-                         ("requested_output", (*OUTPUTS.values(), "new_prose"))):
+    for key, choices in (("intent", OUTPUTS), ("source_kind", SOURCES),):
         if request[key] not in choices:
             return field_repair(key, "unknown_value", "根据原委托选择一个值：" + "、".join(sorted(choices)))
     tags = request["client_tags"]
@@ -126,9 +125,11 @@ def inspect(request):
     matches = matches_polish(instruction) if intent == "polish" else re.fullmatch(GRAMMAR[intent], instruction)
     if not matches and DRAFTING.search(instruction):
         return "deny", "DIRECT_DRAFTING"
-    if (not matches or OUTPUTS[intent] != request["requested_output"] or
+    if (not matches or
         not all(t in SCOPES[intent] for t in tags)):
         return "clarify", "INTENT_UNCLEAR"
+    if OUTPUTS[intent] != request["requested_output"]:
+        return "deny", "INVALID_REQUEST"
     if intent in {"translate", "polish"}:
         if not original or request["source_kind"] != "draft":
             return "clarify", "SOURCE_REQUIRED"
@@ -204,6 +205,11 @@ class Gateway:
         if repair:
             return result("deny", "INVALID_REQUEST") | {"repair": repair, "message": repair["hint"]}
         decision, reason = inspect(request)
+        if reason == "INVALID_REQUEST":
+            expected = OUTPUTS[request["intent"]]
+            hint = f"当前意图 {request['intent']} 对应 requested_output={expected}。保留用户原话后重试。"
+            repair = field_repair("requested_output", "intent_output_mismatch", hint)
+            return result(decision, reason) | {"repair": repair | {"replace_with": expected}, "message": hint}
         if decision != "allow":
             return result(decision, reason)
         self.tasks = {k:v for k,v in self.tasks.items() if now-v[0]<1800}
@@ -215,7 +221,7 @@ class Gateway:
         if len(seen) >= 12 or (handle not in self.tasks and len(self.tasks) >= 1000):
             return result("deny", "LIMIT")
         try:
-            cards = self.fetch(request["intent"], request["client_tags"], seen, count_select)
+            cards = self.fetch(request["intent"], request["client_tags"], seen, count_select, request["user_request"])
         except sqlite3.Error:
             return result("error", "UNAVAILABLE")
         cards = cards[:min(3, 12-len(seen))]
@@ -229,13 +235,46 @@ class Gateway:
             reply["translation_guidance"]="保留原文条件、否定、归属、比较对象、数值、编号和证据强度。"
         return reply
 
-    def fetch(self, intent, tags, seen, count_select):
+    def fetch(self, intent, tags, seen, count_select, wording):
         from contextlib import closing
         cards = []
         ids = set(seen)
         with closing(sqlite3.connect(self.database.resolve().as_uri()+"?mode=ro", uri=True)) as db:
             db.set_trace_callback(count_select)
             db.row_factory = sqlite3.Row
+            if intent in {"compare", "check_evidence"}:
+                tags = list(dict.fromkeys(tags))
+                if intent == "compare" and re.search("职责|分工|用途|可比性|试验条件|实验条件", wording):
+                    tags.extend(["方法选择", "实验验证"])
+                if intent == "check_evidence" and re.search("证据强度|适用范围|适用条件|证据充分性", wording):
+                    tags.extend(["实验验证", "边界与归属"])
+                tags = list(dict.fromkeys(tags))
+                marks = ",".join("?" for _ in tags)
+                rows = db.execute(f"""SELECT scenario, stage, knowledge_id, kind, move,
+                    requirements, misuse, evidence_basis, independent_support, template, grammar
+                    FROM scene_route WHERE scenario IN ({marks})""", tags)
+                priority = (("方法选择/论证步骤", "比较边界", "对照证据", "替代与基线", "民用比较")
+                            if intent == "compare" else
+                            ("适用边界", "分层验证", "适用条件", "必要证据", "结论限定"))
+                def rank(row):
+                    scoped = row["scenario"] + "/" + row["kind"]
+                    key = scoped if scoped in priority else row["kind"]
+                    return (priority.index(key) if key in priority else len(priority),
+                            tags.index(row["scenario"]), row["stage"], row["knowledge_id"])
+                ranked = sorted((r for r in rows if r["kind"] in TYPES[intent]
+                                 and r["knowledge_id"] not in ids), key=rank)
+                # Cover distinct research moves before adding a second card of the same kind.
+                kinds = set()
+                for distinct in (True, False):
+                    for row in ranked:
+                        if row["knowledge_id"] in ids or (distinct and row["kind"] in kinds):
+                            continue
+                        cards.append({k: row[k] for k in row.keys() if k not in ("scenario", "stage")})
+                        kinds.add(row["kind"])
+                        ids.add(row["knowledge_id"])
+                        if len(cards) == 3:
+                            return cards
+                return cards
             for tag in tags:
                 for row in db.execute("""SELECT knowledge_id, kind, move, requirements, misuse,
                     evidence_basis, independent_support, template, grammar FROM scene_route

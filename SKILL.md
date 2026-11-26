@@ -11,7 +11,7 @@ PTB 提供参考卡、编辑规则和步骤指引。客户端模型翻译、选�
 
 调用工具 `ptb_lookup`，外层参数名为 `request`。对象中填写：
 
-- user_request（指令原话）、intent、source_kind、requested_output、client_tags（1–3个）。
+- user_request（指令原话）、intent、source_kind、requested_output、client_tags（1–3个）。比较任务固定使用 compare / comparison，证据检查固定使用 check_evidence / evidence_feedback；完整对应表随工具发现提供。
 - intent/output 对应 translate/translation、polish/revision、plan/outline、compare/comparison、check_evidence/evidence_feedback。明确新写正文时产物填 new_prose。
 - source_kind 取 draft、outline、data、prior_cards、none。改译需附 source_text、source_lang 和 target_lang，语种 zh/ru，俄语润色用 ru/ru。
 - 标签选 篇章布局、方法选择、实验验证、综述分歧、结果与不确定性、边界与归属、目标与假设。

@@ -77,6 +77,31 @@ class Rules(unittest.TestCase):
                     self.assertEqual(reply["db_query_count"], 0)
                     self.assertEqual(reply["reason_code"], "INTENT_UNCLEAR" if tail == "并安排会议" else "DIRECT_DRAFTING")
 
+    def test_compare_and_evidence_rank_beyond_first_scene(self):
+        import sqlite3
+        from tempfile import TemporaryDirectory
+        from make_demo import build
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "cards.sqlite"
+            build(path)
+            with sqlite3.connect(path) as db:
+                for i, (scene, kind) in enumerate([("实验验证", "适用边界"), ("实验验证", "分层验证"),
+                                                  ("方法选择", "比较边界"), ("方法选择", "论证步骤")]):
+                    db.execute("INSERT INTO scene_route(scenario,stage,knowledge_id,kind) VALUES(?,?,?,?)",
+                               (scene, i + 10, str(i), kind))
+            db.close()
+            gateway = Gateway(path)
+            for intent, words, kind in [
+                ("compare", "比较方案 A 与方案 B 的研究职责及试验条件", "论证步骤"),
+                ("check_evidence", "检查上述结果的证据强度和适用范围", "适用边界")]:
+                query = ask(intent, user_request=words)
+                error = gateway.lookup(query | {"requested_output": "report"})
+                self.assertEqual(error["db_query_count"], 0)
+                self.assertEqual(error["repair"]["replace_with"], query["requested_output"])
+                cards = gateway.lookup(query)["cards"]
+                self.assertEqual(cards[0]["kind"], kind)
+                self.assertEqual(len({c["knowledge_id"] for c in cards}), 3)
+
     def setUp(self):
         self.g = Gateway(DB)
 
