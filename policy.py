@@ -14,6 +14,12 @@ OUTPUTS = {"translate": "translation", "polish": "revision", "plan": "outline",
 SCENES = ("篇章布局", "方法选择", "实验验证", "综述分歧", "结果与不确定性", "边界与归属", "目标与假设")
 SCOPES = {"plan": set(SCENES), "compare": {"实验验证", "方法选择", "综述分歧", "结果与不确定性", "边界与归属"},
           "check_evidence": set(SCENES), "translate": set(SCENES), "polish": set(SCENES)}
+WRITING_MOVES = {
+    "chapter_gap": "已有产物留下待解决步骤",
+    "calibration_check": "分开参数辨识和变条件检验",
+    "interpretability": "按可解释性说明方法选择",
+    "non_exhaustive": "明确分析未穷尽",
+}
 SOURCE_GUIDE = {
     "none": "Only a question or instruction; naming A/B or referring to results supplies no material.",
     "draft": "Actual author prose is supplied for translation, revision or review.",
@@ -82,6 +88,9 @@ def matches_polish(instruction):
         clauses = [clauses[0] + clauses[1], *clauses[2:]]
     actions = 0
     for clause in clauses:
+        if re.fullmatch(r"(?:我同意提交|只使用\s*ptb|请给我修订稿和请求号)", clause):
+            continue
+        clause = re.sub(r"^请通过\s*ptb\s*(?=润色|校对)", "", clause)
         if EDIT_REQUEST.fullmatch(clause) or re.fullmatch(GRAMMAR["polish"], clause):
             actions += 1
         elif not EDIT_CONSTRAINT.fullmatch(clause):
@@ -104,7 +113,7 @@ REQUIRED = ("user_request", "intent", "source_kind", "requested_output", "client
 def malformed(request):
     if not isinstance(request, dict):
         return field_repair("request", "object_required", "把参数放入 request 对象。")
-    allowed = (*REQUIRED, "source_text", "source_lang", "target_lang", "task_handle")
+    allowed = (*REQUIRED, "source_text", "source_lang", "target_lang", "task_handle", "writing_move")
     for key in request:
         if key not in allowed:
             return field_repair("request", "unknown_field", f"移除未定义的参数 {key!r}。允许字段为 " + ", ".join(allowed))
@@ -115,6 +124,9 @@ def malformed(request):
         if request[key] not in choices:
             return field_repair(key, "unknown_value", "根据实际委托和材料选择列表中的值。") | (
                 choices_for("source_kind", request) if key == "source_kind" else {"choices": sorted(choices)})
+    if "writing_move" in request and (request["intent"] not in ("translate","polish") or
+                                      request["writing_move"] not in WRITING_MOVES):
+        return field_repair("writing_move", "unsupported_move", "仅单步改译可选；无匹配时省略。") | {"choices": list(WRITING_MOVES)}
     tags = request["client_tags"]
     if not isinstance(tags, list) or not 1 <= len(tags) <= 3 or any(t not in SCENES for t in tags):
         repair = field_repair("client_tags", "scene_list_required",
@@ -255,7 +267,7 @@ class Gateway:
         if len(seen) >= 12 or (handle not in self.tasks and len(self.tasks) >= 1000):
             return result("deny", "LIMIT")
         try:
-            cards = self.fetch(request["intent"], request["client_tags"], seen, count_select, request["user_request"], request.get("source_text", ""))
+            cards = self.fetch(request["intent"], request["client_tags"], seen, count_select, request["user_request"], request.get("source_text", ""), request.get("writing_move"))
         except sqlite3.Error:
             return result("error", "UNAVAILABLE")
         cards = cards[:min(3, 12-len(seen))]
@@ -269,13 +281,18 @@ class Gateway:
             reply["translation_guidance"]="保留原文条件、否定、归属、比较对象、数值、编号和证据强度。"
         return reply
 
-    def fetch(self, intent, tags, seen, count_select, wording, source_text=""):
+    def fetch(self, intent, tags, seen, count_select, wording, source_text="", writing_move=None):
         from contextlib import closing
         cards = []
         ids = set(seen)
         with closing(sqlite3.connect(self.database.resolve().as_uri()+"?mode=ro", uri=True)) as db:
             db.set_trace_callback(count_select)
             db.row_factory = sqlite3.Row
+            if writing_move:
+                rows = db.execute("""SELECT knowledge_id,kind,move,requirements,misuse,evidence_basis,
+                    independent_support,template,grammar FROM scene_route
+                    WHERE move=? AND kind='俄语句式' ORDER BY knowledge_id""", (WRITING_MOVES[writing_move],))
+                return [dict(row) for row in rows if row["knowledge_id"] not in ids][:3]
             if intent in {"compare", "check_evidence"}:
                 tags = list(dict.fromkeys(tags))
                 if intent == "compare" and re.search("职责|分工|用途|可比性|试验条件|实验条件", wording):

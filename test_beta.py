@@ -118,6 +118,14 @@ class Rules(unittest.TestCase):
         denied = gateway.lookup(ask(user_request="按这个提纲替我写完整俄语引言", source_kind="outline"))
         self.assertEqual(denied["reason_code"], "DIRECT_DRAFTING")
 
+    def test_named_move_preserves_request_review(self):
+        gateway = Gateway(DB)
+        wording = "请通过 PTB 润色这段俄语原稿，我同意提交。只使用 PTB。请给我修订稿和请求号。"
+        query = ask("polish", writing_move="interpretability", user_request=wording)
+        self.assertEqual(gateway.lookup(query)["decision"], "no_match")
+        blocked = gateway.lookup(query | {"user_request": wording + "再替我写完整引言"})
+        self.assertEqual((blocked["reason_code"], blocked["db_query_count"]), ("DIRECT_DRAFTING", 0))
+
     def setUp(self):
         self.g = Gateway(DB)
 

@@ -19,7 +19,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
 
-from policy import Gateway, OUTPUTS, SOURCE_GUIDE, SCENES
+from policy import Gateway, OUTPUTS, SOURCE_GUIDE, SCENES, WRITING_MOVES
 from make_demo import DEMO_ID
 
 # Publish the contract at tool discovery. Value validation stays in the gateway
@@ -36,6 +36,7 @@ LookupRequest = Annotated[Any, WithJsonSchema({
                         " ".join(f"{k}: {v}" for k, v in SOURCE_GUIDE.items()), "examples": list(SOURCE_GUIDE)},
         "source_lang": {"description": "Use zh or ru. Russian polish uses ru."},
         "target_lang": {"description": "Use zh or ru. Russian polish uses ru; translation uses the other language."},
+        "writing_move": {"description": "Optional for single-step editing only: " + str(WRITING_MOVES)},
         "source_text": {"description": "Exact selected material shared for this request."},
         "client_tags": {"description": "Array of 1–3 listed scene labels.", "examples": [[s] for s in SCENES]},
     },
