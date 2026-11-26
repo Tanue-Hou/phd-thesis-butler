@@ -21,6 +21,7 @@ from starlette.responses import JSONResponse
 
 from policy import Gateway, OUTPUTS, SOURCE_GUIDE, SCENES, WRITING_MOVES
 from make_demo import DEMO_ID
+from scene_cards import MOVES, SceneCards, route_kinds
 
 # Publish the contract at tool discovery. Value validation stays in the gateway
 # so older clients receive an actionable repair rather than an opaque RPC error.
@@ -46,7 +47,24 @@ LookupRequest = Annotated[Any, WithJsonSchema({
 
 VERSION = "0.1.0-beta.3"
 
-def create_app(token, database, port, *, demo=False, registry=None, events=None):
+
+class PTBMCP(FastMCP):
+    async def list_tools(self):
+        tools = await super().list_tools()
+        for tool in tools:
+            if tool.name == "ptb_scene_cards":
+                tool.inputSchema["additionalProperties"] = False
+                tool.inputSchema["required"] = ["request"]
+        return tools
+
+    async def call_tool(self, name, arguments):
+        if name == "ptb_scene_cards" and set(arguments) != {"request"}:
+            # FastMCP otherwise discards extra outer arguments before invoking the tool.
+            arguments = {"request": None}
+        return await super().call_tool(name, arguments)
+
+
+def create_app(token, database, port, *, demo=False, registry=None, events=None, labels_only=False):
     with closing(sqlite3.connect(database.resolve().as_uri() + "?mode=ro", uri=True)) as db:
         if (db.execute("PRAGMA application_id").fetchone()[0] == DEMO_ID) != demo:
             raise ValueError("Demo database requires explicit --demo mode")
@@ -74,17 +92,59 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         origins.append("https://" + host)
     skill = Path(__file__).with_name("SKILL.md").read_text(encoding="utf-8")
     catalog = skill.split("<!-- ptb-catalog -->", 1)[1].split("<!-- /ptb-catalog -->", 1)[0].strip()
-    service = FastMCP("PTB", instructions="For a supported writing request, select ptb_lookup and build its arguments yourself. Before sending, briefly explain the scope and obtain consent if it has not already been given. Do not ask the author to name a tool, recite a consent formula or supply protocol fields. Continue the approved steps for that same task without requesting repeated consent. Ask again if the scope changes.\n\n" + catalog,
+    kinds = route_kinds(database)
+    SceneRequest = Annotated[Any, WithJsonSchema({
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["intent", "scene"],
+        "properties": {
+            "intent": {"type": "string", "enum": list(OUTPUTS)},
+            "scene": {"type": "string", "enum": list(SCENES)},
+            "kind": {"type": "string", "enum": list(kinds)},
+            "writing_move": {"type": "string", "enum": list(MOVES),
+                             "description": str(MOVES)},
+            "task_handle": {"type": "string", "minLength": 32, "maxLength": 32,
+                            "description": "Only the server-issued handle for this same authorized task."},
+        },
+    })]
+    service = PTBMCP("PTB", instructions=catalog,
         json_response=True, stateless_http=True, max_request_body_size=65536, log_level="WARNING",
         transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=True,
                                                      allowed_hosts=hosts, allowed_origins=origins))
     identities = ContextVar("ptb_identity")
     gateways = {}
+    scenes = {}
     db_version = sha256(database.read_bytes()).hexdigest()[:16]
+
+    def gateway(identity):
+        sid = identity[:2]
+        if sid not in gateways:
+            gateways[sid] = Gateway(database)
+        return gateways[sid]
+
     @service.tool()
+    async def ptb_scene_cards(request: SceneRequest = None) -> dict[str, Any]:
+        """Fetch reference cards using allowlisted intent and scene labels only.
+        Determine the actual task, chapter and paragraph function from local material.
+        Refuse direct drafting and fabricated evidence before any call.
+        Optionally target a listed kind or writing_move, and continue with the returned task_handle.
+        Never pass instructions, excerpts, summaries, names, paths, or any other document detail.
+        The service cannot verify the author's wording, source, consent or evidence.
+        """
+        identity = identities.get()
+        sid = identity[:2]
+        if sid not in scenes:
+            scenes[sid] = SceneCards(gateway(identity), kinds)
+        reply = scenes[sid].lookup(request)
+        if events:
+            record(events, identity, "scene_cards", reply["decision"], reply["reason_code"],
+                   reply["request_id"], reply["db_query_count"], len(reply["cards"]))
+        return reply
+
     async def ptb_lookup(request: LookupRequest = None) -> dict[str, Any]:
-        """Submit the user's actual instruction, intent, source_kind, requested_output and 1–3 client_tags.
-        Use the task catalog in the server instructions. The client selects the scene and evaluates each card's
+        """Legacy text-sharing tool. Use only when explicitly authorized to send original text.
+        Submit the user's actual instruction, intent, source_kind, requested_output and 1–3 client_tags.
+        The client selects the scene and evaluates each card's
         prerequisites against the supplied material. The server performs rule checks and SQLite retrieval.
         Choose source_kind from none, draft, outline, data, prior_cards. Standalone questions use none,
         including references to results or A/B with no supplied material. For selected prose use draft;
@@ -106,11 +166,7 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         """
         start = time.monotonic()
         identity = identities.get()
-        # Binding changes start a separate task and rate-limit scope.
-        sid = identity[:2]
-        if sid not in gateways:
-            gateways[sid] = Gateway(database)
-        reply = gateways[sid].lookup(request)
+        reply = gateway(identity).lookup(request)
         if events:
             record(events, identity, "lookup", reply["decision"], reply["reason_code"],
                    reply["request_id"], reply["db_query_count"], len(reply["cards"]))
@@ -132,6 +188,8 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         logging.getLogger("ptb.audit").info(json.dumps(audit))
         return reply
 
+    if not labels_only:
+        service.add_tool(ptb_lookup)
     app = service.streamable_http_app()
     expected = ("Bearer " + token).encode("ascii")
     async def authenticated(scope, receive, send):
@@ -161,6 +219,7 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--db", type=Path, help="Private knowledge database (or PTB_DB_PATH)")
     group.add_argument("--demo", action="store_true", help="Use the bundled fictional database")
+    parser.add_argument("--labels-only", action="store_true", help="Disable legacy text-sharing tool discovery and calls")
     args = parser.parse_args()
     configured = args.db or os.getenv("PTB_DB_PATH")
     if args.demo and configured:
@@ -171,5 +230,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     logging.getLogger("ptb.audit").setLevel(logging.INFO)
     app = create_app(os.getenv("PTB_BETA_TOKEN",""), database, args.port, demo=args.demo,
-                     registry=os.getenv("PTB_KEY_REGISTRY"), events=os.getenv("PTB_AUDIT_PATH"))
+                     registry=os.getenv("PTB_KEY_REGISTRY"), events=os.getenv("PTB_AUDIT_PATH"),
+                     labels_only=args.labels_only)
     uvicorn.run(app,host="127.0.0.1",port=args.port,access_log=False,proxy_headers=False)

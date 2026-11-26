@@ -22,14 +22,14 @@ RULES = {
     "fidelity": ("第2、6节", "去除译者自行添加的道歉、自贬和辩解；忠实保留否定、条件、归属、数值和引用。"),
 }
 
-def guidance(draft):
+def guidance(draft=None):
     roles = []
     for role, pattern in [
         ("method", r"метод|модел|вариант|方案|方法"),
         ("result", r"сни[жз]|значим|результат|下降|显著|结果"),
         ("discussion", r"возмож|предполож|обсужд|可能|推测|讨论"),
     ]:
-        if re.search(pattern, draft, re.I):
+        if draft is None or re.search(pattern, draft, re.I):
             roles.append(role)
     roles.append("fidelity")
     rev = os.getenv("PTB_RELEASE_COMMIT", DOC_COMMIT)

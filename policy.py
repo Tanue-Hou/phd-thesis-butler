@@ -187,6 +187,14 @@ class Gateway:
         self.calls = deque()
         self.workflows = Workflows()
 
+    def reserve_call(self, now):
+        while self.calls and now - self.calls[0] >= 60:
+            self.calls.popleft()
+        if len(self.calls) >= 30:
+            return False
+        self.calls.append(now)
+        return True
+
     def lookup(self, request):
         if isinstance(request, dict):
             wording = request.get("user_request")
@@ -227,11 +235,8 @@ class Gateway:
         def result(decision, reason, cards=None, handle=None):
             return dict(request_id=rid, decision=decision, reason_code=reason,
                         db_query_count=query_count, message=MESSAGES[reason], cards=cards or [], task_handle=handle)
-        while self.calls and now - self.calls[0] >= 60:
-            self.calls.popleft()
-        if len(self.calls) >= 30:
+        if not self.reserve_call(now):
             return result("deny", "LIMIT")
-        self.calls.append(now)
         if request is None or (isinstance(request, dict) and any(not request.get(k) for k in REQUIRED)):
             missing = next((k for k in REQUIRED if not (request or {}).get(k)), "request")
             return result("deny", "INTENT_REQUIRED") | {"repair": field_repair(

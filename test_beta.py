@@ -1,7 +1,11 @@
 import asyncio
+from contextlib import closing
+from hashlib import sha256
 import logging
 import secrets
 import socket
+import sqlite3
+import tempfile
 import threading
 import time
 import unittest
@@ -12,7 +16,9 @@ import httpx
 import uvicorn
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
-from policy import Gateway
+from policy import Gateway, SCENES
+from scene_cards import KEY_LIMIT, MOVES, SceneCards, route_kinds
+from make_demo import build
 from server import create_app
 
 DB = Path(__file__).with_name("demo.sqlite")
@@ -222,12 +228,91 @@ class Rules(unittest.TestCase):
             self.g.calls.extend([time.monotonic()]*30)
             self.assertEqual(self.g.lookup(ask())["reason_code"],"LIMIT")
 
+class PrivacyRouting(unittest.TestCase):
+    def test_task_binding_pagination_and_limits_across_all_scenes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "test.sqlite"
+            build(database)
+            with sqlite3.connect(database) as db:
+                db.executemany("INSERT INTO scene_route VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
+                    (scene, stage, f"fixture-{index}-{stage}", "合成知识类别",
+                     tuple(MOVES.values())[stage], "", "", "", 1, "", "")
+                    for index, scene in enumerate(SCENES) for stage in range(5)
+                ])
+            db.close()
+            gateway = Gateway(database)
+            route = SceneCards(gateway, route_kinds(database))
+            request = {"intent": "polish", "scene": SCENES[0], "kind": "合成知识类别"}
+            first = route.lookup(request)
+            self.assertEqual(len(first["cards"]), 3)
+            self.assertTrue(first["has_more"])
+            handle = first["task_handle"]
+            follow = request | {"task_handle": handle}
+            self.assertEqual(len(route.lookup(follow)["cards"]), 2)
+            self.assertEqual(route.lookup(follow)["decision"], "no_match")
+            self.assertEqual(SceneCards(Gateway(database), route.kinds).lookup(follow)["reason_code"],
+                             "TASK_EXPIRED")
+            for scene in SCENES[1:]:
+                for move in MOVES:
+                    request = {"intent": "translate", "scene": scene,
+                               "kind": "合成知识类别", "writing_move": move}
+                    reply = route.lookup(request)
+                    if len(route.released) < KEY_LIMIT:
+                        self.assertEqual(reply["cards"][0]["move"], MOVES[move])
+                    if reply["decision"] == "deny":
+                        self.assertEqual(reply["reason_code"], "LIMIT")
+            self.assertEqual(len(route.released), KEY_LIMIT)
+            with patch("scene_cards.time.monotonic", return_value=time.monotonic() + 1801):
+                self.assertEqual(route.lookup(follow)["reason_code"], "TASK_EXPIRED")
+            gateway.calls.clear()
+            gateway.calls.extend([time.monotonic()] * 30)
+            self.assertEqual(route.lookup(follow)["db_query_count"], 0)
+
+    def test_same_task_cannot_release_more_than_twelve_cards(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "test.sqlite"
+            build(database)
+            with sqlite3.connect(database) as db:
+                db.executemany("INSERT INTO scene_route VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
+                    (SCENES[0], index, f"fixture-{index}", "合成知识类别",
+                     "", "", "", "", 1, "", "")
+                    for index in range(15)
+                ])
+            db.close()
+            route = SceneCards(Gateway(database), route_kinds(database))
+            request = {"intent": "plan", "scene": SCENES[0], "kind": "合成知识类别"}
+            for _ in range(4):
+                reply = route.lookup(request)
+                request["task_handle"] = reply["task_handle"]
+                self.assertEqual(len(reply["cards"]), 3)
+            self.assertFalse(reply["has_more"])
+            self.assertEqual(route.lookup(request)["reason_code"], "LIMIT")
+
 class Transport(unittest.TestCase):
     def test_real_mcp(self):
-        token=secrets.token_urlsafe(32)
+        self.run_transport(False)
+
+    def test_labels_only_mcp(self):
+        with tempfile.TemporaryDirectory() as directory:
+            token = "test-key-001"
+            registry = Path(directory) / "keys.sqlite"
+            events = Path(directory) / "events.sqlite"
+            with closing(sqlite3.connect(registry)) as db, db:
+                db.execute("CREATE TABLE keys(id, owner, digest, active)")
+                db.execute("INSERT INTO keys VALUES (?, ?, ?, ?)",
+                           ("test-slot", "test-user", sha256(token.encode()).hexdigest(), 1))
+            self.run_transport(True, token=token, registry=registry, events=events)
+            with closing(sqlite3.connect(events)) as db:
+                self.assertIn(("scene_cards", "deny", "INVALID_REQUEST", 0, 0),
+                              db.execute("SELECT action, decision, reason, queries, cards FROM events").fetchall())
+            self.assertNotIn(b"PRIVATE-TEXT-SENTINEL", events.read_bytes())
+
+    def run_transport(self, labels_only, *, token=None, registry=None, events=None):
+        token = token or secrets.token_urlsafe(32)
         with socket.socket() as listener:
             listener.bind(("127.0.0.1",0))
-            app=create_app(token,DB,listener.getsockname()[1], demo=True)
+            app=create_app(token,DB,listener.getsockname()[1], demo=True, labels_only=labels_only,
+                           registry=registry, events=events)
             server=uvicorn.Server(uvicorn.Config(app,access_log=False,log_level="error"))
             thread=threading.Thread(target=server.run,kwargs={"sockets":[listener]},daemon=True)
             thread.start()
@@ -236,11 +321,11 @@ class Transport(unittest.TestCase):
                     if server.started: break
                     time.sleep(.05)
                 self.assertTrue(server.started)
-                asyncio.run(self.client(listener.getsockname()[1],token))
+                asyncio.run(self.client(listener.getsockname()[1],token,labels_only))
             finally:
                 server.should_exit=True
                 thread.join(5)
-    async def client(self,port,token):
+    async def client(self,port,token,labels_only):
         url=f"http://127.0.0.1:{port}/mcp"
         async with httpx.AsyncClient(trust_env=False) as anonymous:
             self.assertEqual((await anonymous.post(url,json={})).status_code,401)
@@ -248,7 +333,41 @@ class Transport(unittest.TestCase):
             async with streamable_http_client(url,http_client=http) as (read,write,_):
                 async with ClientSession(read,write) as session:
                     await session.initialize()
-                    self.assertEqual([t.name for t in (await session.list_tools()).tools],["ptb_lookup"])
+                    tools = {tool.name: tool for tool in (await session.list_tools()).tools}
+                    allowed = {"ptb_scene_cards"} if labels_only else {"ptb_lookup", "ptb_scene_cards"}
+                    self.assertEqual(set(tools), allowed)
+                    tool_schema = tools["ptb_scene_cards"].inputSchema
+                    self.assertFalse(tool_schema["additionalProperties"])
+                    self.assertEqual(tool_schema["required"], ["request"])
+                    schema = tool_schema["properties"]["request"]
+                    self.assertEqual(schema["required"], ["intent", "scene"])
+                    self.assertFalse(schema["additionalProperties"])
+                    self.assertEqual(set(schema["properties"]),
+                                     {"intent", "scene", "kind", "writing_move", "task_handle"})
+                    labels = {"intent": "plan", "scene": "篇章布局"}
+                    marker = "PRIVATE-TEXT-SENTINEL"
+                    response = await session.call_tool("ptb_scene_cards", {"request": labels, "source_text": marker})
+                    self.assertEqual(response.structuredContent["reason_code"], "INVALID_REQUEST")
+                    self.assertEqual(response.structuredContent["db_query_count"], 0)
+                    self.assertNotIn(marker, str(response))
+                    for extra in ("user_request", "source_text", "summary", "path", "filename", "quote"):
+                        with self.assertNoLogs(level="WARNING"):
+                            response = await session.call_tool("ptb_scene_cards", {"request": labels | {extra: marker}})
+                        denied = response.structuredContent
+                        self.assertEqual(denied["reason_code"], "INVALID_REQUEST")
+                        self.assertEqual(denied["db_query_count"], 0)
+                        self.assertNotIn(marker, str(response))
+                    for invalid in ({"intent": marker}, {"scene": [marker]}, {"kind": marker},
+                                    {"writing_move": marker}, {"task_handle": marker}):
+                        response = await session.call_tool("ptb_scene_cards", {"request": labels | invalid})
+                        self.assertEqual(response.structuredContent["db_query_count"], 0)
+                        self.assertNotIn(marker, str(response))
+                    response = await session.call_tool("ptb_scene_cards", {"request": labels})
+                    self.assertEqual(response.structuredContent["decision"], "allow")
+                    if labels_only:
+                        response = await session.call_tool("ptb_lookup", {})
+                        self.assertTrue(response.isError)
+                        return
                     for request,expected in [(ask(),"allow"),(ask("translate"),"allow"),({}, "deny"),(ask("translate",source_text=""),"clarify"),
                                               (ask(user_request="按这个提纲替我写完整俄语引言"),"deny")]:
                         response=await session.call_tool("ptb_lookup",{"request":request})

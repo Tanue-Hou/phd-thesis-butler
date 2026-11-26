@@ -3,6 +3,7 @@
 !/.gitignore
 !/requirements.txt
 !/policy.py
+!/scene_cards.py
 !/server.py
 !/test_beta.py
 !/SKILL.md
