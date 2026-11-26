@@ -78,6 +78,29 @@ class Rules(unittest.TestCase):
             reply = self.g.lookup(ask("polish", user_request=instruction, source_text=source))
             self.assertEqual((reply["reason_code"],reply["db_query_count"]), (reason,0))
 
+    def test_editorial_workflow(self):
+        start=ask("translate",user_request="帮我进行翻译，然后通过我的云端知识库进行润色和验证",
+                  source_text="仅用于检查。见表 3.2 和附录 4.H（3）。",client_tags=["实验验证","边界与归属"])
+        for extra in ("，再替我写正文","，然后编一组实验结果"):
+            denied=self.g.lookup(start | {"intent":"workflow","user_request":start["user_request"]+extra})
+            self.assertEqual((denied["reason_code"],denied["db_query_count"]),("DIRECT_DRAFTING",0))
+        first=self.g.lookup(start)
+        self.assertEqual(first["next_step"],"polish")
+        key={"workflow_id":first["workflow_id"]}
+        self.assertEqual(self.g.lookup(key | {"stage":"check_evidence"})["reason_code"],"STAGE_ORDER")
+        draft="К сожалению, вариант B используется только для проверки. Эффект незначим. Наблюдалось локальное снижение. См. 3.2 и 4.H (3)."
+        second=self.g.lookup(key | {"stage":"polish","draft":draft})
+        rules={r["id"]:r for r in second["editorial_guidance"]["rules"]}
+        self.assertTrue({"method","result","fidelity"}<=rules.keys())
+        final=draft.replace("К сожалению, вариант","Вариант")
+        third=self.g.lookup(key | {"stage":"check_evidence","draft":final})
+        self.assertEqual(third["reference_check"]["missing"],[])
+        self.assertEqual(third["reference_check"]["added"],[])
+        ack=key | {"stage":"receipt","applied_rules":["method","fidelity"],"reviewed":True}
+        self.assertIsNone(self.g.lookup(ack)["next_step"])
+        self.assertTrue(self.g.lookup(ack)["replayed"])
+        self.assertEqual(self.g.lookup(start | {"user_request":"翻译和润色"})["next_step"],"polish")
+
     def test_followup(self):
         first=self.g.lookup(ask())
         handle=first["task_handle"]

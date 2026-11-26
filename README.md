@@ -76,3 +76,7 @@ python make_demo.py rebuilt-demo.sqlite
 随包 demo.sqlite 完全由 [虚构样例生成器](make_demo.py) 创建。生成器要求输出路径尚不存在。回归测试会启动临时 HTTP 服务，通过 MCP 客户端实际发现工具并调用。手动联调时设置 PTB_BETA_TOKEN，清除 PTB_DB_PATH，然后运行 `python server.py --demo`。知识库与服务端的 SSH 私钥均无需分发给测试客户端。
 
 个人访问密钥为 12 个区分大小写的随机字符（A–Z、a–z、0–9、短横线或下划线）。PTB-001 等编号仅用于管理。密钥轮换后，重新运行一次客户端配置即可。
+
+### 组合改译与编辑依据
+
+一次提出中文原稿的翻译、润色和核对，按 MCP 的 next_step 继续同一任务。客户端执行改译并回传采用记录。服务端在润色响应中直接提供 [反防御性编辑规范及原章节](docs/editorial-policy.md)，规则不占知识卡名额。PTB_RELEASE_COMMIT 可由发布者指定为本次部署的完整 Git 提交号。

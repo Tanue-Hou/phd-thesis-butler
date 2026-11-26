@@ -7,6 +7,7 @@ import time
 import unicodedata
 from collections import deque
 from pathlib import Path
+from editorial import Workflows, guidance, stages
 
 OUTPUTS = {"translate": "translation", "polish": "revision", "plan": "outline",
            "compare": "comparison", "check_evidence": "evidence_feedback"}
@@ -122,8 +123,30 @@ class Gateway:
         self.database = database
         self.tasks = {}
         self.calls = deque()
+        self.workflows = Workflows()
 
     def lookup(self, request):
+        if isinstance(request, dict):
+            wording = request.get("user_request")
+            if isinstance(wording, str) and len(wording)<=12000:
+                # Explicit fabrication or a positive drafting clause blocks the complete commission.
+                original = request.get("source_text")
+                scoped = clean(wording)
+                prefix, sep, body = scoped.partition(":")
+                if isinstance(original,str) and sep and body.strip()==clean(original):
+                    scoped = prefix
+                match = re.search(r"(?:编造|虚构|编一组|捏造)(?:[^，。；]{0,16})(?:数据|结果)", scoped)
+                if match:
+                    return dict(decision="deny", reason_code="DIRECT_DRAFTING", request_id=secrets.token_hex(8),
+                                cards=[], db_query_count=0, task_handle=None, message="请求包含编造数据或结果，已在查库前停止。")
+                if request.get("intent")=="workflow" and not stages(scoped) and DRAFTING.search(scoped):
+                    return dict(decision="deny",reason_code="DIRECT_DRAFTING",request_id=secrets.token_hex(8),
+                                cards=[],db_query_count=0,task_handle=None,message="请求包含新增或扩写正文，已在查库前停止。")
+            if "workflow_id" in request or request.get("intent")=="workflow" or (isinstance(wording,str) and len(wording)<=12000 and stages(wording)):
+                return self.workflows.run(request,self._single)
+        return self._single(request)
+
+    def _single(self, request):
         now = time.monotonic()
         rid = secrets.token_hex(8)
         query_count = 0
@@ -158,7 +181,12 @@ class Gateway:
             return result("error", "UNAVAILABLE")
         cards = cards[:min(3, 12-len(seen))]
         self.tasks[handle] = (now, seen | {c["knowledge_id"] for c in cards})
-        return result("allow" if cards else "no_match", "ALLOW" if cards else "NO_MATCH", cards, handle)
+        reply = result("allow" if cards else "no_match", "ALLOW" if cards else "NO_MATCH", cards, handle)
+        if request["intent"]=="polish":
+            reply["editorial_guidance"]=guidance(request["source_text"])
+        if request["intent"]=="translate":
+            reply["translation_guidance"]="保留原文条件、否定、归属、比较对象、数值、编号和证据强度。"
+        return reply
 
     def fetch(self, intent, tags, seen, count_select):
         from contextlib import closing

@@ -21,7 +21,7 @@ from starlette.responses import JSONResponse
 from policy import Gateway
 from make_demo import DEMO_ID
 
-VERSION = "0.1.0-beta.2"
+VERSION = "0.1.0-beta.3"
 
 def create_app(token, database, port, *, demo=False, registry=None, events=None):
     with closing(sqlite3.connect(database.resolve().as_uri() + "?mode=ro", uri=True)) as db:
@@ -60,7 +60,11 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
     async def ptb_lookup(request: dict[str, Any] | None = None) -> dict[str, Any]:
         """Submit the user's actual instruction, intent, source_kind, requested_output and 1–3 client_tags.
         Optional source_text, source_lang, target_lang, task_handle. See SKILL.md.
-        Allowed intents: translate, polish, plan, compare, check_evidence.
+        For a Chinese-to-Russian translation plus polish (optionally verification), send the entire original instruction as
+        user_request, intent=workflow, source_kind=draft, requested_output=workflow, source_text=selected Chinese,
+        source_lang=zh,target_lang=ru and client_tags. Automatically follow next_step via this same tool without
+        re-prompting the user. In polish use editorial_guidance; cite actual rule URLs after the final text.
+        Single intents: translate, polish, plan, compare, check_evidence.
         Never invent source text. Tag values: 篇章布局, 方法选择, 实验验证, 综述分歧, 结果与不确定性, 边界与归属, 目标与假设.
         """
         start = time.monotonic()
@@ -73,6 +77,16 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         if events:
             record(events, identity, "lookup", reply["decision"], reply["reason_code"],
                    reply["request_id"], reply["db_query_count"], len(reply["cards"]))
+            if "editorial_guidance" in reply:
+                record(events, identity, "editorial_issued", "issued", "v1.0",reply["request_id"])
+            if "workflow_id" in reply:
+                group = sha256(reply["workflow_id"].encode()).hexdigest()[:20]
+                record(events, identity,"workflow_"+group,reply["stage"],
+                       "replay" if reply.get("replayed") else reply["reason_code"],reply["request_id"])
+            if "client_report" in reply and not reply.get("replayed"):
+                report = reply["client_report"]
+                record(events, identity, "editorial_applied", "client_report", ",".join(report["applied_rules"]),reply["request_id"])
+                record(events, identity, "source_reviewed", "client_report",str(report["reviewed"]),reply["request_id"])
         audit = {"request_id": reply["request_id"], "decision": reply["decision"],
                  "reason": reply["reason_code"], "cards": len(reply["cards"]), "db_query_count": reply["db_query_count"],
                  "elapsed_ms": round((time.monotonic()-start)*1000), "rules": VERSION, "db": db_version}
