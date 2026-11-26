@@ -12,7 +12,7 @@ from editorial import GLOSSARY, Workflows, field_repair, guidance, stages
 OUTPUTS = {"translate": "translation", "polish": "revision", "plan": "outline",
            "compare": "comparison", "check_evidence": "evidence_feedback"}
 SCENES = ("篇章布局", "方法选择", "实验验证", "综述分歧", "结果与不确定性", "边界与归属", "目标与假设")
-SCOPES = {"plan": set(SCENES), "compare": {"实验验证", "方法选择", "综述分歧", "结果与不确定性"},
+SCOPES = {"plan": set(SCENES), "compare": {"实验验证", "方法选择", "综述分歧", "结果与不确定性", "边界与归属"},
           "check_evidence": set(SCENES), "translate": set(SCENES), "polish": set(SCENES)}
 SOURCES = {"draft", "outline", "data", "prior_cards", "none"}
 TYPES = {
@@ -29,6 +29,19 @@ GRAMMAR = {
     "compare": r"(?:请|帮我)?(?:比较|对比)(?:两种方法|两个方法|仿真与实测|这两项研究|两篇论文)(?:的可比性|的验证方式)?|сравни(?:те)? (?:методы|условия проверки)",
     "check_evidence": r"(?:请|帮我)?(?:仅|只)?(?:检查|核查|核对)(?:我的|这段)?(?:引用|证据|证据强度|结论依据|验证方式)|(?:仿真结果|仿真)(?:能否|能)(?:写成|证明)实车验证(?:吗)?|проверь(?:те)? (?:обоснованность вывода|аргументацию|ссылки)",
 }
+# These are complete, bounded requests. Each joined item must be a known dimension.
+_REQUEST_PREFIX = r"(?:请帮我|请|帮我)?"
+_JOIN = r"\s*(?:与|和|及|以及|、)\s*"
+_METHOD = r"(?:方案|方法|模型|控制器)\s*(?:[a-z](?:[0-9]{1,2})?|[甲乙丙丁一二三四]|[0-9]{1,2})"
+_COMPARE_AXIS = r"(?:研究职责|职责|分工|用途|试验条件|实验条件|验证方式|可比性|适用范围)"
+_EVIDENCE_AXIS = r"(?:证据强度|证据充分性|适用范围|适用条件|结论依据|局限性)"
+GRAMMAR["compare"] += (
+    rf"|{_REQUEST_PREFIX}(?:比较|对比)(?:一下)?\s*{_METHOD}{_JOIN}{_METHOD}\s*的"
+    rf"{_COMPARE_AXIS}(?:{_JOIN}{_COMPARE_AXIS})*")
+GRAMMAR["check_evidence"] += (
+    rf"|{_REQUEST_PREFIX}(?:检查|核查|核对|评估)(?:一下)?(?:上述|这些|该|本段|这段)?"
+    rf"(?:结果|结论|研究|论述)的{_EVIDENCE_AXIS}(?:{_JOIN}{_EVIDENCE_AXIS})*")
+
 # Parse the whole instruction. Only standalone preservation clauses may accompany editing.
 EDIT_TARGET = (r"(?:(?:上述|上面(?:的)?|这段|这篇|我的|以下)(?:的)?)?"
                r"(?:俄语|俄文)?(?:原稿|译稿|段落|文字|文本|译文)")

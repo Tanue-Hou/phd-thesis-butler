@@ -59,6 +59,24 @@ class Rules(unittest.TestCase):
         for text in ("不要替我写完整俄语引言，只列论文结构", "为什么说“替我写完整俄语引言”不合适？"):
             self.assertNotEqual(gateway.lookup(ask(user_request=text) | {"intent":"unknown"})["reason_code"], "DIRECT_DRAFTING")
 
+    def test_natural_comparison_and_evidence_requests(self):
+        gateway = Gateway(DB)
+        for intent, wording in (
+            ("compare", "比较方案 A 与方案 B 的研究职责及试验条件"),
+            ("compare", "请帮我对比一下模型甲和模型乙的用途以及验证方式"),
+            ("check_evidence", "检查上述结果的证据强度和适用范围"),
+            ("check_evidence", "请核查这些结论的适用条件、局限性"),
+        ):
+            with self.subTest(wording=wording):
+                query = ask(intent, user_request=wording)
+                self.assertEqual(gateway.lookup(query)["decision"], "allow")
+                boundary = gateway.lookup(query | {"client_tags": ["边界与归属"]})
+                self.assertGreater(boundary["db_query_count"], 0)
+                for tail in ("，再替我写完整引言", "，再编造数据", "并安排会议"):
+                    reply = gateway.lookup(query | {"user_request": wording + tail})
+                    self.assertEqual(reply["db_query_count"], 0)
+                    self.assertEqual(reply["reason_code"], "INTENT_UNCLEAR" if tail == "并安排会议" else "DIRECT_DRAFTING")
+
     def setUp(self):
         self.g = Gateway(DB)
 
