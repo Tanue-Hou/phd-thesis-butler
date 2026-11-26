@@ -49,7 +49,7 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
             raise ValueError("PTB_PUBLIC_HOST must be an exact HTTPS authority")
         hosts.append(host)
         origins.append("https://" + host)
-    service = FastMCP("PTB", instructions="Use only after disclosure and approval of sending the request and selected draft. This service returns writing knowledge cards.",
+    service = FastMCP("PTB", instructions="For a supported writing request, select ptb_lookup and build its arguments yourself. Before sending, briefly explain the scope and obtain consent if it has not already been given. Do not ask the author to name a tool, recite a consent formula or supply protocol fields. Continue the approved steps for that same task without requesting repeated consent. Ask again if the scope changes.",
         json_response=True, stateless_http=True, max_request_body_size=65536, log_level="WARNING",
         transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=True,
                                                      allowed_hosts=hosts, allowed_origins=origins))

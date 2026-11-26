@@ -11,7 +11,7 @@
 1. 打开 **插件 → MCP → 添加**。已有 Ptb 条目时点齿轮编辑。
 2. 名称填 `ptb`，选择 **Streamable HTTP**，URL 填 `https://ptb.tanue.co.uk/mcp`。
 3. 展开 **标头**。左栏填 `Authorization`，右栏先输入 `Bearer` 和一个英文空格，再粘贴自己的 12 位密钥。使用这种填法时，把 **Bearer 令牌环境变量** 和 **来自环境变量的标头** 留空。
-4. 保存并启用，新开对话，执行文末的连接测试。以后打开客户端会沿用这项配置。
+4. 保存并启用。回到对话就可以提问，以后会沿用这项配置。
 
 ### 配置文件与 Windows CLI
 
@@ -24,7 +24,7 @@ url = "https://ptb.tanue.co.uk/mcp"
 http_headers = { Authorization = "Bearer KEY_PLACEHOLDER" }
 ```
 
-在 Codex 的 MCP 列表或 CLI 的 `/mcp` 查看工具。偏好在 Windows 加密保存凭证的用户仍可选用 [DPAPI 启动脚本](../ptb-codex.ps1)。
+偏好在 Windows 加密保存凭证的用户仍可选用 [DPAPI 启动脚本](../ptb-codex.ps1)。
 
 ## Claude Code
 
@@ -73,21 +73,23 @@ try {
 
 保留凭证引用中的美元符号和花括号。自定义 Host profile 需为 MCP manager 注入 credentials provider。个人密钥与用于调用 DeepSeek 模型的 API key 分开设置。[DeepSeek Harness MCP manager 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/mcp/mcp-manager/README.md)
 
-## 确认连接
+## 开始使用
 
-新开对话并刷新工具。找到 `ptb_lookup` 后，可以直接说：
+配好以后，在平时写论文的对话里直接问：
 
-> 我同意向 PTB 提交“只列论文结构”。请实际调用 ptb_lookup，把返回的结构卡展示给我。
+> 方法章怎么安排？
 
-看到工具调用和结构卡，说明已接通。再选中一段自己的中文原稿，说“帮我翻译成俄语，然后润色和核对”。在已通过组合任务实测的 Codex CLI 中，这一次委托会交回俄语稿、核对结果和可点击的编辑依据。
+如果手头已经有一段中文，选中它，再说：
 
-首次调用会把本轮指令、意图和场景标签发给 PTB。改译时还会发送选中的原稿及语言，组合任务会继续发送译稿。请只选中愿意提交的段落。服务提供写作参考，直接代写请求会被拒绝。
+> 帮我翻译成俄语，然后润色和核对。
 
-| 遇到的情况 | 怎么处理 |
-|---|---|
-| HTTP 401 | 检查个人密钥是否启用，核对大小写以及 Bearer 后的英文空格。 |
-| 连接超时 | 检查本机网络能否访问ptb.tanue.co.uk 的 HTTPS 端口。 |
-| 返回 INTENT_REQUIRED | 认证已通过。让客户端按[调用说明](../SKILL.md)提交本轮原话及完整意图。 |
-| 工具返回了卡片，但客户端停在第一步 | 提醒客户端按返回的 next_step 继续同一任务。 |
+第一次使用时，助手会说明此次会发给 PTB 的内容，由你确认。普通提问会发送本轮指令、意图和场景标签；改译还会发送选中的段落及后续译稿。同一段的翻译、润色和核对可以一次委托。
 
-Codex CLI 已验证完整组合任务，Claude Code 已验证远程连接。Antigravity 和 DeepSeek Harness 的设置按各自配置规范整理，组合流程仍待实机验证。
+<details>
+<summary>连接遇到问题？</summary>
+
+- 新添加的 PTB 没有出现：刷新客户端的工具列表，必要时新开对话。
+- 提示 401：核对密钥是否启用，以及标头中 Bearer 后面的英文空格。
+- 连接超时：检查当前网络能否访问 `https://ptb.tanue.co.uk/`。
+
+</details>
