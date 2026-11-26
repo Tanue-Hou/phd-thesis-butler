@@ -152,7 +152,13 @@ class Gateway:
                 if match:
                     return dict(decision="deny", reason_code="DIRECT_DRAFTING", request_id=secrets.token_hex(8),
                                 cards=[], db_query_count=0, task_handle=None, message="请求包含编造数据或结果，已在查库前停止。")
-                if request.get("intent")=="workflow" and not stages(scoped) and DRAFTING.search(scoped):
+                # A positive standalone drafting command takes precedence over malformed client metadata.
+                explicit_draft = re.search(
+                    r"(?:^|[，,。；;：:\n])\s*(?:请)?(?:按|根据)?(?:这个|以下|上述)?(?:提纲|题目)?"
+                    r"(?:替我|帮我|给我)(?:写|生成|起草)(?:一篇|一段|完整的?)?(?:中文|俄语|俄文)?"
+                    r"(?:引言|正文|论文|讨论章|结论章|章节)", scoped)
+                if (explicit_draft or request.get("requested_output") == "new_prose" or
+                    (request.get("intent")=="workflow" and not stages(scoped) and DRAFTING.search(scoped))):
                     return dict(decision="deny",reason_code="DIRECT_DRAFTING",request_id=secrets.token_hex(8),
                                 cards=[],db_query_count=0,task_handle=None,message="请求包含新增或扩写正文，已在查库前停止。")
             if "workflow_id" in request or request.get("intent")=="workflow" or (isinstance(wording,str) and len(wording)<=12000 and stages(wording)):

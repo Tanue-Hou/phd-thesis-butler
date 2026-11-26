@@ -39,6 +39,10 @@ class Rules(unittest.TestCase):
                                   (ask(client_tags="篇章布局", user_request="替我写完整引言"), "deny")]:
             invalid = gateway.lookup(request)
             self.assertEqual(invalid["db_query_count"], 0)
+            if expected == "deny":
+                self.assertEqual(invalid["reason_code"], "DIRECT_DRAFTING")
+                self.assertNotIn("repair", invalid)
+                continue
             fix = invalid["repair"]
             self.assertEqual((fix["field"], fix["reason"]), ("client_tags", "scene_list_required"))
             retry = request | {fix["field"]: fix["replace_with"]}
@@ -46,6 +50,14 @@ class Rules(unittest.TestCase):
         for change, field in [({"intent": ["plan"]}, "intent"), ({"source_kind": "unknown"}, "source_kind"),
                               ({"extra": "extra"}, "request"), ({"source_text": "x"*8001}, "source_text")]:
             self.assertEqual(gateway.lookup(ask() | change)["repair"]["field"], field)
+
+    def test_positive_drafting_precedes_bad_metadata(self):
+        gateway = Gateway(DB)
+        reply = gateway.lookup(ask(user_request="按这个提纲替我写完整俄语引言") | {"intent": "drafting"})
+        self.assertEqual((reply["reason_code"], reply["db_query_count"]), ("DIRECT_DRAFTING", 0))
+        self.assertNotIn("repair", reply)
+        for text in ("不要替我写完整俄语引言，只列论文结构", "为什么说“替我写完整俄语引言”不合适？"):
+            self.assertNotEqual(gateway.lookup(ask(user_request=text) | {"intent":"unknown"})["reason_code"], "DIRECT_DRAFTING")
 
     def setUp(self):
         self.g = Gateway(DB)
