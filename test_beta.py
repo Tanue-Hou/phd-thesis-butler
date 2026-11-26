@@ -102,6 +102,17 @@ class Rules(unittest.TestCase):
                 self.assertEqual(cards[0]["kind"], kind)
                 self.assertEqual(len({c["knowledge_id"] for c in cards}), 3)
 
+    def test_source_material_contract(self):
+        gateway = Gateway(DB)
+        for kind, text in (("none", ""), ("draft", "稿件。"), ("outline", "1 引言；2 方法"), ("data", "A=3, B=4")):
+            self.assertEqual(gateway.lookup(ask(source_kind=kind, source_text=text))["decision"], "allow")
+        for kind, text in (("instruction", ""), ("prior_cards", ""), ("outline", ""), ("none", "表1")):
+            rejected = gateway.lookup(ask(source_kind=kind, source_text=text))
+            self.assertEqual(rejected["db_query_count"], 0)
+            self.assertEqual(set(rejected["repair"]["choices"]), {"none","draft","outline","data","prior_cards"})
+        denied = gateway.lookup(ask(user_request="按这个提纲替我写完整俄语引言", source_kind="outline"))
+        self.assertEqual(denied["reason_code"], "DIRECT_DRAFTING")
+
     def setUp(self):
         self.g = Gateway(DB)
 

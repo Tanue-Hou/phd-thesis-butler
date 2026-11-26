@@ -19,7 +19,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
 
-from policy import Gateway, OUTPUTS
+from policy import Gateway, OUTPUTS, SOURCE_GUIDE, SCENES
 from make_demo import DEMO_ID
 
 # Publish the contract at tool discovery. Value validation stays in the gateway
@@ -28,7 +28,16 @@ INTENT_OUTPUTS = {**OUTPUTS, "workflow": "workflow"}
 OUTPUT_HELP = ", ".join(f"{k} -> {v}" for k, v in INTENT_OUTPUTS.items())
 LookupRequest = Annotated[Any, WithJsonSchema({
     "description": "Task request, or continuation with workflow_id and stage.",
-    "properties": {"requested_output": {"description": "Use this exact intent mapping: " + OUTPUT_HELP}},
+    "properties": {
+        "user_request": {"description": "Original user instruction."},
+        "intent": {"examples": list(INTENT_OUTPUTS), "description": OUTPUT_HELP},
+        "requested_output": {"description": "Use this exact intent mapping: " + OUTPUT_HELP},
+        "source_kind": {"description": "Select by the material actually supplied: " +
+                        " ".join(f"{k}: {v}" for k, v in SOURCE_GUIDE.items()), "examples": list(SOURCE_GUIDE)},
+        "source_text": {"description": "Exact selected material shared for this request."},
+        "client_tags": {"description": "Array of 1–3 listed scene labels.", "examples": [[s] for s in SCENES]},
+    },
+    "x-ptb-source-kinds": SOURCE_GUIDE,
     "x-ptb-intent-outputs": INTENT_OUTPUTS,
 })]
 
@@ -70,6 +79,11 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
     @service.tool()
     async def ptb_lookup(request: LookupRequest = None) -> dict[str, Any]:
         """Submit the user's actual instruction, intent, source_kind, requested_output and 1–3 client_tags.
+        Choose source_kind from none, draft, outline, data, prior_cards. Standalone questions use none,
+        including references to results or A/B with no supplied material. For selected prose use draft;
+        for supplied headings use outline; for provided measurements use data. Use prior_cards only
+        if prior PTB cards were explicitly selected. Preserve selected material in source_text.
+        If repair.choices exists choose only from it according to the original task.
         On repair.auto_retry=true, correct the indicated field using the existing authorized task and retry automatically.
         When replace_with exists, retry the same tool with that value at request[field].
         Keep original wording, draft, scope and workflow stage. Never invent facts or change intent to pass.

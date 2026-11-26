@@ -14,7 +14,28 @@ OUTPUTS = {"translate": "translation", "polish": "revision", "plan": "outline",
 SCENES = ("篇章布局", "方法选择", "实验验证", "综述分歧", "结果与不确定性", "边界与归属", "目标与假设")
 SCOPES = {"plan": set(SCENES), "compare": {"实验验证", "方法选择", "综述分歧", "结果与不确定性", "边界与归属"},
           "check_evidence": set(SCENES), "translate": set(SCENES), "polish": set(SCENES)}
-SOURCES = {"draft", "outline", "data", "prior_cards", "none"}
+SOURCE_GUIDE = {
+    "none": "Only a question or instruction; naming A/B or referring to results supplies no material.",
+    "draft": "Actual author prose is supplied for translation, revision or review.",
+    "outline": "Actual section headings, outline or plan supplied for this task.",
+    "data": "Measurements, a dataset or a table supplied as the material to analyse.",
+    "prior_cards": "The author explicitly selected earlier PTB cards as the input.",
+}
+SOURCES = set(SOURCE_GUIDE)
+def choices_for(field, request):
+    if field == "source_kind":
+        return {"choices": list(SOURCE_GUIDE), "choice_help": SOURCE_GUIDE}
+    if field == "client_tags":
+        return {"choices": list(SCENES)}
+    if field == "intent":
+        return {"choices": [*OUTPUTS, "workflow"]}
+    if field == "requested_output":
+        intent = (request or {}).get("intent")
+        value = OUTPUTS.get(intent) if isinstance(intent, str) else None
+        return {"choices": [value] if value else [*OUTPUTS.values(), "workflow", "new_prose"]}
+    return {}
+
+
 TYPES = {
     "translate": {"俄语句式", "俄语语用"}, "polish": {"俄语句式", "俄语语用"},
     "plan": {"整篇布局", "双端依赖", "篇章衔接", "章间衔接", "论证步骤", "篇章布局", "顺序与计划"},
@@ -89,17 +110,18 @@ def malformed(request):
             return field_repair("request", "unknown_field", f"移除未定义的参数 {key!r}。允许字段为 " + ", ".join(allowed))
     for key, value in request.items():
         if key != "client_tags" and not isinstance(value, str):
-            return field_repair(key, "string_required", "使用字符串；无可选值时省略该字段。")
+            return field_repair(key, "string_required", "使用字符串；无可选值时省略该字段。") | choices_for(key, request)
     for key, choices in (("intent", OUTPUTS), ("source_kind", SOURCES),):
         if request[key] not in choices:
-            return field_repair(key, "unknown_value", "根据原委托选择一个值：" + "、".join(sorted(choices)))
+            return field_repair(key, "unknown_value", "根据实际委托和材料选择列表中的值。") | (
+                choices_for("source_kind", request) if key == "source_kind" else {"choices": sorted(choices)})
     tags = request["client_tags"]
     if not isinstance(tags, list) or not 1 <= len(tags) <= 3 or any(t not in SCENES for t in tags):
         repair = field_repair("client_tags", "scene_list_required",
                               "传入含 1 至 3 个标签的 JSON 数组，可选：" + "、".join(SCENES))
         if isinstance(tags, str) and tags in SCENES:
             repair["replace_with"] = [tags]
-        return repair
+        return repair | {"choices": list(SCENES)}
     instruction = clean(request["user_request"])
     if not instruction or len(instruction) > 12000:
         return field_repair("user_request", "instruction_size", "需提供原始指令，规范化后为 1 至 12000 字符；保留完整意图。", automatic=False)
@@ -200,7 +222,7 @@ class Gateway:
         if request is None or (isinstance(request, dict) and any(not request.get(k) for k in REQUIRED)):
             missing = next((k for k in REQUIRED if not (request or {}).get(k)), "request")
             return result("deny", "INTENT_REQUIRED") | {"repair": field_repair(
-                missing, "required", "从当前已授权的委托中补全必填字段，保留原话。")}
+                missing, "required", "从当前已授权的委托中补全必填字段，保留原话。") | choices_for(missing, request)}
         repair = malformed(request)
         if repair:
             return result("deny", "INVALID_REQUEST") | {"repair": repair, "message": repair["hint"]}
@@ -209,9 +231,20 @@ class Gateway:
             expected = OUTPUTS[request["intent"]]
             hint = f"当前意图 {request['intent']} 对应 requested_output={expected}。保留用户原话后重试。"
             repair = field_repair("requested_output", "intent_output_mismatch", hint)
-            return result(decision, reason) | {"repair": repair | {"replace_with": expected}, "message": hint}
+            return result(decision, reason) | {"repair": repair | {"choices": [expected], "replace_with": expected}, "message": hint}
+        if reason == "SOURCE_REQUIRED" and request.get("source_text", "").strip() and request["source_kind"] != "draft":
+            hint = "如材料确为本次选中的作者原稿，选择 draft；数据和提纲不能冒充原稿。"
+            repair = field_repair("source_kind", "author_draft_required", hint) | {"choices": ["draft"]}
+            return result(decision, reason) | {"repair": repair, "message": hint}
         if decision != "allow":
             return result(decision, reason)
+        kind = request["source_kind"]
+        supplied = bool(request.get("source_text", "").strip())
+        if (kind == "none" and supplied) or (kind in {"draft","outline","data","prior_cards"} and not supplied
+                and not (kind == "prior_cards" and request.get("task_handle") in self.tasks)):
+            hint = "根据本次实际选中的材料选类型，并附上已授权材料；只有问题时选 none。"
+            repair = field_repair("source_kind", "material_mismatch", hint) | choices_for("source_kind", request)
+            return result("deny", "INVALID_REQUEST") | {"repair": repair, "message": hint}
         self.tasks = {k:v for k,v in self.tasks.items() if now-v[0]<1800}
         handle = request.get("task_handle")
         if handle and handle not in self.tasks:
@@ -221,7 +254,7 @@ class Gateway:
         if len(seen) >= 12 or (handle not in self.tasks and len(self.tasks) >= 1000):
             return result("deny", "LIMIT")
         try:
-            cards = self.fetch(request["intent"], request["client_tags"], seen, count_select, request["user_request"])
+            cards = self.fetch(request["intent"], request["client_tags"], seen, count_select, request["user_request"], request.get("source_text", ""))
         except sqlite3.Error:
             return result("error", "UNAVAILABLE")
         cards = cards[:min(3, 12-len(seen))]
@@ -235,7 +268,7 @@ class Gateway:
             reply["translation_guidance"]="保留原文条件、否定、归属、比较对象、数值、编号和证据强度。"
         return reply
 
-    def fetch(self, intent, tags, seen, count_select, wording):
+    def fetch(self, intent, tags, seen, count_select, wording, source_text=""):
         from contextlib import closing
         cards = []
         ids = set(seen)
@@ -275,6 +308,17 @@ class Gateway:
                         if len(cards) == 3:
                             return cards
                 return cards
+            if intent in {"translate", "polish"} and re.search(
+                    r"未(?:发现|检出|观察到)(?:统计(?:学)?上?)?显著差异|差异(?:无|不具有)统计学意义|"
+                    r"не (?:выявлено|обнаружено) (?:статистически )?значимых различий|"
+                    r"(?:статистически )?значимых различий.{0,30}не (?:выявлено|обнаружено)", source_text, re.I):
+                # Prefer the directly applicable indexed move, independent of tag order.
+                row = db.execute("""SELECT knowledge_id,kind,move,requirements,misuse,evidence_basis,
+                    independent_support,template,grammar FROM scene_route WHERE kind='俄语句式'
+                    AND scenario='结果与不确定性' AND move='报告未确认显著差异'
+                    AND template<>'' ORDER BY stage,knowledge_id LIMIT 1""").fetchone()
+                if row and row["knowledge_id"] not in ids:
+                    return [dict(row)]
             for tag in tags:
                 for row in db.execute("""SELECT knowledge_id, kind, move, requirements, misuse,
                     evidence_basis, independent_support, template, grammar FROM scene_route

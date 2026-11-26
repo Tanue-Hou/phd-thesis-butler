@@ -129,7 +129,7 @@ class Workflows:
                 polish=stage=="polish"
                 args=dict(user_request="润色" if polish else "核对证据",intent=stage,source_kind="draft",
                           requested_output="revision" if polish else "evidence_feedback",client_tags=flow["tags"],
-                          task_handle=flow["handle"])
+                          task_handle=flow["handle"], source_text=draft)
                 if polish:
                     args.update(source_text=draft,source_lang="ru",target_lang="ru")
                 out=single(args)
