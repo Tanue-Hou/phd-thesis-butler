@@ -63,7 +63,7 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         For a Chinese-to-Russian translation plus polish (optionally verification), send the entire original instruction as
         user_request, intent=workflow, source_kind=draft, requested_output=workflow, source_text=selected Chinese,
         source_lang=zh,target_lang=ru and client_tags. Automatically follow next_step via this same tool without
-        re-prompting the user. In polish use editorial_guidance; cite actual rule URLs after the final text.
+        re-prompting the user. In polish use editorial_guidance; cite actual rule URLs after the final text. Show glossary_guidance once at final delivery.
         Single intents: translate, polish, plan, compare, check_evidence.
         Never invent source text. Tag values: 篇章布局, 方法选择, 实验验证, 综述分歧, 结果与不确定性, 边界与归属, 目标与假设.
         """

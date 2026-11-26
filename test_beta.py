@@ -97,7 +97,9 @@ class Rules(unittest.TestCase):
         self.assertEqual(third["reference_check"]["missing"],[])
         self.assertEqual(third["reference_check"]["added"],[])
         ack=key | {"stage":"receipt","applied_rules":["method","fidelity"],"reviewed":True}
-        self.assertIsNone(self.g.lookup(ack)["next_step"])
+        completed=self.g.lookup(ack)
+        self.assertIsNone(completed["next_step"])
+        self.assertEqual(completed["glossary_guidance"]["path"],"术语对应表.md")
         self.assertTrue(self.g.lookup(ack)["replayed"])
         self.assertEqual(self.g.lookup(start | {"user_request":"翻译和润色"})["next_step"],"polish")
 

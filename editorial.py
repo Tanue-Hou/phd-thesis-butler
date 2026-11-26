@@ -9,6 +9,12 @@ import unicodedata
 from collections import Counter
 
 DOC_COMMIT = "6c74d36c2e4eba6d8dead679016b4f84a556ceaf"
+GLOSSARY = {
+    "path":"术语对应表.md",
+    "columns":["中文术语","首选俄语译名","缩写或符号","适用条件或出处"],
+    "instruction":"终稿后提醒：建议在论文工作目录建立并持续维护《术语对应表.md》，后续章节优先沿用已确认的译名。已有表则复用，有冲突列出供作者确认；写入、更新前取得用户同意。",
+}
+
 RULES = {
     "method": ("第1、4节", "先交代方法选择与模型职责，再写实现；保留“仅用于”等范围限定。"),
     "result": ("第1、3、6节", "先陈述有依据的发现；保留真实下降、比较基准和不显著结果。"),
@@ -136,6 +142,7 @@ class Workflows:
           "check_evidence":"应用 editorial_guidance，保留编辑依据。传入 workflow_id、stage=check_evidence、draft=润色终稿。",
           "receipt":"完成所请求的编辑与核对后传入 workflow_id、stage=receipt、applied_rules 和 reviewed 布尔值，再呈现终稿、核对结果和编辑依据。",
           None:"向用户交付终稿，附所用规则链接及核对范围。"}[next_stage]
+        out["glossary_guidance"]=GLOSSARY
         flow["time"]=now
         if stage!="translate":
             flow["cache"][stamp]=out

@@ -7,7 +7,7 @@ import time
 import unicodedata
 from collections import deque
 from pathlib import Path
-from editorial import Workflows, guidance, stages
+from editorial import GLOSSARY, Workflows, guidance, stages
 
 OUTPUTS = {"translate": "translation", "polish": "revision", "plan": "outline",
            "compare": "comparison", "check_evidence": "evidence_feedback"}
@@ -182,6 +182,8 @@ class Gateway:
         cards = cards[:min(3, 12-len(seen))]
         self.tasks[handle] = (now, seen | {c["knowledge_id"] for c in cards})
         reply = result("allow" if cards else "no_match", "ALLOW" if cards else "NO_MATCH", cards, handle)
+        if request["intent"] in ("translate","polish"):
+            reply["glossary_guidance"]=GLOSSARY
         if request["intent"]=="polish":
             reply["editorial_guidance"]=guidance(request["source_text"])
         if request["intent"]=="translate":
