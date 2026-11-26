@@ -1,6 +1,6 @@
 # 在客户端直接接入 PTB
 
-在自己使用的客户端添加一次名为 `ptb` 的远程 MCP 服务，地址为 `https://91.149.239.14:10443/mcp`。认证使用管理员发放的 **12 位个人密钥**。如果界面有单独的 Bearer Token 栏，只填密钥本身。如果界面显示 Headers，请把头名称填为 `Authorization`，值填为 `Bearer ` 加个人密钥（Bearer 后恰有一个空格）。下列 KEY_PLACEHOLDER 均须替换。密钥区分大小写，PTB-001 等编号不能用于登录。
+在自己使用的客户端添加一次名为 `ptb` 的远程 MCP 服务，地址为 `https://ptb.tanue.co.uk/mcp`。认证使用管理员发放的 **12 位个人密钥**。如果界面有单独的 Bearer Token 栏，只填密钥本身。如果界面显示 Headers，请把头名称填为 `Authorization`，值填为 `Bearer ` 加个人密钥（Bearer 后恰有一个空格）。下列 KEY_PLACEHOLDER 均须替换。密钥区分大小写，PTB-001 等编号不能用于登录。
 
 配置放在客户端的个人设置中。下列直接填写 HTTP 头的文件会保存明文凭证，请勿放进项目、Git、共享文件夹或截图。已用旧脚本配置过同名服务时，编辑原条目即可；同一条目仅使用一种 Authorization 来源。
 
@@ -9,7 +9,7 @@
 ### 桌面端图形界面
 
 1. 打开 **插件 → MCP → 添加**。已有 Ptb 条目时点齿轮编辑。
-2. 名称填 `ptb`，选择 **Streamable HTTP**，URL 填 `https://91.149.239.14:10443/mcp`。
+2. 名称填 `ptb`，选择 **Streamable HTTP**，URL 填 `https://ptb.tanue.co.uk/mcp`。
 3. 展开 **标头**。左栏填 `Authorization`，右栏先输入 `Bearer` 和一个英文空格，再粘贴自己的 12 位密钥。使用这种填法时，把 **Bearer 令牌环境变量** 和 **来自环境变量的标头** 留空。
 4. 保存并启用，新开对话，执行文末的连接测试。以后打开客户端会沿用这项配置。
 
@@ -20,7 +20,7 @@
 
 ```toml
 [mcp_servers.ptb]
-url = "https://91.149.239.14:10443/mcp"
+url = "https://ptb.tanue.co.uk/mcp"
 http_headers = { Authorization = "Bearer KEY_PLACEHOLDER" }
 ```
 
@@ -34,7 +34,7 @@ http_headers = { Authorization = "Bearer KEY_PLACEHOLDER" }
 $secret = Read-Host 'PTB 12 位密钥' -AsSecureString
 $key = [Net.NetworkCredential]::new('', $secret).Password
 try {
-    claude mcp add --transport http --scope user ptb https://91.149.239.14:10443/mcp --header "Authorization: Bearer $key"
+    claude mcp add --transport http --scope user ptb https://ptb.tanue.co.uk/mcp --header "Authorization: Bearer $key"
 } finally {
     Remove-Variable key,secret
 }
@@ -44,13 +44,13 @@ try {
 
 ## Antigravity
 
-在 IDE 的 MCP Servers 设置中打开当前客户端的原始配置，把下面的 `ptb` 条目并入已有的 `mcpServers`，保存并刷新服务器。CLI 也支持同一协议，可使用 `agy mcp add --type http --header "Authorization: Bearer $key" ptb https://91.149.239.14:10443/mcp`，其中 PowerShell 变量 `$key` 可按上一节隐藏读取。CLI 选项要写在服务名之前。
+在 IDE 的 MCP Servers 设置中打开当前客户端的原始配置，把下面的 `ptb` 条目并入已有的 `mcpServers`，保存并刷新服务器。CLI 也支持同一协议，可使用 `agy mcp add --type http --header "Authorization: Bearer $key" ptb https://ptb.tanue.co.uk/mcp`，其中 PowerShell 变量 `$key` 可按上一节隐藏读取。CLI 选项要写在服务名之前。
 
 ```json
 {
   "mcpServers": {
     "ptb": {
-      "serverUrl": "https://91.149.239.14:10443/mcp",
+      "serverUrl": "https://ptb.tanue.co.uk/mcp",
       "headers": { "Authorization": "Bearer KEY_PLACEHOLDER" }
     }
   }
@@ -67,7 +67,7 @@ try {
 | --- | --- |
 | 名称 | `ptb` |
 | transport | `streamable-http` |
-| url | `https://91.149.239.14:10443/mcp` |
+| url | `https://ptb.tanue.co.uk/mcp` |
 | headers → Authorization | `Bearer ${credential:PTB_ACCESS_KEY}` |
 | enabled | `true` |
 
@@ -86,7 +86,7 @@ try {
 | 遇到的情况 | 怎么处理 |
 |---|---|
 | HTTP 401 | 检查个人密钥是否启用，核对大小写以及 Bearer 后的英文空格。 |
-| 连接超时 | 检查本机网络能否访问服务器的 10443 端口。 |
+| 连接超时 | 检查本机网络能否访问ptb.tanue.co.uk 的 HTTPS 端口。 |
 | 返回 INTENT_REQUIRED | 认证已通过。让客户端按[调用说明](../SKILL.md)提交本轮原话及完整意图。 |
 | 工具返回了卡片，但客户端停在第一步 | 提醒客户端按返回的 next_step 继续同一任务。 |
 
