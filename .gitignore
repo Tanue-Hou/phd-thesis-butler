@@ -12,3 +12,7 @@
 
 !/access_keys.py
 !/ptb-codex.ps1
+
+!/docs/
+!/docs/.nojekyll
+!/docs/index.html
