@@ -57,8 +57,12 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
     gateways = {}
     db_version = sha256(database.read_bytes()).hexdigest()[:16]
     @service.tool()
-    async def ptb_lookup(request: dict[str, Any] | None = None) -> dict[str, Any]:
+    async def ptb_lookup(request: Any = None) -> dict[str, Any]:
         """Submit the user's actual instruction, intent, source_kind, requested_output and 1–3 client_tags.
+        On repair.auto_retry=true, correct the indicated field using the existing authorized task and retry automatically.
+        When replace_with exists, retry the same tool with that value at request[field].
+        Keep original wording, draft, scope and workflow stage. Never invent facts or change intent to pass.
+        Stop if the same correction fails again. Do not retry a policy denial.
         Optional source_text, source_lang, target_lang, task_handle. See SKILL.md.
         For a Chinese-to-Russian translation plus polish (optionally verification), send the entire original instruction as
         user_request, intent=workflow, source_kind=draft, requested_output=workflow, source_text=selected Chinese,
@@ -77,6 +81,8 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         if events:
             record(events, identity, "lookup", reply["decision"], reply["reason_code"],
                    reply["request_id"], reply["db_query_count"], len(reply["cards"]))
+            if repair := reply.get("repair"):
+                record(events, identity, "validation", repair["field"], repair["reason"], reply["request_id"])
             if "editorial_guidance" in reply:
                 record(events, identity, "editorial_issued", "issued", "v1.0",reply["request_id"])
             if "workflow_id" in reply:

@@ -7,7 +7,7 @@ import time
 import unicodedata
 from collections import deque
 from pathlib import Path
-from editorial import GLOSSARY, Workflows, guidance, stages
+from editorial import GLOSSARY, Workflows, field_repair, guidance, stages
 
 OUTPUTS = {"translate": "translation", "polish": "revision", "plan": "outline",
            "compare": "comparison", "check_evidence": "evidence_feedback"}
@@ -65,29 +65,42 @@ MESSAGES = {"ALLOW": "按本次任务返回知识卡。", "INTENT_REQUIRED": "�
 def clean(text):
     return unicodedata.normalize("NFKC", text).strip().lower()
 
-def inspect(request):
-    if request is None:
-        return "deny", "INTENT_REQUIRED"
+REQUIRED = ("user_request", "intent", "source_kind", "requested_output", "client_tags")
+
+def malformed(request):
     if not isinstance(request, dict):
-        return "deny", "INVALID_REQUEST"
-    required = ("user_request", "intent", "source_kind", "requested_output", "client_tags")
-    if any(not request.get(k) for k in required):
-        return "deny", "INTENT_REQUIRED"
-    if set(request) - set(required) - {"source_text", "source_lang", "target_lang", "task_handle"}:
-        return "deny", "INVALID_REQUEST"
-    if any(not isinstance(v, str) for k, v in request.items() if k != "client_tags"):
-        return "deny", "INVALID_REQUEST"
+        return field_repair("request", "object_required", "把参数放入 request 对象。")
+    allowed = (*REQUIRED, "source_text", "source_lang", "target_lang", "task_handle")
+    for key in request:
+        if key not in allowed:
+            return field_repair("request", "unknown_field", f"移除未定义的参数 {key!r}。允许字段为 " + ", ".join(allowed))
+    for key, value in request.items():
+        if key != "client_tags" and not isinstance(value, str):
+            return field_repair(key, "string_required", "使用字符串；无可选值时省略该字段。")
+    for key, choices in (("intent", OUTPUTS), ("source_kind", SOURCES),
+                         ("requested_output", (*OUTPUTS.values(), "new_prose"))):
+        if request[key] not in choices:
+            return field_repair(key, "unknown_value", "根据原委托选择一个值：" + "、".join(sorted(choices)))
+    tags = request["client_tags"]
+    if not isinstance(tags, list) or not 1 <= len(tags) <= 3 or any(t not in SCENES for t in tags):
+        repair = field_repair("client_tags", "scene_list_required",
+                              "传入含 1 至 3 个标签的 JSON 数组，可选：" + "、".join(SCENES))
+        if isinstance(tags, str) and tags in SCENES:
+            repair["replace_with"] = [tags]
+        return repair
+    instruction = clean(request["user_request"])
+    if not instruction or len(instruction) > 12000:
+        return field_repair("user_request", "instruction_size", "需提供原始指令，规范化后为 1 至 12000 字符；保留完整意图。", automatic=False)
+    if len(request.get("source_text", "").strip()) > 8000:
+        return field_repair("source_text", "draft_too_long", "所选原稿超过 8000 字符，需缩小处理范围。", automatic=False)
+    return None
+
+
+def inspect(request):
     tags = request["client_tags"]
     intent = request["intent"]
-    if (intent not in OUTPUTS or request["source_kind"] not in SOURCES or
-        not isinstance(tags, list) or not 1 <= len(tags) <= 3 or
-        any(not isinstance(t, str) or t not in SCENES for t in tags) or
-        request["requested_output"] not in {*OUTPUTS.values(), "new_prose"}):
-        return "deny", "INVALID_REQUEST"
     instruction = clean(request["user_request"])
     original = request.get("source_text", "").strip()
-    if not instruction or len(instruction) > 12000 or len(original) > 8000:
-        return "deny", "INVALID_REQUEST"
     # Strip only an exact, delimited duplicate of the separately supplied material.
     if original:
         prefix, sep, body = instruction.partition(":")
@@ -164,6 +177,13 @@ class Gateway:
         if len(self.calls) >= 30:
             return result("deny", "LIMIT")
         self.calls.append(now)
+        if request is None or (isinstance(request, dict) and any(not request.get(k) for k in REQUIRED)):
+            missing = next((k for k in REQUIRED if not (request or {}).get(k)), "request")
+            return result("deny", "INTENT_REQUIRED") | {"repair": field_repair(
+                missing, "required", "从当前已授权的委托中补全必填字段，保留原话。")}
+        repair = malformed(request)
+        if repair:
+            return result("deny", "INVALID_REQUEST") | {"repair": repair, "message": repair["hint"]}
         decision, reason = inspect(request)
         if decision != "allow":
             return result(decision, reason)

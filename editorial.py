@@ -61,6 +61,11 @@ def references(text):
     return Counter(re.sub(r"\s+","",v) for v in re.findall(
         r"(?<![\d.])\d+(?:\.(?:[A-Za-z]|\d+[A-Za-z]?))+(?:\s*\(\s*\d+\s*\))?",norm))
 
+def field_repair(field, reason, hint, *, automatic=True):
+    """Field and reason are server-defined codes, safe to record in audit logs."""
+    return {"field": field, "reason": reason, "hint": hint, "auto_retry": automatic}
+
+
 class Workflows:
     def __init__(self):
         self.active = {}
@@ -68,9 +73,10 @@ class Workflows:
     def run(self, request, single):
         now = time.monotonic()
         self.active = {k:v for k,v in self.active.items() if now-v["time"]<1800}
-        def failure(reason, message, decision="clarify"):
+        def failure(reason, message, decision="clarify", repair=None):
             return dict(request_id=secrets.token_hex(8),decision=decision,reason_code=reason,
-                        message=message,cards=[],db_query_count=0,task_handle=None)
+                        message=message,cards=[],db_query_count=0,task_handle=None,
+                        **({"repair": repair} if repair else {}))
         token=request.get("workflow_id")
         if token is None:
             wording=request.get("user_request","")
@@ -109,11 +115,11 @@ class Workflows:
                 return failure("STAGE_ORDER","请按上次返回的 next_step 顺序继续。")
             if stage=="receipt":
                 ids=request.get("applied_rules")
-                if not isinstance(ids,list) or any(not isinstance(i,str) or i not in flow["rules"] for i in ids):
-                    return failure("INVALID_REQUEST","请列出实际采用的已下发规则编号，可为空。")
+                if not isinstance(ids,list) or any(not isinstance(i,str) or i not in flow.get("rules", ()) for i in ids):
+                    return failure("INVALID_REQUEST","请列出实际采用的已下发规则编号，可为空。", repair=field_repair("applied_rules", "issued_rule_list_required", "传入实际采用的已下发规则编号数组；没有采用则传 []。"))
                 reviewed=request.get("reviewed")
                 if type(reviewed) is not bool or (reviewed and "check_evidence" not in flow["seq"]):
-                    return failure("INVALID_REQUEST","请如实报告是否已完成原稿核对。")
+                    return failure("INVALID_REQUEST","请如实报告是否已完成原稿核对。", repair=field_repair("reviewed", "review_status_required", "传入 JSON 布尔值；只有本流程包含核对且确实完成时传 true，否则传 false。"))
                 out=dict(request_id=secrets.token_hex(8),decision="allow",reason_code="RECEIPT",cards=[],
                          db_query_count=0,client_report={"applied_rules":ids,"reviewed":reviewed})
             else:

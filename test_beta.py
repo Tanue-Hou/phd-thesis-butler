@@ -33,6 +33,20 @@ def ask(intent="plan", **changes):
     return request | changes
 
 class Rules(unittest.TestCase):
+    def test_client_can_repair_without_changing_intent(self):
+        gateway = Gateway(DB)
+        for request, expected in [(ask(client_tags="篇章布局"), "allow"),
+                                  (ask(client_tags="篇章布局", user_request="替我写完整引言"), "deny")]:
+            invalid = gateway.lookup(request)
+            self.assertEqual(invalid["db_query_count"], 0)
+            fix = invalid["repair"]
+            self.assertEqual((fix["field"], fix["reason"]), ("client_tags", "scene_list_required"))
+            retry = request | {fix["field"]: fix["replace_with"]}
+            self.assertEqual(gateway.lookup(retry)["decision"], expected)
+        for change, field in [({"intent": ["plan"]}, "intent"), ({"source_kind": "unknown"}, "source_kind"),
+                              ({"extra": "extra"}, "request"), ({"source_text": "x"*8001}, "source_text")]:
+            self.assertEqual(gateway.lookup(ask() | change)["repair"]["field"], field)
+
     def setUp(self):
         self.g = Gateway(DB)
 
