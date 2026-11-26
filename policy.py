@@ -28,6 +28,31 @@ GRAMMAR = {
     "compare": r"(?:请|帮我)?(?:比较|对比)(?:两种方法|两个方法|仿真与实测|这两项研究|两篇论文)(?:的可比性|的验证方式)?|сравни(?:те)? (?:методы|условия проверки)",
     "check_evidence": r"(?:请|帮我)?(?:仅|只)?(?:检查|核查|核对)(?:我的|这段)?(?:引用|证据|证据强度|结论依据|验证方式)|(?:仿真结果|仿真)(?:能否|能)(?:写成|证明)实车验证(?:吗)?|проверь(?:те)? (?:обоснованность вывода|аргументацию|ссылки)",
 }
+# Parse the whole instruction. Only standalone preservation clauses may accompany editing.
+EDIT_TARGET = (r"(?:(?:上述|上面(?:的)?|这段|这篇|我的|以下)(?:的)?)?"
+               r"(?:俄语|俄文)?(?:原稿|译稿|段落|文字|文本|译文)")
+EDIT_ACTION = r"(?:进行)?(?:学术)?(?:润色|校对)"
+EDIT_REQUEST = re.compile(
+    r"(?:请|请帮我|帮我|直接帮助我|帮助我)?(?:把|将|对)?"
+    rf"(?:{EDIT_TARGET}|(?:你|刚才)翻译(?:的)?这段)(?:通过(?:我的)?\s*mcp\s*)?{EDIT_ACTION}")
+PRESERVED_ITEM = r"(?:技术信息|技术细节|公式编号|表格编号|附录引用|引用|原意|数值|单位)"
+EDIT_CONSTRAINT = re.compile(
+    rf"(?:请)?(?:保留(?:全部|所有)?{PRESERVED_ITEM}(?:(?:及|和|与|、){PRESERVED_ITEM})*"
+    r"|(?:不|不要|不得|无需)(?:扩写|续写|代写)(?:正文|论文|段落)?)")
+
+def matches_polish(instruction):
+    clauses = [part.strip() for part in re.split(r"[,，;；。]", instruction)]
+    # A comma may separate the selected draft from the MCP action.
+    if len(clauses) > 1 and re.fullmatch(r"通过(?:我的)?\s*mcp\s*" + EDIT_ACTION, clauses[1]):
+        clauses = [clauses[0] + clauses[1], *clauses[2:]]
+    actions = 0
+    for clause in clauses:
+        if EDIT_REQUEST.fullmatch(clause) or re.fullmatch(GRAMMAR["polish"], clause):
+            actions += 1
+        elif not EDIT_CONSTRAINT.fullmatch(clause):
+            return False
+    return actions == 1
+
 DRAFTING = re.compile(r"(?:代写|续写|扩写|补齐|补写|写成|撰写|写出|生成|起草|替我写|帮我写|写一|写完整|写引言|写正文|напиш|допиш|сгенерир|перепиш.{0,18}в.{0,10}глав|write.{0,20}(?:paper|chapter|introduction))", re.I)
 MESSAGES = {"ALLOW": "按本次任务返回知识卡。", "INTENT_REQUIRED": "请提交本轮请求及完整意图申报。",
             "INVALID_REQUEST": "参数无效，请按工具说明提交。", "DIRECT_DRAFTING": "PTB 不提供直接代写或扩写正文。",
@@ -71,7 +96,7 @@ def inspect(request):
     instruction = re.sub(r"^(?:请)?(?:不要|无需|不用)(?:生成|代写|写)(?:论文|正文|文章)[，,。；; ]+", "", instruction)
     if request["requested_output"] == "new_prose":
         return "deny", "DIRECT_DRAFTING"
-    matches = re.fullmatch(GRAMMAR[intent], instruction)
+    matches = matches_polish(instruction) if intent == "polish" else re.fullmatch(GRAMMAR[intent], instruction)
     if not matches and DRAFTING.search(instruction):
         return "deny", "DIRECT_DRAFTING"
     if (not matches or OUTPUTS[intent] != request["requested_output"] or

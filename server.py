@@ -21,7 +21,7 @@ from starlette.responses import JSONResponse
 from policy import Gateway
 from make_demo import DEMO_ID
 
-VERSION = "0.1.0-beta.1"
+VERSION = "0.1.0-beta.2"
 
 def create_app(token, database, port, *, demo=False, registry=None, events=None):
     with closing(sqlite3.connect(database.resolve().as_uri() + "?mode=ro", uri=True)) as db:

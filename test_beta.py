@@ -67,6 +67,17 @@ class Rules(unittest.TestCase):
                 self.assertEqual(r["decision"],"allow",r)
                 self.assertTrue(1<=len(r["cards"])<=3)
 
+    def test_polish_preservation(self):
+        wording = "请对上述俄语原稿进行学术润色，保留全部技术信息、公式编号及附录引用，不扩写正文。"
+        for instruction in (wording, "直接帮助我把你翻译这段，通过我的 MCP进行润色。"):
+            self.assertEqual(self.g.lookup(ask("polish",user_request=instruction))["decision"],"allow")
+        cases = [(wording, "", "SOURCE_REQUIRED"),
+                 (wording + "然后续写正文", "Текст", "DIRECT_DRAFTING"),
+                 ("请对上述俄语原稿进行学术润色，扩写正文", "Текст", "DIRECT_DRAFTING")]
+        for instruction, source, reason in cases:
+            reply = self.g.lookup(ask("polish", user_request=instruction, source_text=source))
+            self.assertEqual((reply["reason_code"],reply["db_query_count"]), (reason,0))
+
     def test_followup(self):
         first=self.g.lookup(ask())
         handle=first["task_handle"]
