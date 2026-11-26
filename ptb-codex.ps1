@@ -8,7 +8,7 @@ if ($Setup) {
     if (-not $Url -or ([uri]$Url).Scheme -ne 'https') { throw 'Specify the HTTPS MCP URL with -Url' }
     New-Item -ItemType Directory -Force $dir | Out-Null
     $secret = Read-Host 'PTB access key' -AsSecureString
-    if ($secret.Length -lt 32) { throw 'Incomplete access key' }
+    if ($secret.Length -ne 12) { throw 'Expected a 12-character access key' }
     codex mcp add ptb --url $Url --bearer-token-env-var PTB_ACCESS_KEY
     if ($LASTEXITCODE) { throw 'MCP registration failed' }
     ConvertFrom-SecureString $secret | Set-Content -LiteralPath $file

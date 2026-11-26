@@ -26,7 +26,7 @@ def identify(registry, header):
     if not header:
         return "", "", "missing_key"
     scheme, _, key = header.partition(b" ")
-    if scheme.lower() != b"bearer" or not 32 <= len(key) <= 256:
+    if scheme.lower() != b"bearer" or len(key) != 12:
         return "", "", "invalid_key"
     with closing(connect(registry,"ro")) as db:
         row = db.execute("SELECT id,owner,active FROM keys WHERE digest=?",
