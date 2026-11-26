@@ -24,10 +24,11 @@ PhD Thesis Butler 向写作客户端提供结构、方法、表达与证据检�
 
 ## 管理员在 VPS 启动
 
-使用 Python 3.11 或更新版本，在单独的虚拟环境中安装依赖。将真实脱敏数据库放在发布目录之外，仅授予服务账户读取权限。在权限受限的服务环境文件中配置以下变量；通过秘密管理工具生成至少 32 字符的随机 ASCII 测试令牌。
+使用 Python 3.11 或更新版本，在单独的虚拟环境中安装依赖。将真实脱敏数据库放在发布目录之外，仅授予服务账户读取权限。在权限受限的服务环境文件中配置以下变量；给服务进程授予密钥映射库读取权限、审计目录写入权限。
 
 ```text
-PTB_BETA_TOKEN=<随机令牌>
+PTB_KEY_REGISTRY=/srv/ptb-access/keys.sqlite
+PTB_AUDIT_PATH=/srv/ptb-audit/events.sqlite
 PTB_PUBLIC_HOST=ptb.example.org
 PTB_DB_PATH=/srv/ptb-private/writing-knowledge.sqlite
 ```
@@ -37,7 +38,24 @@ python -m pip install -r requirements.txt
 python server.py --port 8765
 ```
 
-也可用 `--db /path/to/private.sqlite` 显式指定库。服务启动时检查库及查询字段；生产配置缺库或误选演示库时启动失败。使用单进程运行，由进程管理器负责重启。在 HTTPS 反向代理将 `/mcp` 转至 `http://127.0.0.1:8765/mcp`，保留外部 Host、Authorization 和 Origin。域名与 PTB_PUBLIC_HOST 对应。令牌轮换时替换服务环境变量、重启并通过独立渠道更新测试客户端。当前实例使用一枚共享测试令牌，独立于 SSH 凭证，限额按实例计算。审计记录请求号、决策、原因、卡数、查询数、耗时和规则及库版本。
+也可用 `--db /path/to/private.sqlite` 显式指定库。服务启动时检查库及查询字段；生产配置缺库或误选演示库时启动失败。使用单进程运行，由进程管理器负责重启。在 HTTPS 反向代理将 `/mcp` 转至 `http://127.0.0.1:8765/mcp`，保留外部 Host、Authorization 和 Origin。域名与 PTB_PUBLIC_HOST 对应。每次 HTTP 请求按 Bearer 密钥的 SHA-256 摘要查用户映射。绑定和停用即时生效；每个用户与密钥组合独立计限额。管理员通过 SSH 使用下列命令。用户标签填内部别名，历史调用保留当时的标签。
+
+```sh
+cd /opt/ptb-beta/build
+python3 access_keys.py list
+python3 access_keys.py bind PTB-002 student-02
+python3 access_keys.py revoke PTB-002
+python3 access_keys.py usage
+```
+
+新实例用 200 行的私有 CSV（列 id,digest，digest 为随机密钥字节串的 SHA-256 十六进制值，按密钥的 ASCII 文本计算）运行 `python3 access_keys.py init manifest.csv`。新槽位须绑定后才能访问。换人时分配一个未披露过的密钥，撤销旧密钥；修改标签不会改变秘密。审计记录知识查询的判定、拒绝原因、卡数、查询数、请求号与时间，以及认证失败事件。缺少或未知密钥无法归属到真实用户。保护并备份两个 SQLite 库和管理员的独立密钥保管库。
+
+### 客户端一次录入
+
+支持凭证存储的 harness：在用户级 MCP 设置中保存 HTTPS 地址及 Bearer 密钥，启用记住凭证。业务调用时由客户端自动携带请求头。请勿在模型对话或共享工作区填写密钥。
+
+Windows Codex CLI 可在本地下载本仓库的 `ptb-codex.ps1`。首次运行 `.\ptb-codex.ps1 -Setup -Url https://你的地址/mcp` 并在隐藏输入框粘贴一次。以后用 `.\ptb-codex.ps1` 启动 Codex。脚本使用当前 Windows 用户的 DPAPI 加密保存密钥，只在启动进程时提供环境变量。每台新设备各配置一次。
+
 
 回退时将服务切换到已验证的 MCP 提交及其兼容数据库，保留当前库备份，然后重启；首次部署若无可回退版本，先关闭测试端点。Git 保留旧 Skill 提交供历史查阅。
 
