@@ -237,7 +237,7 @@ class PrivacyRouting(unittest.TestCase):
                 db.executemany("INSERT INTO scene_route VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
                     (scene, stage, f"fixture-{index}-{stage}", "合成知识类别",
                      tuple(MOVES.values())[stage], "", "", "", 1, "", "")
-                    for index, scene in enumerate(SCENES) for stage in range(5)
+                    for index, scene in enumerate(SCENES) for stage in range(5 if index == 0 else len(MOVES))
                 ])
             db.close()
             gateway = Gateway(database)

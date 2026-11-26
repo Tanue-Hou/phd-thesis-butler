@@ -8,7 +8,12 @@ import time
 from editorial import GLOSSARY, guidance
 from policy import OUTPUTS, SCENES, TYPES, WRITING_MOVES
 
-MOVES = {**WRITING_MOVES, "no_significant_difference": "报告未确认显著差异"}
+MOVES = {
+    **WRITING_MOVES,
+    "no_significant_difference": "报告未确认显著差异",
+    "test_whether": "表述待检验问题",
+    "report_observation": "报告给定条件下的观察",
+}
 PAGE_SIZE = 3
 TASK_LIMIT = 12
 KEY_LIMIT = 24
