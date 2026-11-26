@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "canonical_labels": ["AUTOMATION_CONTROL", "SCI_TECH", "AGRI_MED", "ARTS_SPORTS", "HUM_POL_ECON"],
-  "legacy_aliases": {"TECH_LIFE": ["SCI_TECH"], "HUM_SOC": ["HUM_POL_ECON"], "MATH_PHYS": ["SCI_TECH"]},
-  "basis": "Legacy mappings preserved from scripts/l1_annotate_templates.py. Directory names are not record labels. MATH_PHYS to SCI_TECH is lossy; use canonical labels for explicit scope.",
-  "unresolved_namespaces": {"ART_SPORT": "Use canonical ARTS_SPORTS explicitly; old fallback to GLOBAL is not a trustworthy equivalence.", "planning_layer": "Six planning clusters do not have a verified one-to-one correspondence with five corpus labels; caller must choose corpus scope explicitly."},
-  "global_policy": "GLOBAL is explicit cross-cluster browsing over recognized labels, including generic GLOBAL records. Unknown and dirty labels are excluded, not deleted.",
-  "semantic_status": "Existing labels may be wrong. Label consistency is not validated disciplinary relevance."
-}

@@ -1,54 +1,11 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-
-# Environment
-.env
-*.env.local
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Corpus build output
-.phd_build/
-.phd_cache/
-.phd_extensions/
-
-# Raw data (PDFs, too large for git)
-data/
-data/curated/
-
-# Build pipeline (private — not uploaded to public repo)
-corpus_layer/
-scripts/pipeline/
-scripts/download_*
-scripts/pass_*
-scripts/build_*
-scripts/extract_*
-scripts/validate_corpus_layer.py
-tests/
-reports/
-evals/
-
-# Old v4.0 discipline assets (superseded by v5.0 references/)
-assets/discipline/
-
-# Project planning documents (internal)
-tasks/
-queue/
-/references/
-agents/
-logs/
-PROJECT*.md
-project_config.yaml
-.github/
-ssh_config_temp
-tmp/
+# Only explicitly listed release files can be added normally.
+*
+!/.gitignore
+!/requirements.txt
+!/policy.py
+!/server.py
+!/test_beta.py
+!/SKILL.md
+!/README.md
+!/demo.sqlite
+!/make_demo.py
