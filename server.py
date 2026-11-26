@@ -34,6 +34,8 @@ LookupRequest = Annotated[Any, WithJsonSchema({
         "requested_output": {"description": "Use this exact intent mapping: " + OUTPUT_HELP},
         "source_kind": {"description": "Select by the material actually supplied: " +
                         " ".join(f"{k}: {v}" for k, v in SOURCE_GUIDE.items()), "examples": list(SOURCE_GUIDE)},
+        "source_lang": {"description": "Use zh or ru. Russian polish uses ru."},
+        "target_lang": {"description": "Use zh or ru. Russian polish uses ru; translation uses the other language."},
         "source_text": {"description": "Exact selected material shared for this request."},
         "client_tags": {"description": "Array of 1–3 listed scene labels.", "examples": [[s] for s in SCENES]},
     },
@@ -82,7 +84,7 @@ def create_app(token, database, port, *, demo=False, registry=None, events=None)
         Choose source_kind from none, draft, outline, data, prior_cards. Standalone questions use none,
         including references to results or A/B with no supplied material. For selected prose use draft;
         for supplied headings use outline; for provided measurements use data. Use prior_cards only
-        if prior PTB cards were explicitly selected. Preserve selected material in source_text.
+        if prior PTB cards were explicitly selected. For polish use source_lang=ru,target_lang=ru. Preserve selected material in source_text.
         If repair.choices exists choose only from it according to the original task.
         On repair.auto_retry=true, correct the indicated field using the existing authorized task and retry automatically.
         When replace_with exists, retry the same tool with that value at request[field].

@@ -155,7 +155,8 @@ def inspect(request):
     if intent in {"translate", "polish"}:
         if not original or request["source_kind"] != "draft":
             return "clarify", "SOURCE_REQUIRED"
-        src, dst = request.get("source_lang"), request.get("target_lang")
+        default_lang = "ru" if intent == "polish" else None
+        src, dst = request.get("source_lang", default_lang), request.get("target_lang", default_lang)
         if (src, dst) not in ({("zh","ru"),("ru","zh")} if intent == "translate" else {("ru","ru")}):
             return "clarify", "SOURCE_MISMATCH"
         if not re.search(r"[\u3400-\u9fff]" if src == "zh" else r"[а-яё]", original, re.I):

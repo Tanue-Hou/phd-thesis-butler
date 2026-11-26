@@ -110,6 +110,11 @@ class Rules(unittest.TestCase):
             rejected = gateway.lookup(ask(source_kind=kind, source_text=text))
             self.assertEqual(rejected["db_query_count"], 0)
             self.assertEqual(set(rejected["repair"]["choices"]), {"none","draft","outline","data","prior_cards"})
+        polish = ask("polish")
+        polish.pop("source_lang")
+        polish.pop("target_lang")
+        self.assertEqual(gateway.lookup(polish)["decision"], "allow")
+        self.assertEqual(gateway.lookup(polish | {"target_lang": "zh"})["reason_code"], "SOURCE_MISMATCH")
         denied = gateway.lookup(ask(user_request="按这个提纲替我写完整俄语引言", source_kind="outline"))
         self.assertEqual(denied["reason_code"], "DIRECT_DRAFTING")
 
