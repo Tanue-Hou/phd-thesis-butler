@@ -4,7 +4,17 @@
 
 配置放在客户端的个人设置中。下列直接填写 HTTP 头的文件会保存明文凭证，请勿放进项目、Git、共享文件夹或截图。已用旧脚本配置过同名服务时，编辑原条目即可；同一条目仅使用一种 Authorization 来源。
 
-## Codex App 与 CLI
+## Codex
+
+### 桌面端图形界面
+
+1. 打开 **插件 → MCP → 添加**。已有 Ptb 条目时点齿轮编辑。
+2. 名称填 `ptb`，选择 **Streamable HTTP**，URL 填 `https://91.149.239.14:10443/mcp`。
+3. 展开 **标头**。左栏填 `Authorization`，右栏先输入 `Bearer` 和一个英文空格，再粘贴自己的 12 位密钥。使用这种填法时，把 **Bearer 令牌环境变量** 和 **来自环境变量的标头** 留空。
+4. 保存并启用，新开对话，执行文末的连接测试。以后打开客户端会沿用这项配置。
+
+### 配置文件与 Windows CLI
+
 
 打开用户级 Codex 配置 `~/.codex/config.toml`（Windows 为 `%USERPROFILE%\.codex\config.toml`）。在现有配置中增改这一节，移除该节旧的 `bearer_token_env_var`，保存并重新打开 Codex 会话。随后可以正常启动 App 或 CLI，无需通过启动脚本。
 
@@ -32,7 +42,7 @@ try {
 
 如果已注册同名的用户级旧服务，需要替换时，先运行 `claude mcp remove ptb --scope user`。仅移除你要更新的这一项。[Claude Code MCP 文档](https://code.claude.com/docs/en/mcp)
 
-## Antigravity IDE 与 agy CLI
+## Antigravity
 
 在 IDE 的 MCP Servers 设置中打开当前客户端的原始配置，把下面的 `ptb` 条目并入已有的 `mcpServers`，保存并刷新服务器。CLI 也支持同一协议，可使用 `agy mcp add --type http --header "Authorization: Bearer $key" ptb https://91.149.239.14:10443/mcp`，其中 PowerShell 变量 `$key` 可按上一节隐藏读取。CLI 选项要写在服务名之前。
 
@@ -49,7 +59,7 @@ try {
 
 [Antigravity MCP 文档](https://antigravity.google/docs/ide/mcp)
 
-## DeepSeek Harness（deepseek-ai/deepseek-harness）
+## DeepSeek Harness
 
 在 Web 或 Desktop 的凭证设置中创建个人凭证 `PTB_ACCESS_KEY`，值为 12 位密钥。然后在 Settings 的 MCP 管理中添加一个服务，填写下表并启用，使用 Probe 检查连接。已配置其他服务时，在 Settings 单独添加这一项即可。
 
@@ -63,10 +73,21 @@ try {
 
 保留凭证引用中的美元符号和花括号。自定义 Host profile 需为 MCP manager 注入 credentials provider。个人密钥与用于调用 DeepSeek 模型的 API key 分开设置。[DeepSeek Harness MCP manager 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/mcp/mcp-manager/README.md)
 
-## 四个客户端的验收
+## 确认连接
 
-重新打开客户端，刷新 MCP 工具。应能找到 `ptb_lookup`（客户端可能给工具名添加服务前缀）。向助手提出“只列论文结构”，同意提交本轮请求后，确认助手实际调用该工具，返回结构卡。若 HTTP 401，检查密钥是否已绑定、请求头空格和大小写；工具返回 `INTENT_REQUIRED` 则说明认证已通过，客户端需要按 [Skill](../SKILL.md) 补全用户意图。
+新开对话并刷新工具。找到 `ptb_lookup` 后，可以直接说：
 
-**首次试用指令**：可以把下面这句话发给已连接的客户端。密钥仅由客户端附在 HTTP 请求头中。
+> 我同意向 PTB 提交“只列论文结构”。请实际调用 ptb_lookup，把返回的结构卡展示给我。
 
-> 同意向 PTB 提交本轮指令「只列论文结构」。请实际调用 PTB 的 ptb_lookup，参数 request 为 { "user_request": "只列论文结构", "intent": "plan", "source_kind": "none", "requested_output": "outline", "client_tags": ["篇章布局"] }，向我展示返回的结构卡。
+看到工具调用和结构卡，说明已接通。再选中一段自己的中文原稿，说“帮我翻译成俄语，然后润色和核对”。在已通过组合任务实测的 Codex CLI 中，这一次委托会交回俄语稿、核对结果和可点击的编辑依据。
+
+首次调用会把本轮指令、意图和场景标签发给 PTB。改译时还会发送选中的原稿及语言，组合任务会继续发送译稿。请只选中愿意提交的段落。服务提供写作参考，直接代写请求会被拒绝。
+
+| 遇到的情况 | 怎么处理 |
+|---|---|
+| HTTP 401 | 检查个人密钥是否启用，核对大小写以及 Bearer 后的英文空格。 |
+| 连接超时 | 检查本机网络能否访问服务器的 10443 端口。 |
+| 返回 INTENT_REQUIRED | 认证已通过。让客户端按[调用说明](../SKILL.md)提交本轮原话及完整意图。 |
+| 工具返回了卡片，但客户端停在第一步 | 提醒客户端按返回的 next_step 继续同一任务。 |
+
+Codex CLI 已验证完整组合任务，Claude Code 已验证远程连接。Antigravity 和 DeepSeek Harness 的设置按各自配置规范整理，组合流程仍待实机验证。
