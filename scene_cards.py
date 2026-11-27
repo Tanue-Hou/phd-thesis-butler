@@ -14,9 +14,9 @@ MOVES = {
     "test_whether": "表述待检验问题",
     "report_observation": "报告给定条件下的观察",
 }
-PAGE_SIZE = 3
-TASK_LIMIT = 12
-KEY_LIMIT = 24
+PAGE_SIZE = 8
+TASK_LIMIT = 48
+KEY_LIMIT = 64
 TASK_TTL = 1800
 KEY_WINDOW = 86400
 

@@ -236,15 +236,15 @@ class PrivacyRouting(unittest.TestCase):
             with sqlite3.connect(database) as db:
                 db.executemany("INSERT INTO scene_route VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
                     (scene, stage, f"fixture-{index}-{stage}", "合成知识类别",
-                     tuple(MOVES.values())[stage], "", "", "", 1, "", "")
-                    for index, scene in enumerate(SCENES) for stage in range(5 if index == 0 else len(MOVES))
+                     tuple(MOVES.values())[stage % len(MOVES)], "", "", "", 1, "", "")
+                    for index, scene in enumerate(SCENES) for stage in range(10 if index == 0 else len(MOVES))
                 ])
             db.close()
             gateway = Gateway(database)
             route = SceneCards(gateway, route_kinds(database))
             request = {"intent": "polish", "scene": SCENES[0], "kind": "合成知识类别"}
             first = route.lookup(request)
-            self.assertEqual(len(first["cards"]), 3)
+            self.assertEqual(len(first["cards"]), 8)
             self.assertTrue(first["has_more"])
             handle = first["task_handle"]
             follow = request | {"task_handle": handle}
@@ -257,18 +257,15 @@ class PrivacyRouting(unittest.TestCase):
                     request = {"intent": "translate", "scene": scene,
                                "kind": "合成知识类别", "writing_move": move}
                     reply = route.lookup(request)
-                    if len(route.released) < KEY_LIMIT:
-                        self.assertEqual(reply["cards"][0]["move"], MOVES[move])
-                    if reply["decision"] == "deny":
-                        self.assertEqual(reply["reason_code"], "LIMIT")
-            self.assertEqual(len(route.released), KEY_LIMIT)
+                    self.assertEqual(reply["cards"][0]["move"], MOVES[move])
+                    gateway.calls.clear()
             with patch("scene_cards.time.monotonic", return_value=time.monotonic() + 1801):
                 self.assertEqual(route.lookup(follow)["reason_code"], "TASK_EXPIRED")
             gateway.calls.clear()
             gateway.calls.extend([time.monotonic()] * 30)
             self.assertEqual(route.lookup(follow)["db_query_count"], 0)
 
-    def test_same_task_cannot_release_more_than_twelve_cards(self):
+    def test_task_and_daily_unique_card_allowances(self):
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "test.sqlite"
             build(database)
@@ -276,17 +273,28 @@ class PrivacyRouting(unittest.TestCase):
                 db.executemany("INSERT INTO scene_route VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
                     (SCENES[0], index, f"fixture-{index}", "合成知识类别",
                      "", "", "", "", 1, "", "")
-                    for index in range(15)
+                    for index in range(70)
                 ])
             db.close()
             route = SceneCards(Gateway(database), route_kinds(database))
             request = {"intent": "plan", "scene": SCENES[0], "kind": "合成知识类别"}
-            for _ in range(4):
+            for _ in range(6):
                 reply = route.lookup(request)
                 request["task_handle"] = reply["task_handle"]
-                self.assertEqual(len(reply["cards"]), 3)
+                self.assertEqual(len(reply["cards"]), 8)
             self.assertFalse(reply["has_more"])
             self.assertEqual(route.lookup(request)["reason_code"], "LIMIT")
+            # A new scene within another task may release a further sixteen unique cards.
+            with sqlite3.connect(database) as db:
+                db.execute("UPDATE scene_route SET scenario=? WHERE stage >= 48 AND kind=?", (SCENES[1], request["kind"]))
+            db.close()
+            other = {"intent": "polish", "scene": SCENES[1], "kind": request["kind"]}
+            for _ in range(2):
+                page = route.lookup(other)
+                self.assertEqual(len(page["cards"]), 8)
+                other["task_handle"] = page["task_handle"]
+            self.assertEqual(len(route.released), KEY_LIMIT)
+            self.assertEqual(route.lookup(other)["reason_code"], "LIMIT")
 
 class Transport(unittest.TestCase):
     def test_real_mcp(self):
